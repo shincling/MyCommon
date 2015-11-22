@@ -1,0 +1,352 @@
+{
+    "page1": {
+        "accountingFirm": "\u534e\u666e\u5929\u5065\u4f1a\u8ba1\u5e08\u4e8b\u52a1\u6240(\u7279\u6b8a\u666e\u901a\u5408\u4f19)", 
+        "assistantStocktrader": "\u6d77\u901a\u8bc1\u5238", 
+        "birthday": "2003-10-13", 
+        "businessScope": "\u6280\u672f\u5f00\u53d1\u3001\u6280\u672f\u63a8\u5e7f\u3001\u6280\u672f\u8f6c\u8ba9\u3001\u6280\u672f\u54a8\u8be2\u3001\u6280\u672f\u670d\u52a1;\u8ba1\u7b97\u673a\u6280\u672f\u57f9\u8bad;\u59d4\u6258\u52a0\u5de5\u7535\u5b50\u8ba1\u7b97\u673a\u53ca\u5916\u90e8\u8bbe\u5907;\u9500\u552e\u8ba1\u7b97\u673a\u3001\u8f6f\u4ef6\u53ca\u8f85\u52a9\u8bbe\u5907\u3001\u5de5\u4e1a\u81ea\u52a8\u63a7\u5236\u7cfb\u7edf\u88c5\u7f6e\u3001\u81ea\u52a8\u5316\u7acb\u4f53\u4ed3\u5e93\u3001\u673a\u68b0\u8bbe\u5907;\u8ba1\u7b97\u673a\u7ef4\u4fee;\u8ba1\u7b97\u673a\u7cfb\u7edf\u670d\u52a1;\u5e94\u7528\u8f6f\u4ef6\u670d\u52a1,\u57fa\u7840\u8f6f\u4ef6\u670d\u52a1\u3002", 
+        "companyEmail": "shuwei@bjsiasun.com", 
+        "companyEvolution": "2003\u5e7410\u670813\u65e5,\u6c88\u9633\u65b0\u677e\u673a\u5668\u4eba\u81ea\u52a8\u5316\u80a1\u4efd\u6709\u9650\u516c\u53f8\u8054\u5408\u4f55\u521a\u7b49\u4e03\u4f4d\u81ea\u7136\u4eba\u5171\u540c\u8d27\u5e01\u51fa\u8d44700\u4e07\u5143\u6210\u7acb\u4e86\u5317\u4eac\u65b0\u677e\u4f73\u548c\u63a7\u5236\u7cfb\u7edf\u6709\u9650\u516c\u53f8,\u5e76\u5728\u5317\u4eac\u5e02\u5de5\u5546\u884c\u653f\u7ba1\u7406\u5c40\u767b\u8bb0\u6ce8\u518c\u3002\u6709\u9650\u516c\u53f8\u6ce8\u518c\u53f7\u4e3a1101081619517,\u6ce8\u518c\u8d44\u672c700\u4e07\u5143\u30022007\u5e743\u670818\u65e5,\u6709\u9650\u516c\u53f8\u80a1\u4e1c\u4f1a\u901a\u8fc7\u51b3\u8bae,\u4e00\u81f4\u540c\u610f\u6709\u9650\u516c\u53f8\u4ee5\u622a\u6b622006\u5e7412\u670831\u65e5\u7ecf\u5ba1\u8ba1\u7684\u51c0\u8d44\u4ea725,565,065.79\u5143,\u63091.0226:1\u6298\u5408\u6210\u80a1\u4efd\u516c\u53f825,000,000\u80a1\u3002\u516c\u53f8\u540d\u79f0\u53d8\u66f4\u4e3a\"\u5317\u4eac\u65b0\u677e\u4f73\u548c\u7535\u5b50\u7cfb\u7edf\u80a1\u4efd\u6709\u9650\u516c\u53f8\u3002", 
+        "guapaiDate": "2007-09-28", 
+        "guzhuanzhongxinhangye": "\u4fe1\u606f\u6280\u672f>\u6280\u672f\u786c\u4ef6\u4e0e\u8bbe\u5907>\u7535\u5b50\u8bbe\u5907\u3001\u4eea\u5668\u548c\u5143\u4ef6", 
+        "layerFirm": "", 
+        "legalRep": "\u66f2\u9053\u594e", 
+        "locationArea": "\u5317\u4eac-\u5317\u4eac\u5e02", 
+        "locationYQArea": "\u5317\u4eac\u4e2d\u5173\u6751", 
+        "mailNumber": "100038", 
+        "mainStocktrader": "\u7533\u4e07\u5b8f\u6e90\u8bc1\u5238", 
+        "managerName": "\u4f55\u521a", 
+        "name": "\u5317\u4eac\u65b0\u677e\u4f73\u548c\u7535\u5b50\u7cfb\u7edf\u80a1\u4efd\u6709\u9650\u516c\u53f8", 
+        "president": "\u66f2\u9053\u594e", 
+        "registerAddress": "\u5317\u4eac\u5e02\u6d77\u6dc0\u533a\u5317\u5c0f\u9a6c\u53826\u53f7\u534e\u5929\u5927\u53a61018\u5ba4", 
+        "registerMoney": "2,750.00", 
+        "secretary": "\u8212\u4f1f", 
+        "secretaryFax": "010-63361768", 
+        "secretaryMail": "shuwei@bjsiasun.com", 
+        "secretaryPhone": "010-63324498", 
+        "shenwanhangye": "\u8ba1\u7b97\u673a>\u8ba1\u7b97\u673a\u8bbe\u5907", 
+        "staffNumber": "106", 
+        "website": "www.bjsiasun.com", 
+        "wordAddress": "\u5317\u4eac\u5e02\u6d77\u6dc0\u533a\u5317\u5c0f\u9a6c\u53826\u53f7\u534e\u5929\u5927\u53a61018\u5ba4", 
+        "zuoshishang": ""
+    }, 
+    "page2": {
+        "companyLeader": [
+            {
+                "Description": "\u66f2\u9053\u594e\u5148\u751f\uff0c\u4e2d\u56fd\u7c4d\uff0c\u7814\u7a76\u751f\u5b66\u5386\uff0c\u535a\u58eb\u751f\u5bfc\u5e08\uff0c\u7814\u7a76\u5458\uff0c\u66fe\u7559\u5b66\u5fb7\u56fd\uff0c\u4e3a\u4eab\u53d7\u56fd\u52a1\u9662\u653f\u5e9c\u7279\u6b8a\u6d25\u8d34\u7684\u4e13\u5bb6\u3002\u66fe\u8363\u83b7\u4e2d\u56fd\u79d1\u5b66\u9662\u79d1\u6280\u8fdb\u6b65\u4e8c\u7b49\u5956\u4e24\u9879\u3001\u7279\u7b49\u5956\u4e00\u9879\uff0c\u56fd\u5bb6\u79d1\u6280\u8fdb\u6b65\u4e8c\u7b49\u5956\u4e00\u9879\uff0c\u5e76\u83b7\u8fbd\u5b81\u7701\u5341\u5927\u6770\u51fa\u9752\u5e74\u79d1\u6280\u521b\u4e1a\u5956\uff0c\u8fbd\u5b81\u7701\u52b3\u52a8\u6a21\u8303\uff0c\u4e2d\u56fd\u79d1\u5b66\u9662\u9752\u5e74\u79d1\u5b66\u5bb6\u5956\uff0c\u8fbd\u5b81\u7701\u4f18\u79c0\u4e13\u5bb6\uff0c\u4e2d\u56fd\u9752\u5e74\u79d1\u6280\u5956\uff0c\u201c\u4e5d\u4e94\u201d\u56fd\u5bb6\u79d1\u6280\u653b\u5173\u5148\u8fdb\u4e2a\u4eba\uff0c\u6c88\u9633\u5e02\u79d1\u6280\u632f\u5174\u5956\uff08\u4e2a\u4eba\u5956\uff09\u3001\u8fbd\u5b81\u7701\u4f18\u79c0\u4e13\u5bb6\u7b49\u5956\u9879\u3002\u73b0\u4e3a\u673a\u5668\u4eba\u56fd\u5bb6\u5de5\u7a0b\u7814\u7a76\u4e2d\u5fc3\u526f\u4e3b\u4efb\uff0c\u517c\u4efb\u5168\u56fd\u5de5\u4e1a\u81ea\u52a8\u5316\u7cfb\u7edf\u6807\u51c6\u5316\u6280\u672f\u59d4\u5458\u4f1a\u5de5\u4e1a\u673a\u5668\u4eba\u5206\u4f1a\u526f\u4e3b\u4efb\u59d4\u5458\uff0c\u4e2d\u56fd\u81ea\u52a8\u5316\u5b66\u4f1a\u673a\u5668\u4eba\u59d4\u5458\u4f1a\u5e38\u52a1\u59d4\u5458\uff0c\u4e2d\u56fd\u710a\u63a5\u5b66\u4f1a\u673a\u5668\u4eba\u710a\u63a5\u59d4\u5458\u4f1a\u5e38\u52a1\u7406\u4e8b\uff0c\u4e2d\u56fd\u673a\u7535\u4e00\u4f53\u5316\u6280\u672f\u5e94\u7528\u534f\u4f1a\u673a\u5668\u4eba\u5de5\u7a0b\u5206\u4f1a\u5e38\u52a1\u7406\u4e8b\uff0c\u8fbd\u5b81\u7701\u81ea\u52a8\u5316\u5b66\u4f1a\u5e38\u52a1\u7406\u4e8b\u7b49\u804c\u3002\u73b0\u4efb\u6c88\u9633\u65b0\u677e\u673a\u5668\u4eba\u81ea\u52a8\u5316\u80a1\u4efd\u6709\u9650\u516c\u53f8\u526f\u8463\u4e8b\u957f\u3001\u603b\u88c1\uff0c\u5317\u4eac\u65b0\u677e\u4f73\u548c\u7535\u5b50\u7cfb\u7edf\u80a1\u4efd\u6709\u9650\u516c\u53f8\u8463\u4e8b\u957f\u3002", 
+                "accessionDate": "2013-05-20", 
+                "birthday": "1961", 
+                "education": "\u7855\u58eb", 
+                "holdingShares": "", 
+                "name": "\u66f2\u9053\u594e", 
+                "title": "\u8463\u4e8b\u957f"
+            }, 
+            {
+                "Description": "\u674e\u6052\u52ad\u5148\u751f\uff0c\u4e2d\u56fd\u7c4d\uff0c\u672c\u79d1\u5b66\u5386\uff0c\u7814\u7a76\u5458\u3002\u66fe\u4efb\u6c5f\u82cf\u81ea\u52a8\u5316\u7814\u7a76\u6240\u6240\u957f\u52a9\u7406\u3001\u526f\u6240\u957f\u3002\u73b0\u4efb\u6c5f\u82cf\u81ea\u52a8\u5316\u7814\u7a76\u6240\u6240\u957f\uff0c\u5317\u4eac\u65b0\u677e\u4f73\u548c\u7535\u5b50\u7cfb\u7edf\u80a1\u4efd\u6709\u9650\u516c\u53f8\u526f\u8463\u4e8b\u957f\u3002", 
+                "accessionDate": "2013-05-20", 
+                "birthday": "1965", 
+                "education": "\u672c\u79d1", 
+                "holdingShares": "", 
+                "name": "\u674e\u6052\u52ad", 
+                "title": "\u526f\u8463\u4e8b\u957f"
+            }, 
+            {
+                "Description": "\u4f55\u521a\u5148\u751f\uff0c\u4e2d\u56fd\u7c4d\uff0c\u672c\u79d1\u5b66\u5386\u3002\u66fe\u4efb\u804c\u4e8e\u4e2d\u56fd\u822a\u5929\u90e8634\u6240\u3001\u82f1\u7279\u5c14\u8ba1\u7b97\u673a\u6280\u672f\u6709\u9650\u516c\u53f8\u6280\u672f\u90e8\u7ecf\u7406\u3001\u5317\u4eac\u6052\u5a01\u7535\u5b50\u7cfb\u7edf\u516c\u53f8\u603b\u7ecf\u7406\u3001\u5317\u4eac\u4e09\u4e5d\u4f73\u548c\u4fe1\u606f\u79d1\u6280\u53d1\u5c55\u6709\u9650\u516c\u53f8\u603b\u7ecf\u7406\u3002\u73b0\u4efb\u5317\u4eac\u65b0\u677e\u4f73\u548c\u7535\u5b50\u7cfb\u7edf\u80a1\u4efd\u6709\u9650\u516c\u53f8\u8463\u4e8b\u517c\u603b\u7ecf\u7406\u3002", 
+                "accessionDate": "2013-05-20", 
+                "birthday": "1965", 
+                "education": "\u672c\u79d1", 
+                "holdingShares": "576.27", 
+                "name": "\u4f55\u521a", 
+                "title": "\u8463\u4e8b"
+            }, 
+            {
+                "Description": "\u738b\u5b8f\u7389\u5148\u751f\uff0c\u4e2d\u56fd\u7c4d\uff0c\u7814\u7a76\u751f\u5b66\u5386\uff0c\u526f\u7814\u7a76\u5458\u3002\u66fe\u62c5\u4efb\u6c88\u9633\u65b0\u677e\u673a\u5668\u4eba\u81ea\u52a8\u5316\u80a1\u4efd\u6709\u9650\u516c\u53f8\u7269\u6d41\u4e0e\u4ed3\u50a8\u81ea\u52a8\u5316\u4e8b\u4e1a\u90e8\u603b\u7ecf\u7406\u3002\u73b0\u4efb\u6c88\u9633\u65b0\u677e\u673a\u5668\u4eba\u81ea\u52a8\u5316\u80a1\u4efd\u6709\u9650\u516c\u53f8\u526f\u603b\u88c1\uff0c\u673a\u68b0\u5de5\u4e1a\u7269\u6d41\u4ed3\u50a8\u8bbe\u5907\u6807\u51c6\u5316\u6280\u672f\u59d4\u5458\u4f1a\u59d4\u5458\u3002\u5317\u4eac\u65b0\u677e\u4f73\u548c\u7535\u5b50\u7cfb\u7edf\u80a1\u4efd\u6709\u9650\u516c\u53f8\u8463\u4e8b\u3002", 
+                "accessionDate": "2013-05-20", 
+                "birthday": "1966", 
+                "education": "\u7855\u58eb", 
+                "holdingShares": "", 
+                "name": "\u738b\u5b8f\u7389", 
+                "title": "\u8463\u4e8b"
+            }, 
+            {
+                "Description": "\u8bb8\u658c\u5148\u751f\uff0c\u4e2d\u56fd\u7c4d\uff0c\u7814\u7a76\u751f\u5b66\u5386\uff0c\u7814\u7a76\u5458\u3002\u66fe\u4efb\u6c5f\u82cf\u81ea\u52a8\u5316\u7814\u7a76\u6240\u5ba4\u526f\u4e3b\u4efb\u3001\u515a\u59d4\u526f\u4e66\u8bb0\u3002\u73b0\u4efb\u6c5f\u82cf\u81ea\u52a8\u5316\u7814\u7a76\u6240\u526f\u6240\u957f\u3001\u515a\u59d4\u4e66\u8bb0\uff0c\u5317\u4eac\u65b0\u677e\u4f73\u548c\u7535\u5b50\u7cfb\u7edf\u80a1\u4efd\u6709\u9650\u516c\u53f8\u8463\u4e8b\u3002", 
+                "accessionDate": "2013-05-20", 
+                "birthday": "1962", 
+                "education": "\u7855\u58eb", 
+                "holdingShares": "", 
+                "name": "\u8bb8\u658c", 
+                "title": "\u8463\u4e8b"
+            }, 
+            {
+                "Description": "\u8d75\u7acb\u56fd\u5148\u751f\uff0c\u4e2d\u56fd\u7c4d\uff0c\u7814\u7a76\u751f\u5b66\u5386\uff0c\u5de5\u7a0b\u5e08\u3002\u66fe\u4efb\u804c\u4e8e\u91d1\u676f\u6c7d\u8f66\u80a1\u4efd\u6709\u9650\u516c\u53f8\u3001\u4e2d\u56fd\u79d1\u6280\u56fd\u9645\u4fe1\u6258\u6295\u8d44\u6709\u9650\u8d23\u4efb\u516c\u53f8\u3001\u5b8f\u6e90\u8bc1\u5238\u80a1\u4efd\u6709\u9650\u516c\u53f8\u7b49\u3002\u73b0\u4efb\u6c88\u9633\u65b0\u677e\u673a\u5668\u4eba\u81ea\u52a8\u5316\u80a1\u4efd\u6709\u9650\u516c\u53f8\u526f\u603b\u88c1\u3001\u8463\u4e8b\u4f1a\u79d8\u4e66\uff0c\u5317\u4eac\u65b0\u677e\u4f73\u548c\u7535\u5b50\u7cfb\u7edf\u80a1\u4efd\u6709\u9650\u516c\u53f8\u8463\u4e8b\u3002", 
+                "accessionDate": "2013-05-20", 
+                "birthday": "1967", 
+                "education": "\u7855\u58eb", 
+                "holdingShares": "", 
+                "name": "\u8d75\u7acb\u56fd", 
+                "title": "\u8463\u4e8b"
+            }, 
+            {
+                "Description": "\u90b1\u6653\u5cf0\u5148\u751f\uff0c\u4e2d\u56fd\u7c4d\uff0c\u7814\u7a76\u751f\u5b66\u5386\uff0c\u526f\u7814\u7a76\u5458\u3002\u73b0\u4efb\u6c88\u9633\u65b0\u677e\u673a\u5668\u4eba\u81ea\u52a8\u5316\u80a1\u4efd\u6709\u9650\u516c\u53f8\u4f01\u4e1a\u53d1\u5c55\u4e2d\u5fc3\u603b\u7ecf\u7406\uff0c\u5317\u4eac\u65b0\u677e\u4f73\u548c\u7535\u5b50\u7cfb\u7edf\u80a1\u4efd\u6709\u9650\u516c\u53f8\u8463\u4e8b\u3002", 
+                "accessionDate": "2013-05-20", 
+                "birthday": "1967", 
+                "education": "\u7855\u58eb", 
+                "holdingShares": "", 
+                "name": "\u90b1\u6653\u5cf0", 
+                "title": "\u8463\u4e8b"
+            }, 
+            {
+                "Description": "\u5468\u5efa\u5fe0\u5148\u751f\uff0c\u4e2d\u56fd\u7c4d\uff0c\u672c\u79d1\u5b66\u5386\uff0c\u7814\u7a76\u5458\u3002\u66fe\u4efb\u6c5f\u82cf\u81ea\u52a8\u5316\u7814\u7a76\u6240\u5ba4\u526f\u4e3b\u4efb\u3001\u4e3b\u4efb\u3002\u73b0\u4efb\u6c5f\u82cf\u81ea\u52a8\u5316\u7814\u7a76\u6240\u8ba1\u7b97\u673a\u4e8b\u4e1a\u90e8\u4e3b\u4efb\uff0c\u5317\u4eac\u65b0\u677e\u4f73\u548c\u7535\u5b50\u7cfb\u7edf\u80a1\u4efd\u6709\u9650\u516c\u53f8\u8463\u4e8b\u3002", 
+                "accessionDate": "2013-05-20", 
+                "birthday": "1963", 
+                "education": "\u672c\u79d1", 
+                "holdingShares": "", 
+                "name": "\u5468\u5efa\u5fe0", 
+                "title": "\u8463\u4e8b"
+            }, 
+            {
+                "Description": "\u8096\u5b66\u6d77\u5148\u751f\uff0c\u4e2d\u56fd\u7c4d\uff0c\u672c\u79d1\u5b66\u5386\u3002\u66fe\u4efb\u82f1\u7279\u5c14\u8ba1\u7b97\u673a\u6280\u672f\u6709\u9650\u516c\u53f8\u5de5\u7a0b\u5e08\u3001\u5317\u4eac\u4e09\u4e5d\u4f73\u548c\u4fe1\u606f\u79d1\u6280\u53d1\u5c55\u6709\u9650\u516c\u53f8\u5de5\u63a7\u90e8\u7ecf\u7406\u3002\u73b0\u4efb\u5317\u4eac\u65b0\u677e\u4f73\u548c\u7535\u5b50\u7cfb\u7edf\u80a1\u4efd\u6709\u9650\u516c\u53f8\u8463\u4e8b\u3001\u526f\u603b\u7ecf\u7406\u3002", 
+                "accessionDate": "2013-05-20", 
+                "birthday": "1968", 
+                "education": "\u672c\u79d1", 
+                "holdingShares": "63.84", 
+                "name": "\u8096\u5b66\u6d77", 
+                "title": "\u8463\u4e8b"
+            }, 
+            {
+                "Description": "\u91d1\u5e86\u4e30\u5148\u751f\uff0c\u4e2d\u56fd\u7c4d\uff0c\u672c\u79d1\u5b66\u5386\uff0c\u9ad8\u7ea7\u4f1a\u8ba1\u5e08\u3002\u66fe\u4efb\u6c88\u9633\u98de\u673a\u5de5\u4e1a\uff08\u96c6\u56e2\uff09\u6709\u9650\u516c\u53f8\u8d22\u52a1\u4f1a\u8ba1\u5904\u4f1a\u8ba1\u5458\u3001\u6210\u672c\u4ef7\u683c\u79d1\u526f\u79d1\u957f\u3001\u8d44\u4ea7\u7ba1\u7406\u79d1\u526f\u79d1\u957f\u7b49\u804c\u30022000\u5e746\u6708\u52a0\u5165\u6c88\u9633\u65b0\u677e\u673a\u5668\u4eba\u81ea\u52a8\u5316\u80a1\u4efd\u6709\u9650\u516c\u53f8\uff0c\u5386\u4efb\u8d22\u52a1\u4f1a\u8ba1\u90e8\u526f\u90e8\u957f\u3001\u90e8\u957f\u7b49\u804c\u3002\u73b0\u4efb\u6c88\u9633\u65b0\u677e\u673a\u5668\u4eba\u81ea\u52a8\u5316\u80a1\u4efd\u6709\u9650\u516c\u53f8\u8d22\u52a1\u603b\u76d1\uff0c\u5317\u4eac\u65b0\u677e\u4f73\u548c\u7535\u5b50\u7cfb\u7edf\u80a1\u4efd\u6709\u9650\u516c\u53f8\u76d1\u4e8b\u4f1a\u4e3b\u5e2d\u3002", 
+                "accessionDate": "2013-05-20", 
+                "birthday": "1965", 
+                "education": "\u672c\u79d1", 
+                "holdingShares": "", 
+                "name": "\u91d1\u5e86\u4e30", 
+                "title": "\u76d1\u4e8b\u4f1a\u4e3b\u5e2d"
+            }, 
+            {
+                "Description": "\u738b\u4f20\u5065\u5148\u751f\uff0c\u4e2d\u56fd\u7c4d\uff0c\u672c\u79d1\u5b66\u5386\uff0c\u9ad8\u7ea7\u4f1a\u8ba1\u5e08\u30021992\u5e74\u5165\u804c\u6c5f\u82cf\u81ea\u52a8\u5316\u7814\u7a76\u6240\uff0c\u66fe\u4efb\u6c5f\u82cf\u81ea\u52a8\u5316\u7814\u7a76\u6240\u8d22\u52a1\u5904\u526f\u5904\u957f\u3001\u8d22\u52a1\u90e8\u4e3b\u4efb\u7b49\u804c\uff0c\u73b0\u4efb\u6c5f\u82cf\u81ea\u52a8\u5316\u7814\u7a76\u6240\u526f\u603b\u7ecf\u6d4e\u5e08\u517c\u5ba1\u8ba1\u90e8\u4e3b\u4efb\u3002\u5317\u4eac\u65b0\u677e\u4f73\u548c\u7535\u5b50\u7cfb\u7edf\u80a1\u4efd\u6709\u9650\u516c\u53f8\u76d1\u4e8b\u3002", 
+                "accessionDate": "2013-05-20", 
+                "birthday": "1970", 
+                "education": "\u672c\u79d1", 
+                "holdingShares": "", 
+                "name": "\u738b\u4f20\u5065", 
+                "title": "\u76d1\u4e8b"
+            }, 
+            {
+                "Description": "\u5218\u8273\uff0c\u5973\uff0c\u4e13\u79d1\u5b66\u5386\uff0c\u4e2d\u5171\u515a\u5458\u30021992\u5e747\u6708-1998\u5e748\u6708\uff0c\u82f1\u7279\u5c14\u8ba1\u7b97\u673a\u6280\u672f\u6709\u9650\u516c\u53f8\uff0c\u4efb\u884c\u653f\u52a9\u7406\uff1b1998\u5e748\u6708-2004\u5e742\u6708\uff0c\u5eb7\u6cf0\u514b\u56fd\u9645\u7535\u5b50\u6709\u9650\u516c\u53f8\uff0c\u4efb\u884c\u653f\u7ecf\u7406\uff1b2004\u5e743\u6708-2009\u5e743\u6708\uff0c\u5317\u4eac\u8bda\u8fc5\u8fbe\u901a\u4fe1\u8bbe\u5907\u7ecf\u8d38\u6709\u9650\u8d23\u4efb\u516c\u53f8\uff0c\u4efb\u884c\u653f\u7ecf\u7406\u517c\u8d22\u52a1\u51fa\u7eb3\uff1b2009\u5e743\u6708\u81f3\u4eca\uff0c\u5317\u4eac\u65b0\u677e\u4f73\u548c\u7535\u5b50\u7cfb\u7edf\u80a1\u4efd\u6709\u9650\u516c\u53f8\uff0c\u4efb\u4f01\u7ba1\u90e8\u7ecf\u7406\uff1b2014\u5e742\u670826\u65e5\u7ecf\u4e34\u65f6\u804c\u5de5\u5927\u4f1a\u9009\u4e3e\u4e3a\u5317\u4eac\u65b0\u677e\u4f73\u548c\u7535\u5b50\u7cfb\u7edf\u80a1\u4efd\u6709\u9650\u516c\u53f8\u804c\u5de5\u76d1\u4e8b\u3002", 
+                "accessionDate": "2014-02-26", 
+                "birthday": "1971", 
+                "education": "\u4e13\u79d1", 
+                "holdingShares": "", 
+                "name": "\u5218\u8273", 
+                "title": "\u804c\u5de5\u76d1\u4e8b"
+            }, 
+            {
+                "Description": "\u4f55\u521a\u5148\u751f\uff0c\u4e2d\u56fd\u7c4d\uff0c\u672c\u79d1\u5b66\u5386\u3002\u66fe\u4efb\u804c\u4e8e\u4e2d\u56fd\u822a\u5929\u90e8634\u6240\u3001\u82f1\u7279\u5c14\u8ba1\u7b97\u673a\u6280\u672f\u6709\u9650\u516c\u53f8\u6280\u672f\u90e8\u7ecf\u7406\u3001\u5317\u4eac\u6052\u5a01\u7535\u5b50\u7cfb\u7edf\u516c\u53f8\u603b\u7ecf\u7406\u3001\u5317\u4eac\u4e09\u4e5d\u4f73\u548c\u4fe1\u606f\u79d1\u6280\u53d1\u5c55\u6709\u9650\u516c\u53f8\u603b\u7ecf\u7406\u3002\u73b0\u4efb\u5317\u4eac\u65b0\u677e\u4f73\u548c\u7535\u5b50\u7cfb\u7edf\u80a1\u4efd\u6709\u9650\u516c\u53f8\u8463\u4e8b\u517c\u603b\u7ecf\u7406\u3002", 
+                "accessionDate": "2010-05-11", 
+                "birthday": "1965", 
+                "education": "\u672c\u79d1", 
+                "holdingShares": "576.27", 
+                "name": "\u4f55\u521a", 
+                "title": "\u603b\u7ecf\u7406"
+            }, 
+            {
+                "Description": "\u8096\u5b66\u6d77\u5148\u751f\uff0c\u4e2d\u56fd\u7c4d\uff0c\u672c\u79d1\u5b66\u5386\u3002\u66fe\u4efb\u82f1\u7279\u5c14\u8ba1\u7b97\u673a\u6280\u672f\u6709\u9650\u516c\u53f8\u5de5\u7a0b\u5e08\u3001\u5317\u4eac\u4e09\u4e5d\u4f73\u548c\u4fe1\u606f\u79d1\u6280\u53d1\u5c55\u6709\u9650\u516c\u53f8\u5de5\u63a7\u90e8\u7ecf\u7406\u3002\u73b0\u4efb\u5317\u4eac\u65b0\u677e\u4f73\u548c\u7535\u5b50\u7cfb\u7edf\u80a1\u4efd\u6709\u9650\u516c\u53f8\u8463\u4e8b\u3001\u526f\u603b\u7ecf\u7406\u3002", 
+                "accessionDate": "2010-05-11", 
+                "birthday": "1968", 
+                "education": "\u672c\u79d1", 
+                "holdingShares": "63.84", 
+                "name": "\u8096\u5b66\u6d77", 
+                "title": "\u526f\u603b\u7ecf\u7406"
+            }, 
+            {
+                "Description": "\u8212\u4f1f\u5148\u751f\uff0c\u4e2d\u56fd\u7c4d\uff0c\u9ad8\u7ea7\u5de5\u7a0b\u5e08\uff0c\u5de5\u5546\u7ba1\u7406\u535a\u58eb\u3002\u66fe\u4efb\u534e\u5317\u7535\u529b\u5b66\u9662\u8bb2\u5e08\u3001\u82f1\u7279\u5c14\u8ba1\u7b97\u673a\u6280\u672f\u6709\u9650\u516c\u53f8\u7cfb\u7edf\u96c6\u6210\u90e8\u7ecf\u7406\u3001\u5317\u4eac\u4e09\u4e5d\u4f73\u548c\u4fe1\u606f\u79d1\u6280\u53d1\u5c55\u6709\u9650\u516c\u53f8\u7cfb\u7edf\u96c6\u6210\u90e8\u7ecf\u7406\u3001\u603b\u7ecf\u7406\u52a9\u7406\u3002\u73b0\u4efb\u5317\u4eac\u65b0\u677e\u4f73\u548c\u7535\u5b50\u7cfb\u7edf\u80a1\u4efd\u6709\u9650\u516c\u53f8\u526f\u603b\u7ecf\u7406\u3001\u8463\u4e8b\u4f1a\u79d8\u4e66\u3002", 
+                "accessionDate": "2010-05-11", 
+                "birthday": "1961", 
+                "education": "\u535a\u58eb", 
+                "holdingShares": "63.84", 
+                "name": "\u8212\u4f1f", 
+                "title": "\u526f\u603b\u7ecf\u7406\u3001\u8463\u4e8b\u4f1a\u79d8\u4e66"
+            }, 
+            {
+                "Description": "\u66fe\u9633\u5148\u751f\uff0c\u4e2d\u56fd\u7c4d\uff0c\u6c49\u65cf\uff0c\u7ecf\u6d4e\u5b66\u7855\u58eb\u3002\u66fe\u4efb\u4e09\u4e5d\u4f01\u4e1a\u96c6\u56e2\u4e3b\u7ba1\u3001\u90e8\u957f\u52a9\u7406\u3001\u8d22\u52a1\u90e8\u526f\u90e8\u957f\u3001\u90e8\u957f\uff0c\u4e0a\u6d77\u4e09\u4e5d\u79d1\u6280\u53d1\u5c55\u80a1\u4efd\u6709\u9650\u516c\u53f8\u526f\u603b\u7ecf\u7406\u3001\u8d22\u52a1\u603b\u76d1\uff0c\u6df1\u5733\u4e5d\u65b0\u836f\u4e1a\u6709\u9650\u516c\u53f8\u526f\u603b\u7ecf\u7406\u3001\u8d22\u52a1\u603b\u76d1\u3002\u516c\u53f8\u8d22\u52a1\u90e8\u7ecf\u7406\uff0c\u73b0\u4efb\u5317\u4eac\u65b0\u677e\u4f73\u548c\u7535\u5b50\u7cfb\u7edf\u80a1\u4efd\u6709\u9650\u516c\u53f8\u8d22\u52a1\u603b\u76d1\u3002", 
+                "accessionDate": "2010-05-11", 
+                "birthday": "1969", 
+                "education": "\u7855\u58eb", 
+                "holdingShares": "135.74", 
+                "name": "\u66fe\u9633", 
+                "title": "\u8d22\u52a1\u603b\u76d1"
+            }, 
+            {
+                "Description": "\u5468\u82b3\u5973\u58eb\uff0c\u4e2d\u56fd\u7c4d\uff0c\u672c\u79d1\u5b66\u5386\u3002\u4e2d\u5171\u515a\u5458\uff0c\u66fe\u4efb\u5317\u4eac\u5bcc\u673a\u8fbe\u80fd\u7535\u6c14\u4ea7\u54c1\u6709\u9650\u516c\u53f8\u5546\u52a1\u52a9\u7406\u3001\u5317\u4eac\u5bcc\u8fea\u901a\u79d1\u6280\u53d1\u5c55\u6709\u9650\u516c\u53f8\u82f1\u6587\u7f16\u8f91\u3001\u5317\u4eac\u4e09\u4e5d\u4f73\u548c\u4fe1\u606f\u79d1\u6280\u53d1\u5c55\u6709\u9650\u516c\u53f8\u5546\u52a1\u4e13\u5458\u3002\u73b0\u4efb\u5317\u4eac\u65b0\u677e\u4f73\u548c\u7535\u5b50\u7cfb\u7edf\u80a1\u4efd\u6709\u9650\u516c\u53f8\u5546\u52a1\u90e8\u7ecf\u7406\uff0c2013\u5e744\u670816\u65e5\u88ab\u516c\u53f8\u7b2c\u4e09\u5c4a\u804c\u5de5\u4ee3\u8868\u5927\u4f1a\u63a8\u9009\u4e3a\u804c\u5de5\u76d1\u4e8b\u30022014\u5e742\u670826\u65e5\u8f9e\u53bb\u804c\u5de5\u76d1\u4e8b\u804c\u52a1\uff0c2014\u5e744\u6708\u88ab\u5317\u4eac\u65b0\u677e\u4f73\u548c\u7535\u5b50\u7cfb\u7edf\u80a1\u4efd\u6709\u9650\u516c\u53f8\u4e09\u5c4a\u4e09\u6b21\u8463\u4e8b\u4f1a\u8058\u4efb\u4e3a\u526f\u603b\u7ecf\u7406\uff0c\u4efb\u671f\u81f32016\u5e744\u6708\u3002", 
+                "accessionDate": "2014-04-18", 
+                "birthday": "1977", 
+                "education": "\u672c\u79d1", 
+                "holdingShares": "", 
+                "name": "\u5468\u82b3", 
+                "title": "\u526f\u603b\u7ecf\u7406"
+            }
+        ]
+    }, 
+    "page3": {
+        "mainShareholder": [
+            {
+                "data": "2015-06-30", 
+                "detail": [
+                    {
+                        "changeContion": "116.07", 
+                        "name": "\u6c88\u9633\u65b0\u677e\u673a\u5668\u4eba\u81ea\u52a8\u5316\u80a1\u4efd\u6709\u9650\u516c\u53f8", 
+                        "ratio": "46.43%", 
+                        "shareNumber": "1,276.78", 
+                        "stockProperty": "\u53ef\u8f6c\u8ba9\u80a1\u4efd,\u6d41\u901a\u53d7\u9650\u80a1\u4efd"
+                    }, 
+                    {
+                        "changeContion": "52.39", 
+                        "name": "\u4f55\u521a", 
+                        "ratio": "20.96%", 
+                        "shareNumber": "576.27", 
+                        "stockProperty": "\u53ef\u8f6c\u8ba9\u80a1\u4efd,\u6d41\u901a\u53d7\u9650\u80a1\u4efd"
+                    }, 
+                    {
+                        "changeContion": "46.88", 
+                        "name": "\u6c5f\u82cf\u81ea\u52a8\u5316\u7814\u7a76\u6240", 
+                        "ratio": "18.75%", 
+                        "shareNumber": "515.63", 
+                        "stockProperty": "\u53ef\u8f6c\u8ba9\u80a1\u4efd"
+                    }, 
+                    {
+                        "changeContion": "12.34", 
+                        "name": "\u66fe\u9633", 
+                        "ratio": "4.94%", 
+                        "shareNumber": "135.74", 
+                        "stockProperty": "\u53ef\u8f6c\u8ba9\u80a1\u4efd"
+                    }, 
+                    {
+                        "changeContion": "9.22", 
+                        "name": "\u80e1\u671d\u534e", 
+                        "ratio": "3.69%", 
+                        "shareNumber": "101.41", 
+                        "stockProperty": "\u53ef\u8f6c\u8ba9\u80a1\u4efd,\u6d41\u901a\u53d7\u9650\u80a1\u4efd"
+                    }, 
+                    {
+                        "changeContion": "5.80", 
+                        "name": "\u8212\u4f1f", 
+                        "ratio": "2.32%", 
+                        "shareNumber": "63.84", 
+                        "stockProperty": "\u53ef\u8f6c\u8ba9\u80a1\u4efd,\u6d41\u901a\u53d7\u9650\u80a1\u4efd"
+                    }, 
+                    {
+                        "changeContion": "5.80", 
+                        "name": "\u8096\u5b66\u6d77", 
+                        "ratio": "2.32%", 
+                        "shareNumber": "63.84", 
+                        "stockProperty": "\u53ef\u8f6c\u8ba9\u80a1\u4efd,\u6d41\u901a\u53d7\u9650\u80a1\u4efd"
+                    }, 
+                    {
+                        "changeContion": "\u65b0\u8fdb", 
+                        "name": "\u6768\u52b2", 
+                        "ratio": "0.19%", 
+                        "shareNumber": "5.17", 
+                        "stockProperty": "\u53ef\u8f6c\u8ba9\u80a1\u4efd"
+                    }, 
+                    {
+                        "changeContion": "\u65b0\u8fdb", 
+                        "name": "\u76d6\u739f\u5b8f", 
+                        "ratio": "0.08%", 
+                        "shareNumber": "2.19", 
+                        "stockProperty": "\u53ef\u8f6c\u8ba9\u80a1\u4efd"
+                    }, 
+                    {
+                        "changeContion": "-1.02", 
+                        "name": "\u9ad8\u8336\u5a1f", 
+                        "ratio": "0.07%", 
+                        "shareNumber": "1.98", 
+                        "stockProperty": "\u53ef\u8f6c\u8ba9\u80a1\u4efd"
+                    }, 
+                    {
+                        "changeContion": "", 
+                        "name": "\u603b\u8ba1", 
+                        "ratio": "99.75%", 
+                        "shareNumber": "2,742.85", 
+                        "stockProperty": ""
+                    }
+                ], 
+                "holderNumber": "19"
+            }, 
+            {
+                "data": "2014-12-31", 
+                "detail": [
+                    {
+                        "changeContion": "\u672a\u53d8", 
+                        "name": "\u6c88\u9633\u65b0\u677e\u673a\u5668\u4eba\u81ea\u52a8\u5316\u80a1\u4efd\u6709\u9650\u516c\u53f8", 
+                        "ratio": "46.43%", 
+                        "shareNumber": "1,160.71", 
+                        "stockProperty": "\u53ef\u8f6c\u8ba9\u80a1\u4efd,\u6d41\u901a\u53d7\u9650\u80a1\u4efd"
+                    }, 
+                    {
+                        "changeContion": "\u672a\u53d8", 
+                        "name": "\u4f55\u521a", 
+                        "ratio": "20.96%", 
+                        "shareNumber": "523.89", 
+                        "stockProperty": "\u53ef\u8f6c\u8ba9\u80a1\u4efd,\u6d41\u901a\u53d7\u9650\u80a1\u4efd"
+                    }, 
+                    {
+                        "changeContion": "\u672a\u53d8", 
+                        "name": "\u6c5f\u82cf\u81ea\u52a8\u5316\u7814\u7a76\u6240", 
+                        "ratio": "18.75%", 
+                        "shareNumber": "468.75", 
+                        "stockProperty": "\u53ef\u8f6c\u8ba9\u80a1\u4efd"
+                    }, 
+                    {
+                        "changeContion": "94.39", 
+                        "name": "\u66fe\u9633", 
+                        "ratio": "4.94%", 
+                        "shareNumber": "123.40", 
+                        "stockProperty": "\u53ef\u8f6c\u8ba9\u80a1\u4efd"
+                    }, 
+                    {
+                        "changeContion": "\u672a\u53d8", 
+                        "name": "\u80e1\u671d\u534e", 
+                        "ratio": "3.69%", 
+                        "shareNumber": "92.19", 
+                        "stockProperty": "\u53ef\u8f6c\u8ba9\u80a1\u4efd,\u6d41\u901a\u53d7\u9650\u80a1\u4efd"
+                    }, 
+                    {
+                        "changeContion": "\u672a\u53d8", 
+                        "name": "\u8212\u4f1f", 
+                        "ratio": "2.32%", 
+                        "shareNumber": "58.04", 
+                        "stockProperty": "\u53ef\u8f6c\u8ba9\u80a1\u4efd,\u6d41\u901a\u53d7\u9650\u80a1\u4efd"
+                    }, 
+                    {
+                        "changeContion": "\u672a\u53d8", 
+                        "name": "\u8096\u5b66\u6d77", 
+                        "ratio": "2.32%", 
+                        "shareNumber": "58.04", 
+                        "stockProperty": "\u53ef\u8f6c\u8ba9\u80a1\u4efd,\u6d41\u901a\u53d7\u9650\u80a1\u4efd"
+                    }, 
+                    {
+                        "changeContion": "\u65b0\u8fdb", 
+                        "name": "\u53f2\u5927\u660e", 
+                        "ratio": "0.28%", 
+                        "shareNumber": "6.90", 
+                        "stockProperty": "\u53ef\u8f6c\u8ba9\u80a1\u4efd"
+                    }, 
+                    {
+                        "changeContion": "\u65b0\u8fdb", 
+                        "name": "\u9ad8\u8336\u5a1f", 
+                        "ratio": "0.12%", 
+                        "shareNumber": "3.00", 
+                        "stockProperty": "\u53ef\u8f6c\u8ba9\u80a1\u4efd"
+                    }, 
+                    {
+                        "changeContion": "", 
+                        "name": "\u603b\u8ba1", 
+                        "ratio": "99.81%", 
+                        "shareNumber": "2,494.92", 
+                        "stockProperty": ""
+                    }
+                ], 
+                "holderNumber": "17"
+            }
+        ]
+    }
+}

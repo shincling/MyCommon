@@ -1,0 +1,51 @@
+{
+    "chuangyeExp": [
+        {
+            "company": {
+                "name": "", 
+                "uuid": ""
+            }, 
+            "description": "", 
+            "time": ""
+        }
+    ], 
+    "company": {
+        "name": "清科创投", 
+        "uuid": ""
+    }, 
+    "description": "", 
+    "education": "", 
+    "image_url": "", 
+    "investAmount": "", 
+    "investArea": [], 
+    "investExp": [
+        {
+            "company": {
+                "name": "", 
+                "uuid": ""
+            }, 
+            "description": "", 
+            "partner": "", 
+            "time": ""
+        }
+    ], 
+    "investStage": [], 
+    "location": "", 
+    "name": "陈倞", 
+    "news": [], 
+    "sourceWeb": "touziren", 
+    "title": "分析师", 
+    "url": "http://zdb.pedaily.cn/people/%E9%99%88%E5%80%9E", 
+    "uuid": "", 
+    "weibourl": "", 
+    "workExp": [
+        {
+            "company": {
+                "name": "", 
+                "uuid": ""
+            }, 
+            "description": "", 
+            "time": ""
+        }
+    ]
+}

@@ -1,0 +1,67 @@
+{
+    "chuangyeExp": [
+        {
+            "company": {
+                "name": "", 
+                "uuid": ""
+            }, 
+            "description": "", 
+            "time": ""
+        }
+    ], 
+    "company": {
+        "name": "", 
+        "uuid": ""
+    }, 
+    "description": "", 
+    "education": "", 
+    "image_url": "", 
+    "investAmount": "", 
+    "investArea": [], 
+    "investExp": [
+        {
+            "company": {
+                "name": "", 
+                "uuid": ""
+            }, 
+            "description": "", 
+            "partner": "", 
+            "time": ""
+        }
+    ], 
+    "investStage": [], 
+    "location": "", 
+    "name": "布鲁诺·阿施勒", 
+    "news": [
+        {
+            "content": "2011中国金融高峰论坛于18-19日在北京拉开帷幕，“中国金融高峰论坛”作为科博会的重要活动，会议主题为“金融创新与经济结构调整”。瑞士艾德维克资产管理公司执行主席布鲁诺·阿施勒参与本次论坛并发表主...", 
+            "time": "2011-05-19 16:36", 
+            "title": "布鲁诺·阿施勒：外资本土PE和VC同台竞争"
+        }, 
+        {
+            "content": "“创业板的推出，给了我们很大的信心，相信这将极大推动中国本土PE和外资PE的发展”，布鲁诺·阿施勒对记者说起创业板，一脸兴奋。布鲁诺·阿施勒是艾德维克资产管理公司主席，该公司是欧洲最大规模的私募股权F...", 
+            "time": "2009-10-28 08:47", 
+            "title": "艾德维克布鲁诺·阿施勒：创业板将极大推动PE发展"
+        }, 
+        {
+            "content": "国际FOF基金管理公司艾德维克的主席兼CEO布鲁诺·阿施勒日前在京透露，该公司已经与上海浦东新区签订了谅解备忘录，筹备在华建立人民币FOF基金，即募集中国本土资金后投于中国优秀的私募股权基金公司。布鲁...", 
+            "time": "2009-09-01 00:00", 
+            "title": "布鲁诺·阿施勒看好中国市场 筹谋人民币FOF"
+        }
+    ], 
+    "sourceWeb": "touziren", 
+    "title": "", 
+    "url": "http://zdb.pedaily.cn/people/%E5%B8%83%E9%B2%81%E8%AF%BA%C2%B7%E9%98%BF%E6%96%BD%E5%8B%92", 
+    "uuid": "", 
+    "weibourl": "", 
+    "workExp": [
+        {
+            "company": {
+                "name": "", 
+                "uuid": ""
+            }, 
+            "description": "", 
+            "time": ""
+        }
+    ]
+}
