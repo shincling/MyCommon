@@ -16,13 +16,6 @@ for i in range(1,5000):
             sent_w=
             assert 'M' in dia[j]
         '''
-        slot_count='nil'
-        slot_time='nil'
-        slot_idnumber='nil'
-        slot_destination='nil'
-        slot_departure='nil'
-        slot_name='nil'
-
         sent=dia[j][3:-7]
 
 
@@ -34,61 +27,32 @@ for i in range(1,5000):
             for word in (sent_list):
                 w_sent +=' '
                 w_sent +=word
-                w_sent +='\n'
-            w_dia=w_dia+w_sent
+
+            w_dia=w_dia+w_sent+'\n'
         elif 'request' in sent:
             pass
         elif 'inform' in sent:
-            if 'departure' in sent:
-                slot_departure=re.findall('departure=([^i\t+])',sent)[0]+'\t'+str(sent_id)
-            else:
-                slot_departure='nil'+'\t'+str(sent_id)
-            if 'destination' in sent:
-                slot_destination=re.findall('destination=([^i\t+])',sent)[0]+'\t'+str(sent_id)
-            else:
-                slot_destination='nil'+'\t'+str(sent_id)
-            if 'time' in sent:
-                slot_time=re.findall('time=([^i\t+])',sent)[0]+'\t'+str(sent_id)
-            else:
-                slot_time='nil'+'\t'+str(sent_id)
-            if 'count' in sent:
-                slot_count=re.findall('count=([^i\t+])',sent)[0]+'\t'+str(sent_id)
-            else:
-                slot_count='nil'+'\t'+str(sent_id)
-            if 'idnumber' in sent:
-                slot_idnumber=re.findall('idnumber=([^i\t+])',sent)[0]+'\t'+str(sent_id)
-            else:
-                slot_idnumber='nil'+'\t'+str(sent_id)
-            if 'name' in sent:
-                slot_name=re.findall('name=([^i\t+])',sent)[0]+'\t'+str(sent_id)
-            else:
-                slot_name='nil'+'\t'+str(sent_id)
-
-
-
-
-
             w_sent=str(sent_id)
             sent_id=sent_id+1
             sent_list=jieba._lcut(sent[:sent.index('\t')])
             for word in (sent_list):
                 w_sent +=' '
                 w_sent +=word
-                w_sent +='\n'
-            w_dia=w_dia+w_sent
+
+            w_dia=w_dia+w_sent+'\n'
 
         if j%2==1:
-            w_dia=str(sent_id)+w_dia+'departure ?\t%s\n'%slot_departure
+            w_dia=w_dia+str(sent_id)+' departure ?\n'
             sent_id=sent_id+1
-            w_dia=str(sent_id)+w_dia+'destination ?\t%s\n'%slot_destination
+            w_dia=w_dia+str(sent_id)+' destination ?\n'
             sent_id=sent_id+1
-            w_dia=str(sent_id)+w_dia+'name ?\t%s\n'%slot_name
+            w_dia=w_dia+str(sent_id)+' name ?\n'
             sent_id=sent_id+1
-            w_dia=str(sent_id)+w_dia+'idnumber ?\t%s\n'%slot_idnumber
+            w_dia=w_dia+str(sent_id)+' idnumber ?\n'
             sent_id=sent_id+1
-            w_dia=str(sent_id)+w_dia+'time ?\t%s\n'%slot_time
+            w_dia=w_dia+str(sent_id)+' time ?\n'
             sent_id=sent_id+1
-            w_dia=str(sent_id)+w_dia+'count ?\t%s\n'%slot_count
+            w_dia=w_dia+str(sent_id)+' count ?\n'
             sent_id=sent_id+1
 
 
