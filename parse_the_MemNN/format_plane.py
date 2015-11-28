@@ -39,6 +39,15 @@ for i in range(1,5000):
 
             w_dia=w_dia+w_sent+'\n'
         elif 'request' in sent:
+            sent.replace('?','？')
+            w_sent=str(sent_id)
+            sent_id=sent_id+1
+            sent_list=jieba._lcut(sent[:sent.index('\t')])
+            for word in (sent_list):
+                w_sent +=' '
+                w_sent +=word
+
+            w_dia=w_dia+w_sent+'\n'
             pass
         elif 'inform' in sent:
             if 'departure' in sent:
@@ -76,7 +85,7 @@ for i in range(1,5000):
             for word in (sent_list):
                 w_sent +=' '
                 w_sent +=word
-
+            
             w_dia=w_dia+w_sent+'\n'
 
         if j%2==1:
@@ -93,20 +102,7 @@ for i in range(1,5000):
             w_dia=w_dia+str(sent_id)+' count ?\t%s\n'%slot_count.decode('utf8')
             sent_id=sent_id+1
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    pass
+    fw.write(w_dia.encode('utf8'))
+fw.close()
+f.close()
+pass
