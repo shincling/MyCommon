@@ -85,7 +85,6 @@ for i in range(1,5000):
             for word in (sent_list):
                 w_sent +=' '
                 w_sent +=word
-            
             w_dia=w_dia+w_sent+'\n'
 
         if j%2==1:
