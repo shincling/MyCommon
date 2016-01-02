@@ -13,6 +13,8 @@ len_big=0
 len_count=0
 aa=0
 errorInfinal=0
+bb=0
+cc=0
 for file in os.listdir(path):
     filename=path+'/'+file
     print filename
@@ -24,6 +26,13 @@ for file in os.listdir(path):
             len_0+=1
         else:
             len_big+=1
+            ff=open('/home/shin/Memect/ntdb/data/result/0102/all/'+file[:-4]+'_Table1219_word_all.json','r')
+            page_total=len(re.findall('"\d+?":',ff.read()))
+            if page_total==1:
+                bb+=1
+            if page_total>1:
+                cc+=1
+
         if int(content[0:-1].split(":")[-1])>10:
             aa+=1
         len_count+=1
@@ -37,3 +46,6 @@ print 'noLen: %d'%errorInfinal
 print 'Len>10:%d'%aa
 
 print float(aa)/len_count
+
+print bb
+print cc
