@@ -7,3 +7,5 @@ print bb
 print bb**2
 print bb==1
 
+print numpy.concatenate((bb,bb*2),axis=1)
+print numpy.hstack((bb,bb*3))
