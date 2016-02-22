@@ -6,12 +6,12 @@ def f():
     print "After second yield"
 
 g = f()
-g.next()
-g.next()
+# g.next()
+# g.next()
 
-# print "Before first next"
-# g.next()
-# print "Before second next"
-# g.next()
-# print "Before third yield"
-# g.next()
+print "Before first next"
+g.next()
+print "Before second next"
+g.next()
+print "Before third yield"
+g.next()
