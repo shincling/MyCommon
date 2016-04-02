@@ -90,7 +90,7 @@ class LSTMDecoder(StateTransferLSTM):
             self.W_c, self.U_c, self.b_c,
             self.W_f, self.U_f, self.b_f,
             self.W_o, self.U_o, self.b_o,
-            self.W_x, self.b_x
+            self.W_x, self.b_x #x应该是最后的输出
         ]
 
     def reset_states(self):
