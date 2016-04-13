@@ -7,8 +7,11 @@ print args
 def cc(task,f1=0,f2='ccc'):
     print task,f1,f2
 bb={'task':'hhh'}
+bb1=(11,22,33)
 cc(**args.__dict__)
 
 cc(**bb)
 
 cc(bb)
+
+cc(*bb1)
