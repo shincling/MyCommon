@@ -6,5 +6,7 @@ args=parser.parse_args()
 print args
 def cc(task):
     print task
-
+bb={'task':'hhh'}
 cc(**args.__dict__)
+
+cc(bb)
