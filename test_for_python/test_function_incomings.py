@@ -8,3 +8,4 @@ def ttt(incomings,tmp):
     for i in cc:
         print i
 ttt(('dd','bb','hh'),'nothing')
+# ttt('dd','bb',tmp='hhh')
