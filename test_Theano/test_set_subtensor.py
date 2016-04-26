@@ -3,7 +3,7 @@ import numpy as np
 from theano import tensor as T
 
 size=10
-x=T.ivector('x')
+x=T.vector('x')
 y=T.matrix('y')
 
 y=theano.shared(np.random.rand(3,3))
