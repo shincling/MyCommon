@@ -14,7 +14,7 @@ y=theano.shared(np.random.rand(3,3))
 
 ff=theano.function([x],updates=[(y,T.set_subtensor(y[0,:],x))])
 ff1=theano.function([x1],updates=[(y,T.set_subtensor(y[[1],[1,2]],x1))])
-ff2=theano.function([x2],updates=[(y,T.set_subtensor(y[:,:],x2))])
+ff2=theano.function([x2],updates=[(y,T.set_subtensor(y[[0,1,2],:],x2))])
 input_x=np.array([3.0,3,3])
 input_x1=np.array([0.,1])
 input_all=np.random.rand(3,3)
