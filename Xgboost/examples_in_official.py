@@ -9,4 +9,5 @@ bst = xgb.train(param, dtrain, num_round)
 # make prediction
 preds = bst.predict(dtest)
 
-print preds
+for i in preds:
+    print i
