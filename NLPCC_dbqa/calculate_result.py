@@ -20,23 +20,26 @@ def construct_input(input_path):
     if len(new_question_indexList)<len(ans_indexList):
         print 'There are some question with multi answers:(range_left,range_right)'
         for idx,que in enumerate(new_question_indexList):
-            ttt=0
-            ran_left=new_question_indexList[idx]
-            ran_right=new_question_indexList[idx+1]
-            for jj in ans_indexList:
-                if jj>ran_right:
-                    break
-                if  ran_left<=jj<ran_right:
-                    ttt+=1
-            if ttt>1:
-                print ran_left,ran_right
+            try:
+                ttt=0
+                ran_left=new_question_indexList[idx]
+                ran_right=new_question_indexList[idx+1]
+                for jj in ans_indexList:
+                    if jj>ran_right:
+                        break
+                    if  ran_left<=jj<ran_right:
+                        ttt+=1
+                if ttt>1:
+                    print ran_left,ran_right
+            except IndexError:
+                continue
     return new_question_indexList,ans_indexList
 
 def main(input_path,result_path):
     if not (input_path and result_path):
         print 'Error in path : calculate_result.py %input_path %result_path'
     print'The baseline result of {}:\n'.format(input_path)
-    quesion_list,ans_list=construct_input(input_path)
+    construct_input(input_path)
 
 
 if __name__=='__main__':
