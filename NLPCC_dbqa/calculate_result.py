@@ -2,6 +2,7 @@ import sys
 import re
 def construct_input(input_path):
     f_input=open(input_path,'r').readlines()
+    print 'total lines of input is {}'.format(len(f_input))
     new_question_indexList=[]
     ans_indexList=[]
     old_question=''
@@ -10,13 +11,26 @@ def construct_input(input_path):
         now_quesiton,now_ans=spl[0],spl[-1]
         if now_quesiton!=old_question:
             new_question_indexList.append(idx)
-        if now_quesiton=='1':
+            old_question=now_quesiton
+        if now_ans=='1':
             ans_indexList.append(idx)
-    print len(new_question_indexList),len(ans_indexList)
+    print 'total num of questions is :{}'.format(len(new_question_indexList))
+    print 'total num of ans=1 list is {}'.format(len(ans_indexList))
+
+    if len(new_question_indexList)<len(ans_indexList):
+        print 'There are some question with multi answers:(range_left,range_right)'
+        for idx,que in enumerate(new_question_indexList):
+            ttt=0
+            ran_left=new_question_indexList[idx]
+            ran_right=new_question_indexList[idx+1]
+            for jj in ans_indexList:
+                if jj>ran_right:
+                    break
+                if  ran_left<=jj<ran_right:
+                    ttt+=1
+            if ttt>1:
+                print ran_left,ran_right
     return new_question_indexList,ans_indexList
-
-
-
 
 def main(input_path,result_path):
     if not (input_path and result_path):
