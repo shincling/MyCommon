@@ -1,6 +1,7 @@
 import sys
 import re
 def construct_input(input_path):
+    check_onetomany=False
     f_input=open(input_path,'r').readlines()
     print 'total lines of input is {}'.format(len(f_input))
     new_question_indexList=[]
@@ -17,7 +18,7 @@ def construct_input(input_path):
     print 'total num of questions is :{}'.format(len(new_question_indexList))
     print 'total num of ans=1 list is {}'.format(len(ans_indexList))
 
-    if len(new_question_indexList)<len(ans_indexList):
+    if check_onetomany and len(new_question_indexList)<len(ans_indexList):
         print 'There are some question with multi answers:(range_left,range_right)'
         for idx,que in enumerate(new_question_indexList):
             try:
