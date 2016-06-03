@@ -7,6 +7,7 @@ emb_source='bdbk_standard'
 vocab_dict=OrderedDict()
 vocab_wordlist=[]
 vocab_emblist=[]
+'''用loadtxt会出现一个不知道为什么的错位，导致少了一行，所以就不用这个了'''
 # vocab_list=np.loadtxt(emb_source,dtype=str,delimiter=' ',usecols=[0])
 # vocab_emb=np.loadtxt(emb_source,delimiter=' ',usecols=range(1,101))
 # print len(vocab_list)#,len(vocab_emb)
