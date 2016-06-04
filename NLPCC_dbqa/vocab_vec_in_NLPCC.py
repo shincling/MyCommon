@@ -13,3 +13,9 @@ for word in vocab_NLPCC:
     if word.encode('utf8') in vocab_total:
        cover_idx+=1
 print float(cover_idx)/len(vocab_NLPCC)
+
+'''
+vocab_nlpcc:232476
+vocab_total:1142896
+0.479464546878
+'''
