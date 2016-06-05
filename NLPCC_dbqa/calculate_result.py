@@ -40,7 +40,8 @@ def main(input_path,result_path):
     if not (input_path and result_path):
         print 'Error in path : calculate_result.py %input_path %result_path'
     print'The baseline result of {}:\n'.format(input_path)
-    construct_input(input_path)
+    question_list,ans_list=construct_input(input_path)
+    pass
 
 
 if __name__=='__main__':
