@@ -1,18 +1,20 @@
 # -*- coding: utf8 -*-
 from numpy import *
-import numpy as np
+from tqdm import tqdm
 import pickle
 import jieba
+
 
 def cos_dis(vector1,vector2):
     return dot(vector1,vector2)/(linalg.norm(vector1)*linalg.norm(vector2))
 
 word_dict=pickle.load(open('nlpcc_dict_20160605'))
 input_path='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/nlpcc-iccpol-2016.dbqa.training-data'
+out_path='similarity_0606'
 f_input=open(input_path,'r').readlines()
 print 'total lines of input is {}'.format(len(f_input))
 dis_list=[]
-for line in f_input:
+for line in tqdm(f_input):
     each=line.split('\t')
     question=jieba._lcut(each[0])
     question_vector=zeros(100)
@@ -33,3 +35,6 @@ for line in f_input:
 print len(dis_list)
 print dis_list[:30]
 
+f_out=open(out_path,'w')
+for dis in dis_list:
+    f_out.write(dis+'\r\n')
