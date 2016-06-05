@@ -17,7 +17,7 @@ for word in tqdm(vocab_NLPCC):
         cover_idx+=1
         nlpcc_dict[word.encode('utf8')]=vocab_total[word.encode('utf8')]
     else:
-        nlpcc_dict[word.encode('utf8')]=np.random.normal(0,1,[3,])
+        nlpcc_dict[word.encode('utf8')]=np.random.normal(0,1,[100,])
 print 'cover_idx:',cover_idx,float(cover_idx)/len(vocab_NLPCC)
 
 print 'nlpcc_dict:',len(nlpcc_dict)
