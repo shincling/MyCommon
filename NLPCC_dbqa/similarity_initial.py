@@ -37,4 +37,4 @@ print dis_list[:30]
 
 f_out=open(out_path,'w')
 for dis in dis_list:
-    f_out.write(dis+'\r\n')
+    f_out.write(str(dis)+'\r\n')
