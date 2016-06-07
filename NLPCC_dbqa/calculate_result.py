@@ -1,11 +1,13 @@
 import sys
 import re
+import pickle
 def construct_input(input_path):
     check_onetomany=False
     f_input=open(input_path,'r').readlines()
     print 'total lines of input is {}'.format(len(f_input))
     new_question_indexList=[]
     ans_indexList=[]
+    result_list=[]
     old_question=''
     for idx,question in enumerate(f_input):
         spl=question.strip().split('\t')
@@ -15,8 +17,11 @@ def construct_input(input_path):
             old_question=now_quesiton
         if now_ans=='1':
             ans_indexList.append(idx)
+        result_list.append(spl[-1])
     print 'total num of questions is :{}'.format(len(new_question_indexList))
     print 'total num of ans=1 list is {}'.format(len(ans_indexList))
+    # pickle.dump(result_list,open('result_list_0607','w'))
+    # print 'ok'
 
     if check_onetomany and len(new_question_indexList)<len(ans_indexList):
         print 'There are some question with multi answers:(range_left,range_right)'
