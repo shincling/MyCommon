@@ -4,7 +4,7 @@ sys.path.append('..')
 import random
 import calculate_result
 
-ratio=0.3
+ratio=0.5
 shuffle_times=10
 
 input_path='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/nlpcc-iccpol-2016.dbqa.training-data'
@@ -43,5 +43,16 @@ print 'Shuffle ~~~~~  ! '
 
 part_index=int(len(content_list)*(1-ratio))
 print 'The train coves {} stories,and the valid covers {} stories'.format(part_index,len(content_list)-part_index)
+
+f_train=open('training5_1','w')
+f_valid=open('valid5_1','w')
+
+for idx,one_story in enumerate(content_list):
+    if idx<=part_index:
+        for line in one_story:
+            f_train.write(line)
+    else:
+        for line in one_story:
+            f_valid.write(line)
 
 
