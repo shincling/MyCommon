@@ -39,13 +39,14 @@ def construct_input(input_path):
                     print ran_left,ran_right
             except IndexError:
                 continue
-    return new_question_indexList,ans_indexList
+    return new_question_indexList,ans_indexList,f_input
 
 def main(input_path,result_path):
     if not (input_path and result_path):
         print 'Error in path : calculate_result.py %input_path %result_path'
     print'The baseline result of {}:\n'.format(input_path)
-    question_list,ans_list=construct_input(input_path)
+    question_list,ans_list,f_input=construct_input(input_path)
+    return question_list,ans_list,f_input
     pass
 
 
