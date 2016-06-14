@@ -3,6 +3,10 @@ import sys
 import re
 import pickle
 import jieba
+from numpy import *
+
+def cos_dis(vector1,vector2):
+    return dot(vector1,vector2)/(linalg.norm(vector1)*linalg.norm(vector2))
 
 def get_vocab(train_file,test_file):
     f_input_train=open(train_file,'r').readlines()
@@ -26,7 +30,7 @@ def get_vocab(train_file,test_file):
     print 'Save the set to {}'.format(output_name)
     return vocab
 
-def construct_toral_input(input_path):
+def construct_total_input(input_path):
     f_input_train=open(train_file,'r').readlines()
     f_input_test=open(test_file,'r').readlines()
     f_input=f_input_train+f_input_test
@@ -85,6 +89,41 @@ def construct_test(input_path):
     print 'total num of questions is :{}\n'.format(len(new_question_indexList))
     return new_question_indexList,ans_indexList,f_input
 
+def features_builder(split_idx,lines):
+    def word2vec_cos(lines):
+        dis_list=[]
+        word_dict=pickle.load(open('nlpcc_dict_20160605'))
+        for line in lines:
+            each=line.split('\t')
+            question=jieba._lcut(each[0])
+            question_vector=zeros(100)
+            for word in question:
+                one_vec=word_dict[word.encode('utf8')]
+                question_vector+=one_vec
+
+            answer=jieba._lcut(each[1])
+            answer_vector=zeros(100)
+            for word in answer:
+                one_vec=word_dict[word.encode('utf8')]
+                answer_vector+=one_vec
+
+            dis=cos_dis(question_vector,answer_vector)
+            dis_list.append(dis)
+        del word_dict
+        return dis_list
+
+    def format_xgboost(total_features):
+        length=set()
+        for feature in total_features:
+            pass
+
+    total_featurelist=[]
+    total_featurelist.append(word2vec_cos(lines))
+
+
+    return format_xgboost(total_featurelist)
+
+
 if __name__=='__main__':
     train_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/train7_1'
     test_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/valid3_1'
@@ -99,3 +138,5 @@ if __name__=='__main__':
     # print train_ansList[0:20]
     print ''.join(train_lines[0:3])
     print ''.join(test_lines[0:3])
+
+
