@@ -61,10 +61,11 @@ def construct_train(input_path):
         if now_quesiton!=old_question:
             new_question_indexList.append(idx)
             old_question=now_quesiton
-        if now_ans=='1':
-            ans_indexList.append(idx)
+        if now_ans=='1' or now_ans=='0':
+            ans_indexList.append(now_ans)
         result_list.append(spl[-1])
-    print 'total num of questions is :{}\n'.format(len(new_question_indexList))
+    print 'total num of questions is :{}'.format(len(new_question_indexList))
+    print 'total num of ans is :{}  (Ps: it should be equel with the train file lines num)\n'.format(len(ans_indexList))
     return new_question_indexList,ans_indexList,f_input
 
 def construct_test(input_path):
@@ -76,12 +77,10 @@ def construct_test(input_path):
     old_question=''
     for idx,question in enumerate(f_input):
         spl=question.strip().split('\t')
-        now_quesiton,now_ans=spl[0],spl[2]
+        now_quesiton=spl[0]
         if now_quesiton!=old_question:
             new_question_indexList.append(idx)
             old_question=now_quesiton
-        if now_ans=='1':
-            ans_indexList.append(idx)
         result_list.append(spl[-1])
     print 'total num of questions is :{}\n'.format(len(new_question_indexList))
     return new_question_indexList,ans_indexList,f_input
@@ -94,5 +93,9 @@ if __name__=='__main__':
         vocab=get_vocab(train_file,test_file)
     else:
         vocab=pickle.load(open('vocabSet_in_NLPCC_main'))
-    construct_train(train_file)
-    construct_test(test_file)
+    train_split_idx,train_ansList,train_lines=construct_train(train_file)
+    test_split_idx,_,test_lines=construct_test(test_file)
+    del _
+    # print train_ansList[0:20]
+    print ''.join(train_lines[0:3])
+    print ''.join(test_lines[0:3])
