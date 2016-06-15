@@ -119,16 +119,23 @@ def features_builder(split_idx,lines):
         print dis_numpy.shape
         return dis_numpy
 
-    def format_xgboost(total_features):
-        length=set()
-        for feature in total_features:
-            pass
-
     total_featurelist=[]
     total_featurelist.append(word2vec_cos(lines))
 
+    return total_featurelist
 
-    return format_xgboost(total_featurelist)
+def format_xgboost(total_features,out_path,target=None):
+    final_feature=np.concatenate(total_features,axis=1)
+    feature_num=final_feature.shape[1]
+
+    all_lines=''
+    for hang in range(final_feature.shape[0]):
+        line=''
+        for lie in range(1,feature_num+1):
+            line+='{}:{} '.format(lie,final_feature[hang,lie-1])
+        line=line.strip()+'\n'
+        all_lines+=line
+    open(out_path,'w').write(all_lines)
 
 
 if __name__=='__main__':
@@ -145,6 +152,7 @@ if __name__=='__main__':
     # print train_ansList[0:20]
     print ''.join(train_lines[0:3])
     print ''.join(test_lines[0:3])
-    features_builder(test_split_idx,test_lines)
-
+    total_featurelist_test=features_builder(test_split_idx,test_lines)
+    # format_xgboost(total_featurelist,out_path='',target=train_ansList)
+    format_xgboost(total_featurelist_test,out_path='results/test_ssss.txt')
 
