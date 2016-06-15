@@ -3,10 +3,10 @@ import sys
 import re
 import pickle
 import jieba
-from numpy import *
+import numpy as np
 
 def cos_dis(vector1,vector2):
-    return dot(vector1,vector2)/(linalg.norm(vector1)*linalg.norm(vector2))
+    return np.dot(vector1,vector2)/(np.linalg.norm(vector1)*np.linalg.norm(vector2))
 
 def get_vocab(train_file,test_file):
     f_input_train=open(train_file,'r').readlines()
@@ -91,26 +91,33 @@ def construct_test(input_path):
 
 def features_builder(split_idx,lines):
     def word2vec_cos(lines):
-        dis_list=[]
+        dis_numpy=np.zeros([len(lines),1])
         word_dict=pickle.load(open('nlpcc_dict_20160605'))
-        for line in lines:
+        for idx,line in enumerate(lines):
             each=line.split('\t')
             question=jieba._lcut(each[0])
-            question_vector=zeros(100)
+            question_vector=np.zeros(100)
             for word in question:
-                one_vec=word_dict[word.encode('utf8')]
+                try:
+                    one_vec=word_dict[word.encode('utf8')]
+                except  KeyError:
+                    one_vec=np.random.normal(size=(100))
                 question_vector+=one_vec
 
             answer=jieba._lcut(each[1])
-            answer_vector=zeros(100)
+            answer_vector=np.zeros(100)
             for word in answer:
-                one_vec=word_dict[word.encode('utf8')]
+                try:
+                    one_vec=word_dict[word.encode('utf8')]
+                except KeyError:
+                    one_vec=np.random.normal(size=(100))
                 answer_vector+=one_vec
 
             dis=cos_dis(question_vector,answer_vector)
-            dis_list.append(dis)
+            dis_numpy[idx,0]=dis
         del word_dict
-        return dis_list
+        print dis_numpy.shape
+        return dis_numpy
 
     def format_xgboost(total_features):
         length=set()
@@ -138,5 +145,6 @@ if __name__=='__main__':
     # print train_ansList[0:20]
     print ''.join(train_lines[0:3])
     print ''.join(test_lines[0:3])
+    features_builder(test_split_idx,test_lines)
 
 
