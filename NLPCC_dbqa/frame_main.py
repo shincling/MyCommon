@@ -4,6 +4,7 @@ import re
 import pickle
 import jieba
 import numpy as np
+import xgboost as xgb
 
 def cos_dis(vector1,vector2):
     return np.dot(vector1,vector2)/(np.linalg.norm(vector1)*np.linalg.norm(vector2))
@@ -87,7 +88,7 @@ def construct_test(input_path):
             old_question=now_quesiton
         result_list.append(spl[-1])
     print 'total num of questions is :{}\n'.format(len(new_question_indexList))
-    return new_question_indexList,ans_indexList,f_input
+    return new_question_indexList,result_list,f_input
 
 def features_builder(split_idx,lines):
     def word2vec_cos(lines):
@@ -119,7 +120,24 @@ def features_builder(split_idx,lines):
         print dis_numpy.shape
         return dis_numpy
 
+    def word_overlap(lines):
+        dis_numpy=np.zeros([len(lines),1])
+        for idx,line in enumerate(lines):
+            each=line.split('\t')
+            question,answer=each[0],each[1]
+            question=jieba._lcut(question)
+            answer=jieba._lcut(answer)
+
+            result=0
+            for que in question:
+                for ans in answer:
+                    if ans==que:
+                        result+=1
+            dis_numpy[idx,0]=result
+        return dis_numpy
+
     total_featurelist=[]
+    total_featurelist.append(word_overlap(lines))
     total_featurelist.append(word2vec_cos(lines))
 
     return total_featurelist
@@ -135,24 +153,56 @@ def format_xgboost(total_features,out_path,target=None):
             line+='{}:{} '.format(lie,final_feature[hang,lie-1])
         line=line.strip()+'\n'
         all_lines+=line
-    open(out_path,'w').write(all_lines)
 
+    if target:
+        tmp=''
+        lines_list=all_lines.splitlines()
+        assert len(target)==len(lines_list)
+        print 'len target = lines_list , {}'.format(len(target))
+
+        for tar,line in zip(target,lines_list):
+            new_line=str(tar)+' '+line+'\n'
+            tmp+=new_line
+        all_lines=tmp
+
+    open(out_path,'w').write(all_lines.strip())
+
+def cal_main(train_file,test_file,score_file):
+    dtrain = xgb.DMatrix(train_file)
+    dtest = xgb.DMatrix(test_file)
+    # specify parameters via map
+    param = {'max_depth':10, 'eta':1, 'silent':1, 'objective':'binary:logistic' }
+    num_round = 50
+    bst = xgb.train(param, dtrain, num_round)
+    # make prediction
+    preds = bst.predict(dtest)
+    print bst.get_fscore()
+    open(score_file,'w').write('\r\n'.join([str(i) for i in preds]))
+    # return preds
 
 if __name__=='__main__':
     train_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/train7_1'
     test_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/valid3_1'
-    build_vocab=False
-    if build_vocab:
-        vocab=get_vocab(train_file,test_file)
-    else:
-        vocab=pickle.load(open('vocabSet_in_NLPCC_main'))
-    train_split_idx,train_ansList,train_lines=construct_train(train_file)
-    test_split_idx,_,test_lines=construct_test(test_file)
-    del _
-    # print train_ansList[0:20]
-    print ''.join(train_lines[0:3])
-    print ''.join(test_lines[0:3])
-    total_featurelist_test=features_builder(test_split_idx,test_lines)
-    # format_xgboost(total_featurelist,out_path='',target=train_ansList)
-    format_xgboost(total_featurelist_test,out_path='results/test_ssss.txt')
+    train_features='results/train_ssss.txt'
+    test_features='results/test_ssss.txt'
+    score_file='results/result_0615'
+    construct=False
 
+    if construct:
+        build_vocab=False
+        if build_vocab:
+            vocab=get_vocab(train_file,test_file)
+        else:
+            vocab=pickle.load(open('vocabSet_in_NLPCC_main'))
+        train_split_idx,train_ansList,train_lines=construct_train(train_file)
+        test_split_idx,_,test_lines=construct_test(test_file)
+        del _
+        # print train_ansList[0:20]
+        print ''.join(train_lines[0:3])
+        print ''.join(test_lines[0:3])
+        total_featurelist_train=features_builder(train_split_idx,train_lines)
+        total_featurelist_test=features_builder(test_split_idx,test_lines)
+        format_xgboost(total_featurelist_train,out_path=train_features,target=train_ansList)
+        format_xgboost(total_featurelist_test,out_path=test_features)
+
+    cal_main(train_features,test_features,score_file)
