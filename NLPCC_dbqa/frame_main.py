@@ -120,6 +120,36 @@ def features_builder(split_idx,lines):
         print dis_numpy.shape
         return dis_numpy
 
+    def word2vec_dis(lines):
+        dis_numpy=np.zeros([len(lines),1])
+        word_dict=pickle.load(open('nlpcc_dict_20160605'))
+        for idx,line in enumerate(lines):
+            each=line.split('\t')
+            question=jieba._lcut(each[0])
+            question_vector=np.zeros(100)
+            for word in question:
+                try:
+                    one_vec=word_dict[word.encode('utf8')]
+                except  KeyError:
+                    one_vec=np.random.normal(size=(100))
+                question_vector+=one_vec
+
+            answer=jieba._lcut(each[1])
+            answer_vector=np.zeros(100)
+            for word in answer:
+                try:
+                    one_vec=word_dict[word.encode('utf8')]
+                except KeyError:
+                    one_vec=np.random.normal(size=(100))
+                answer_vector+=one_vec
+
+            # dis=cos_dis(question_vector,answer_vector)
+            dis = np.linalg.norm(question_vector-answer_vector)
+            dis_numpy[idx,0]=dis
+        del word_dict
+        print dis_numpy.shape
+        return dis_numpy
+
     def word_overlap(lines):
         dis_numpy=np.zeros([len(lines),1])
         for idx,line in enumerate(lines):
@@ -139,6 +169,7 @@ def features_builder(split_idx,lines):
     total_featurelist=[]
     total_featurelist.append(word_overlap(lines))
     total_featurelist.append(word2vec_cos(lines))
+    total_featurelist.append(word2vec_dis(lines))
 
     return total_featurelist
 
@@ -171,13 +202,23 @@ def cal_main(train_file,test_file,score_file):
     dtrain = xgb.DMatrix(train_file)
     dtest = xgb.DMatrix(test_file)
     # specify parameters via map
-    param = {'max_depth':10, 'eta':1, 'silent':1, 'objective':'binary:logistic' }
-    num_round = 50
+    param = {'booster':'gblinear',
+             'max_depth':50,
+             'eta':0.3,
+             'min_child_weight':10,
+             'subsample':1,
+             'silent':1,
+             'objective':'binary:logistic',
+             'lambda':0.,
+             'alpha':0.}
+    num_round = 100
     bst = xgb.train(param, dtrain, num_round)
     # make prediction
+    train_score=bst.predict(dtrain)
     preds = bst.predict(dtest)
     print bst.get_fscore()
     open(score_file,'w').write('\r\n'.join([str(i) for i in preds]))
+    open(score_file+'_train','w').write('\r\n'.join([str(i) for i in train_score]))
     # return preds
 
 if __name__=='__main__':
@@ -185,8 +226,8 @@ if __name__=='__main__':
     test_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/valid3_1'
     train_features='results/train_ssss.txt'
     test_features='results/test_ssss.txt'
-    score_file='results/result_0615'
-    construct=False
+    score_file='results/result_0616_cover&w2v'
+    construct=0
 
     if construct:
         build_vocab=False
