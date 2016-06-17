@@ -5,9 +5,22 @@ import pickle
 import jieba
 import numpy as np
 import xgboost as xgb
+import scipy.spatial.distance as dist
 
 def cos_dis(vector1,vector2):
     return np.dot(vector1,vector2)/(np.linalg.norm(vector1)*np.linalg.norm(vector2))
+
+def binary_twosent(question,answer):
+    all_words=set(question+answer)
+    question_vec_01=np.zeros([len(all_words),1])
+    answer_vec_01=np.zeros([len(all_words),1])
+    for i in range(len(all_words)):
+        word=list(all_words)[i]
+        if word in question:
+            question_vec_01[i,0]=1
+        if word in answer:
+            answer_vec_01[i,0]=1
+    return question_vec_01,answer_vec_01
 
 def get_vocab(train_file,test_file):
     f_input_train=open(train_file,'r').readlines()
@@ -150,6 +163,40 @@ def features_builder(split_idx,lines):
         print dis_numpy.shape
         return dis_numpy
 
+    def word2vec_disall(lines):
+        dis_numpy=np.zeros([len(lines),4])
+        word_dict=pickle.load(open('nlpcc_dict_20160605'))
+        for idx,line in enumerate(lines):
+            each=line.split('\t')
+            question=jieba._lcut(each[0])
+            question_vector=np.zeros(100)
+            for word in question:
+                try:
+                    one_vec=word_dict[word.encode('utf8')]
+                except  KeyError:
+                    one_vec=np.random.normal(size=(100))
+                question_vector+=one_vec
+
+            answer=jieba._lcut(each[1])
+            answer_vector=np.zeros(100)
+            for word in answer:
+                try:
+                    one_vec=word_dict[word.encode('utf8')]
+                except KeyError:
+                    one_vec=np.random.normal(size=(100))
+                answer_vector+=one_vec
+
+            question_vec_01,answer_vec_01=binary_twosent(question,answer)
+
+            dis_numpy[idx,0]=1-dist.correlation(question_vector,answer_vector)
+            dis_numpy[idx,1]=1-dist.jaccard(question_vec_01,answer_vec_01)
+            dis_numpy[idx,2]=1-dist.hamming(question_vec_01,answer_vec_01)
+            dis_numpy[idx,3]=1-dist.correlation(question_vec_01,answer_vec_01)
+
+        del word_dict
+        print dis_numpy.shape
+        return dis_numpy
+
     def word_overlap(lines):
         dis_numpy=np.zeros([len(lines),1])
         for idx,line in enumerate(lines):
@@ -170,6 +217,7 @@ def features_builder(split_idx,lines):
     total_featurelist.append(word_overlap(lines))
     total_featurelist.append(word2vec_cos(lines))
     total_featurelist.append(word2vec_dis(lines))
+    total_featurelist.append(word2vec_disall(lines))
 
     return total_featurelist
 
@@ -226,7 +274,7 @@ if __name__=='__main__':
     test_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/valid3_1'
     train_features='results/train_ssss.txt'
     test_features='results/test_ssss.txt'
-    score_file='results/result_0616_cover&w2v'
+    score_file='results/result_0617_cover&w2v&dists'
     construct=0
 
     if construct:
@@ -242,8 +290,8 @@ if __name__=='__main__':
         print ''.join(train_lines[0:3])
         print ''.join(test_lines[0:3])
         total_featurelist_train=features_builder(train_split_idx,train_lines)
-        total_featurelist_test=features_builder(test_split_idx,test_lines)
+        # total_featurelist_test=features_builder(test_split_idx,test_lines)
         format_xgboost(total_featurelist_train,out_path=train_features,target=train_ansList)
-        format_xgboost(total_featurelist_test,out_path=test_features)
+        # format_xgboost(total_featurelist_test,out_path=test_features)
 
     cal_main(train_features,test_features,score_file)
