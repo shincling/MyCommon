@@ -1,5 +1,6 @@
 #coding=utf8
 import sys
+import time
 import re
 import pickle
 import jieba
@@ -8,6 +9,7 @@ import jieba.analyse
 import numpy as np
 import xgboost as xgb
 import scipy.spatial.distance as dist
+from tqdm import tqdm
 
 def cos_dis(vector1,vector2):
     return np.dot(vector1,vector2)/(np.linalg.norm(vector1)*np.linalg.norm(vector2))
@@ -266,9 +268,10 @@ def features_builder(split_idx,lines):
         print dis_numpy.shape
         return dis_numpy
 
-    def word_overlap_similar(lines):
+    def word_overlap_rela(lines):
         dis_numpy=np.zeros([len(lines),1])
         relawords_dict=open('relative_words.txt').read()
+        # for idx,line in tqdm(enumerate(lines)):
         for idx,line in enumerate(lines):
             each=line.split('\t')
             question,answer=each[0],each[1]
@@ -278,11 +281,21 @@ def features_builder(split_idx,lines):
             result=0
             for que in question:
                 for ans in answer:
-                    if re.findall('[=#].*?{}.*?{}.*?\n'.format(que,ans),relawords_dict) or re.findall('[=#].*?{}.*?{}.*?\n'.format(ans,que),relawords_dict):
+                    # print que,ans
+                    pattern3='[=#].*? '+que.encode('utf8')+' .*? '+ans.encode('utf8')+'.*?\n'
+                    pattern4='[=#].*? '+ans.encode('utf8')+' .*? '+que.encode('utf8')+'.*?\n'
+                    pattern1='[=#].*? '+que.encode('utf8')+' '+ans.encode('utf8')+'.*?\n'
+                    pattern2='[=#].*? '+ans.encode('utf8')+' '+que.encode('utf8')+'.*?\n'
+
+                    if re.findall(pattern1,relawords_dict) or re.findall(pattern2,relawords_dict) or\
+                            re.findall(pattern3,relawords_dict) or re.findall(pattern4,relawords_dict):
+                    # if re.findall(r'[=#].*? {} .*? {}.*?\n'.format(que.encode('utf8'),ans.encode('utf8')),relawords_dict) or re.findall(r'[=#].*? {} .*? {}.*?\n'.format(ans.encode('utf8'),que.encode('utf8')),relawords_dict):
                         result+=1
+                        print que,ans
             dis_numpy[idx,0]=result
         del relawords_dict
         print dis_numpy.shape
+        pickle.dump(dis_numpy,open('rela_overlap.np.{}'.format(time.ctime()),'w'))
         return dis_numpy
 
     def topwords_similarity(lines):
@@ -307,12 +320,13 @@ def features_builder(split_idx,lines):
         print dis_numpy.shape
         return dis_numpy
     total_featurelist=[]
-    total_featurelist.append(word_overlap(lines))
-    total_featurelist.append(topwords_similarity(lines))
-    total_featurelist.append(word2vec_cos(lines))
-    total_featurelist.append(word2vec_dis(lines))
-    total_featurelist.append(word2vec_disall(lines))
-    total_featurelist.append(word2vec_disall_2(lines))
+    # total_featurelist.append(word_overlap(lines))
+    total_featurelist.append(word_overlap_rela(lines))
+    # total_featurelist.append(topwords_similarity(lines))
+    # total_featurelist.append(word2vec_cos(lines))
+    # total_featurelist.append(word2vec_dis(lines))
+    # total_featurelist.append(word2vec_disall(lines))
+    # total_featurelist.append(word2vec_disall_2(lines))
 
     return total_featurelist
 
@@ -375,14 +389,14 @@ def cal_main(train_file,test_file,score_file,train_target=None):
 if __name__=='__main__':
     train_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/train7_1'
     test_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/valid3_1'
-    # train_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/train_demo'
-    # test_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/valid_demo'
+    train_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/train_demo'
+    test_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/valid_demo'
     train_features='results/train_ssss.txt'
     test_features='results/test_ssss.txt'
     # train_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.train'
     # test_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.test'
     score_file='results/result_0620_cover&w2v&dists'
-    construct=0
+    construct=10
 
     if construct:
         build_vocab=False
