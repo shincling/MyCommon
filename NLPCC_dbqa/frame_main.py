@@ -4,6 +4,7 @@ import re
 import pickle
 import jieba
 import jieba.posseg as pseg
+import jieba.analyse
 import numpy as np
 import xgboost as xgb
 import scipy.spatial.distance as dist
@@ -265,12 +266,33 @@ def features_builder(split_idx,lines):
         print dis_numpy.shape
         return dis_numpy
 
+    def topwords_similarity(lines):
+        dis_numpy=np.zeros([len(lines),4])
+        for idx,line in enumerate(lines):
+            each=line.split('\t')
+            question,answer=each[0],each[1]
+            question=jieba.analyse.extract_tags(question,5)
+            answer=jieba.analyse.extract_tags(answer,5)
+
+            result=0
+            for que in question:
+                for ans in answer:
+                    if ans==que:
+                        result+=1
+            dis_numpy[idx,0]=result
+
+            question_vec,answer_vec=binary_twosent(question,answer)
+            dis_numpy[idx,1]=1-dist.jaccard(question_vec,answer_vec)
+            dis_numpy[idx,2]=1-dist.hamming(question_vec,answer_vec)
+            dis_numpy[idx,3]=1-dist.cosine(question_vec,answer_vec)
+        print dis_numpy.shape
+        return dis_numpy
     total_featurelist=[]
     total_featurelist.append(word_overlap(lines))
-    total_featurelist.append(word2vec_cos(lines))
-    total_featurelist.append(word2vec_dis(lines))
+    total_featurelist.append(topwords_similarity(lines))
+    # total_featurelist.append(word2vec_cos(lines))
+    # total_featurelist.append(word2vec_dis(lines))
     total_featurelist.append(word2vec_disall(lines))
-    # total_featurelist.append(word2vec_disall(lines))
     total_featurelist.append(word2vec_disall_2(lines))
 
     return total_featurelist
@@ -299,10 +321,18 @@ def format_xgboost(total_features,out_path,target=None):
         all_lines=tmp
 
     open(out_path,'w').write(all_lines.strip())
+    return final_feature
 
-def cal_main(train_file,test_file,score_file):
-    dtrain = xgb.DMatrix(train_file)
+def cal_main(train_file,test_file,score_file,train_target=None):
+    if train_target:
+        train_lable=np.zeros(len(train_target))
+        train_lable[:]=map(int,train_target)
+        dtrain = xgb.DMatrix(train_file,train_lable)
+    else:
+        dtrain = xgb.DMatrix(train_file)
+    print 'dtrain finished.'
     dtest = xgb.DMatrix(test_file)
+    print 'dtest finished.'
     # specify parameters via map
     param = {'booster':'gblinear',
              'max_depth':15,
@@ -311,8 +341,8 @@ def cal_main(train_file,test_file,score_file):
              'subsample':1,
              'silent':0,
              'objective':'binary:logistic',
-             'lambda':0.1,
-             'alpha':0.2}
+             'lambda':0.,
+             'alpha':0.}
     num_round = 500
     bst = xgb.train(param, dtrain, num_round)
     # make prediction
@@ -332,7 +362,7 @@ if __name__=='__main__':
     test_features='results/test_ssss.txt'
     # train_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.train'
     # test_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.test'
-    score_file='results/result_0617_cover&w2v&dists'
+    score_file='results/result_0620_cover&w2v&dists'
     construct=1
 
     if construct:
@@ -348,8 +378,14 @@ if __name__=='__main__':
         print ''.join(train_lines[0:3])
         print ''.join(test_lines[0:3])
         total_featurelist_train=features_builder(train_split_idx,train_lines)
-        format_xgboost(total_featurelist_train,out_path=train_features,target=train_ansList)
+        train_np=format_xgboost(total_featurelist_train,out_path=train_features,target=train_ansList)
         total_featurelist_test=features_builder(test_split_idx,test_lines)
-        format_xgboost(total_featurelist_test,out_path=test_features)
+        test_np=format_xgboost(total_featurelist_test,out_path=test_features)
+        pickle.dump(train_np,train_features+'.np')
+        pickle.dump(test_np,test_features+'.np')
+    else:
+        train_np=pickle.load(train_features+'.np')
+        test_np=pickle.load(test_features+'.np')
 
-    cal_main(train_features,test_features,score_file)
+    cal_main(train_np,test_np,score_file,train_target=train_ansList)
+    # cal_main(train_features,test_features,score_file)
