@@ -282,16 +282,24 @@ def features_builder(split_idx,lines):
             for que in question:
                 for ans in answer:
                     # print que,ans
-                    pattern3='[=#].*? '+que.encode('utf8')+' .*? '+ans.encode('utf8')+'.*?\n'
-                    pattern4='[=#].*? '+ans.encode('utf8')+' .*? '+que.encode('utf8')+'.*?\n'
-                    pattern1='[=#].*? '+que.encode('utf8')+' '+ans.encode('utf8')+'.*?\n'
-                    pattern2='[=#].*? '+ans.encode('utf8')+' '+que.encode('utf8')+'.*?\n'
+                    pattern1='[=#].*? '+que.encode('utf8')+' (?:.*? )*?'+ans.encode('utf8')+'.*?\n'
+                    pattern2='[=#].*? '+ans.encode('utf8')+' (?:.*? )*?'+que.encode('utf8')+'.*?\n'
 
-                    if re.findall(pattern1,relawords_dict) or re.findall(pattern2,relawords_dict) or\
-                            re.findall(pattern3,relawords_dict) or re.findall(pattern4,relawords_dict):
-                    # if re.findall(r'[=#].*? {} .*? {}.*?\n'.format(que.encode('utf8'),ans.encode('utf8')),relawords_dict) or re.findall(r'[=#].*? {} .*? {}.*?\n'.format(ans.encode('utf8'),que.encode('utf8')),relawords_dict):
-                        result+=1
+                    # pattern1='[=#].*? '+que.encode('utf8')+' .*? '+ans.encode('utf8')+'.*?\n'
+                    # pattern2='[=#].*? '+ans.encode('utf8')+' .*? '+que.encode('utf8')+'.*?\n'
+                    # pattern3='[=#].*? '+que.encode('utf8')+' '+ans.encode('utf8')+'.*?\n'
+                    # pattern4='[=#].*? '+ans.encode('utf8')+' '+que.encode('utf8')+'.*?\n'
+
+                    try:
+                        if re.findall(pattern1,relawords_dict) or re.findall(pattern2,relawords_dict):# or\
+                            # re.findall(pattern3,relawords_dict) or re.findall(pattern4,relawords_dict):
+                            # if re.findall(r'[=#].*? {} .*? {}.*?\n'.format(que.encode('utf8'),ans.encode('utf8')),relawords_dict) or re.findall(r'[=#].*? {} .*? {}.*?\n'.format(ans.encode('utf8'),que.encode('utf8')),relawords_dict):
+                            result+=1
+                            print que,ans
+                    except:
+                        print 'error in idx %d'%(idx)
                         print que,ans
+                        print '\n'
             dis_numpy[idx,0]=result
         del relawords_dict
         print dis_numpy.shape
