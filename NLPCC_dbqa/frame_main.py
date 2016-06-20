@@ -266,6 +266,25 @@ def features_builder(split_idx,lines):
         print dis_numpy.shape
         return dis_numpy
 
+    def word_overlap_similar(lines):
+        dis_numpy=np.zeros([len(lines),1])
+        relawords_dict=open('relative_words.txt').read()
+        for idx,line in enumerate(lines):
+            each=line.split('\t')
+            question,answer=each[0],each[1]
+            question=jieba._lcut(question)
+            answer=jieba._lcut(answer)
+
+            result=0
+            for que in question:
+                for ans in answer:
+                    if re.findall('[=#].*?{}.*?{}.*?\n'.format(que,ans),relawords_dict) or re.findall('[=#].*?{}.*?{}.*?\n'.format(ans,que),relawords_dict):
+                        result+=1
+            dis_numpy[idx,0]=result
+        del relawords_dict
+        print dis_numpy.shape
+        return dis_numpy
+
     def topwords_similarity(lines):
         dis_numpy=np.zeros([len(lines),4])
         for idx,line in enumerate(lines):
@@ -337,7 +356,7 @@ def cal_main(train_file,test_file,score_file,train_target=None):
     param = {'booster':'gbtree',
              'max_depth':7,
              'eta':0.02,
-             'min_child_weight':5,
+             'min_child_weight':50,
              'subsample':1,
              'silent':0,
              'objective':'binary:logistic',
