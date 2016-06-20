@@ -381,11 +381,11 @@ if __name__=='__main__':
         train_np=format_xgboost(total_featurelist_train,out_path=train_features,target=train_ansList)
         total_featurelist_test=features_builder(test_split_idx,test_lines)
         test_np=format_xgboost(total_featurelist_test,out_path=test_features)
-        pickle.dump(train_np,train_features+'.np')
-        pickle.dump(test_np,test_features+'.np')
+        pickle.dump(train_np,open(train_features+'.np','w'))
+        pickle.dump(test_np,open(test_features+'.np','w'))
     else:
-        train_np=pickle.load(train_features+'.np')
-        test_np=pickle.load(test_features+'.np')
+        train_np=pickle.load(open(train_features+'.np'))
+        test_np=pickle.load(open(test_features+'.np'))
 
     cal_main(train_np,test_np,score_file,train_target=train_ansList)
     # cal_main(train_features,test_features,score_file)
