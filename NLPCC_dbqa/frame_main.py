@@ -290,8 +290,8 @@ def features_builder(split_idx,lines):
     total_featurelist=[]
     total_featurelist.append(word_overlap(lines))
     total_featurelist.append(topwords_similarity(lines))
-    # total_featurelist.append(word2vec_cos(lines))
-    # total_featurelist.append(word2vec_dis(lines))
+    total_featurelist.append(word2vec_cos(lines))
+    total_featurelist.append(word2vec_dis(lines))
     total_featurelist.append(word2vec_disall(lines))
     total_featurelist.append(word2vec_disall_2(lines))
 
@@ -334,16 +334,16 @@ def cal_main(train_file,test_file,score_file,train_target=None):
     dtest = xgb.DMatrix(test_file)
     print 'dtest finished.'
     # specify parameters via map
-    param = {'booster':'gblinear',
-             'max_depth':15,
-             'eta':0.3,
-             'min_child_weight':10,
+    param = {'booster':'gbtree',
+             'max_depth':7,
+             'eta':0.02,
+             'min_child_weight':5,
              'subsample':1,
              'silent':0,
              'objective':'binary:logistic',
-             'lambda':0.,
-             'alpha':0.}
-    num_round = 500
+             'lambda':0.3,
+             'alpha':0.2}
+    num_round = 300
     bst = xgb.train(param, dtrain, num_round)
     # make prediction
     train_score=bst.predict(dtrain)
@@ -363,7 +363,7 @@ if __name__=='__main__':
     # train_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.train'
     # test_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.test'
     score_file='results/result_0620_cover&w2v&dists'
-    construct=1
+    construct=0
 
     if construct:
         build_vocab=False
@@ -372,6 +372,7 @@ if __name__=='__main__':
         else:
             vocab=pickle.load(open('vocabSet_in_NLPCC_main'))
         train_split_idx,train_ansList,train_lines=construct_train(train_file)
+        pickle.dump(train_ansList,open(train_features+'.label_np','w'))
         test_split_idx,_,test_lines=construct_test(test_file)
         del _
         # print train_ansList[0:20]
@@ -385,6 +386,7 @@ if __name__=='__main__':
         pickle.dump(test_np,open(test_features+'.np','w'))
     else:
         train_np=pickle.load(open(train_features+'.np'))
+        train_ansList=pickle.load(open(train_features+'.label_np'))
         test_np=pickle.load(open(test_features+'.np'))
 
     cal_main(train_np,test_np,score_file,train_target=train_ansList)
