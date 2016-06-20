@@ -3,6 +3,7 @@ import sys
 import re
 import pickle
 import jieba
+import jieba.posseg as pseg
 import numpy as np
 import xgboost as xgb
 import scipy.spatial.distance as dist
@@ -17,9 +18,9 @@ def binary_twosent(question,answer):
     for i in range(len(all_words)):
         word=list(all_words)[i]
         if word in question:
-            question_vec_01[i,0]=1
+            question_vec_01[i,0]=1.0
         if word in answer:
-            answer_vec_01[i,0]=1
+            answer_vec_01[i,0]=1.0
     return question_vec_01,answer_vec_01
 
 def get_vocab(train_file,test_file):
@@ -164,7 +165,7 @@ def features_builder(split_idx,lines):
         return dis_numpy
 
     def word2vec_disall(lines):
-        dis_numpy=np.zeros([len(lines),4])
+        dis_numpy=np.zeros([len(lines),6])
         word_dict=pickle.load(open('nlpcc_dict_20160605'))
         for idx,line in enumerate(lines):
             each=line.split('\t')
@@ -189,14 +190,64 @@ def features_builder(split_idx,lines):
             question_vec_01,answer_vec_01=binary_twosent(question,answer)
 
             dis_numpy[idx,0]=1-dist.correlation(question_vector,answer_vector)
+            # dis_numpy[idx,1]=1-dist.correlation(question_vec_01,answer_vec_01)
             dis_numpy[idx,1]=1-dist.jaccard(question_vec_01,answer_vec_01)
             dis_numpy[idx,2]=1-dist.hamming(question_vec_01,answer_vec_01)
-            dis_numpy[idx,3]=1-dist.correlation(question_vec_01,answer_vec_01)
+            # dis_numpy[idx,3]=1-dist.correlation(question_vec_01,answer_vec_01)
+            # dis_numpy[idx,4]=1-dist.correlation(question_vector,answer_vector)
+            # dis_numpy[idx,5]=1-dist.jaccard(question_vec_01,answer_vec_01)
+            # dis_numpy[idx,6]=1-dist.hamming(question_vec_01,answer_vec_01)
+            # dis_numpy[idx,7]=1-dist.correlation(question_vec_01,answer_vec_01)
+            # dis_numpy[idx,4]=dis_numpy[idx,3]
+            dis_numpy[idx,3]=1-dist.rogerstanimoto(question_vec_01,answer_vec_01)
+            dis_numpy[idx,4]=1-dist.cityblock(question_vec_01,answer_vec_01)
+            dis_numpy[idx,5]=1-dist.matching(question_vec_01,answer_vec_01)
 
         del word_dict
         print dis_numpy.shape
         return dis_numpy
 
+    def word2vec_disall_2(lines):
+        dis_numpy=np.zeros([len(lines),3])
+        word_dict=pickle.load(open('nlpcc_dict_20160605'))
+        for idx,line in enumerate(lines):
+            each=line.split('\t')
+            question=jieba._lcut(each[0])
+            question_vector=np.zeros(100)
+            for word in question:
+                try:
+                    one_vec=word_dict[word.encode('utf8')]
+                except  KeyError:
+                    one_vec=np.random.normal(size=(100))
+                question_vector+=one_vec
+
+            answer=jieba._lcut(each[1])
+            answer_vector=np.zeros(100)
+            for word in answer:
+                try:
+                    one_vec=word_dict[word.encode('utf8')]
+                except KeyError:
+                    one_vec=np.random.normal(size=(100))
+                answer_vector+=one_vec
+
+            question_vec_01,answer_vec_01=binary_twosent(question,answer)
+
+            # dis_numpy[idx,0]=1-dist.correlation(question_vector,answer_vector)
+            # dis_numpy[idx,1]=1-dist.jaccard(question_vec_01,answer_vec_01)
+            # dis_numpy[idx,2]=1-dist.hamming(question_vec_01,answer_vec_01)
+            # dis_numpy[idx,3]=1-dist.correlation(question_vec_01,answer_vec_01)
+            # dis_numpy[idx,4]=1-dist.correlation(question_vector,answer_vector)
+            # dis_numpy[idx,5]=1-dist.jaccard(question_vec_01,answer_vec_01)
+            # dis_numpy[idx,6]=1-dist.hamming(question_vec_01,answer_vec_01)
+            # dis_numpy[idx,7]=1-dist.correlation(question_vec_01,answer_vec_01)
+            # dis_numpy[idx,4]=dis_numpy[idx,3]
+            dis_numpy[idx,0]=1-dist.rogerstanimoto(question_vec_01,answer_vec_01)
+            dis_numpy[idx,1]=1-dist.cityblock(question_vec_01,answer_vec_01)
+            dis_numpy[idx,2]=1-dist.matching(question_vec_01,answer_vec_01)
+
+        del word_dict
+        print dis_numpy.shape
+        return dis_numpy
     def word_overlap(lines):
         dis_numpy=np.zeros([len(lines),1])
         for idx,line in enumerate(lines):
@@ -211,6 +262,7 @@ def features_builder(split_idx,lines):
                     if ans==que:
                         result+=1
             dis_numpy[idx,0]=result
+        print dis_numpy.shape
         return dis_numpy
 
     total_featurelist=[]
@@ -218,6 +270,8 @@ def features_builder(split_idx,lines):
     total_featurelist.append(word2vec_cos(lines))
     total_featurelist.append(word2vec_dis(lines))
     total_featurelist.append(word2vec_disall(lines))
+    # total_featurelist.append(word2vec_disall(lines))
+    total_featurelist.append(word2vec_disall_2(lines))
 
     return total_featurelist
 
@@ -251,31 +305,35 @@ def cal_main(train_file,test_file,score_file):
     dtest = xgb.DMatrix(test_file)
     # specify parameters via map
     param = {'booster':'gblinear',
-             'max_depth':50,
+             'max_depth':15,
              'eta':0.3,
              'min_child_weight':10,
              'subsample':1,
-             'silent':1,
+             'silent':0,
              'objective':'binary:logistic',
-             'lambda':0.,
-             'alpha':0.}
-    num_round = 100
+             'lambda':0.1,
+             'alpha':0.2}
+    num_round = 500
     bst = xgb.train(param, dtrain, num_round)
     # make prediction
     train_score=bst.predict(dtrain)
     preds = bst.predict(dtest)
     print bst.get_fscore()
-    open(score_file,'w').write('\r\n'.join([str(i) for i in preds]))
+    open(score_file+'_valid','w').write('\r\n'.join([str(i) for i in preds]))
     open(score_file+'_train','w').write('\r\n'.join([str(i) for i in train_score]))
     # return preds
 
 if __name__=='__main__':
     train_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/train7_1'
     test_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/valid3_1'
+    # train_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/train_demo'
+    # test_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/valid_demo'
     train_features='results/train_ssss.txt'
     test_features='results/test_ssss.txt'
+    # train_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.train'
+    # test_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.test'
     score_file='results/result_0617_cover&w2v&dists'
-    construct=0
+    construct=1
 
     if construct:
         build_vocab=False
@@ -290,8 +348,8 @@ if __name__=='__main__':
         print ''.join(train_lines[0:3])
         print ''.join(test_lines[0:3])
         total_featurelist_train=features_builder(train_split_idx,train_lines)
-        # total_featurelist_test=features_builder(test_split_idx,test_lines)
         format_xgboost(total_featurelist_train,out_path=train_features,target=train_ansList)
-        # format_xgboost(total_featurelist_test,out_path=test_features)
+        total_featurelist_test=features_builder(test_split_idx,test_lines)
+        format_xgboost(total_featurelist_test,out_path=test_features)
 
     cal_main(train_features,test_features,score_file)
