@@ -273,8 +273,8 @@ def features_builder(split_idx,lines):
         relawords_dict=open('relative_words.txt').read()
         # for idx,line in tqdm(enumerate(lines)):
         for idx,line in enumerate(lines):
-            print '\n'
-            print line.strip()
+            # print '\n'
+            # print line.strip()
             each=line.split('\t')
             question,answer=each[0],each[1]
             question=jieba._lcut(question)
@@ -288,12 +288,12 @@ def features_builder(split_idx,lines):
                     wordslist=one.split(' ')[1:]
                     if que.encode('utf8') in wordslist:
                         question_relalist+=wordslist
-            print ' '.join(question_relalist)
+            # print ' '.join(question_relalist)
 
             for ans in answer:
                 if ans.encode('utf8') in question_relalist:
                     result+=1
-                    print ans
+                    # print ans
 
             dis_numpy[idx,0]=result
         del relawords_dict
@@ -323,13 +323,13 @@ def features_builder(split_idx,lines):
         print dis_numpy.shape
         return dis_numpy
     total_featurelist=[]
-    # total_featurelist.append(word_overlap(lines))
+    total_featurelist.append(word_overlap(lines))
     total_featurelist.append(word_overlap_rela(lines))
-    # total_featurelist.append(topwords_similarity(lines))
-    # total_featurelist.append(word2vec_cos(lines))
-    # total_featurelist.append(word2vec_dis(lines))
-    # total_featurelist.append(word2vec_disall(lines))
-    # total_featurelist.append(word2vec_disall_2(lines))
+    total_featurelist.append(topwords_similarity(lines))
+    total_featurelist.append(word2vec_cos(lines))
+    total_featurelist.append(word2vec_dis(lines))
+    total_featurelist.append(word2vec_disall(lines))
+    total_featurelist.append(word2vec_disall_2(lines))
 
     return total_featurelist
 
@@ -414,16 +414,20 @@ if __name__=='__main__':
         # print train_ansList[0:20]
         print ''.join(train_lines[0:3])
         print ''.join(test_lines[0:3])
+
         total_featurelist_test=features_builder(test_split_idx,test_lines)
         test_np=format_xgboost(total_featurelist_test,out_path=test_features)
+        pickle.dump(test_np,open(test_features+'.np','w'))
+        print 'test feats finished'
+
         total_featurelist_train=features_builder(train_split_idx,train_lines)
         train_np=format_xgboost(total_featurelist_train,out_path=train_features,target=train_ansList)
         pickle.dump(train_np,open(train_features+'.np','w'))
-        pickle.dump(test_np,open(test_features+'.np','w'))
+        print 'train feats finished'
     else:
         train_np=pickle.load(open(train_features+'.np'))
         train_ansList=pickle.load(open(train_features+'.label_np'))
         test_np=pickle.load(open(test_features+'.np'))
 
-    cal_main(train_np,test_np,score_file,train_target=train_ansList)
+    # cal_main(train_np,test_np,score_file,train_target=train_ansList)
     # cal_main(train_features,test_features,score_file)
