@@ -273,33 +273,28 @@ def features_builder(split_idx,lines):
         relawords_dict=open('relative_words.txt').read()
         # for idx,line in tqdm(enumerate(lines)):
         for idx,line in enumerate(lines):
+            print '\n'
+            print line.strip()
             each=line.split('\t')
             question,answer=each[0],each[1]
             question=jieba._lcut(question)
             answer=jieba._lcut(answer)
 
             result=0
+            question_relalist=[]
+            relalist=relawords_dict.split('\n')
             for que in question:
-                for ans in answer:
-                    # print que,ans
-                    pattern1='[=#].*? '+que.encode('utf8')+' (?:.*? )*?'+ans.encode('utf8')+'.*?\n'
-                    pattern2='[=#].*? '+ans.encode('utf8')+' (?:.*? )*?'+que.encode('utf8')+'.*?\n'
+                for one in relalist:
+                    wordslist=one.split(' ')[1:]
+                    if que.encode('utf8') in wordslist:
+                        question_relalist+=wordslist
+            print ' '.join(question_relalist)
 
-                    # pattern1='[=#].*? '+que.encode('utf8')+' .*? '+ans.encode('utf8')+'.*?\n'
-                    # pattern2='[=#].*? '+ans.encode('utf8')+' .*? '+que.encode('utf8')+'.*?\n'
-                    # pattern3='[=#].*? '+que.encode('utf8')+' '+ans.encode('utf8')+'.*?\n'
-                    # pattern4='[=#].*? '+ans.encode('utf8')+' '+que.encode('utf8')+'.*?\n'
+            for ans in answer:
+                if ans.encode('utf8') in question_relalist:
+                    result+=1
+                    print ans
 
-                    try:
-                        if re.findall(pattern1,relawords_dict) or re.findall(pattern2,relawords_dict):# or\
-                            # re.findall(pattern3,relawords_dict) or re.findall(pattern4,relawords_dict):
-                            # if re.findall(r'[=#].*? {} .*? {}.*?\n'.format(que.encode('utf8'),ans.encode('utf8')),relawords_dict) or re.findall(r'[=#].*? {} .*? {}.*?\n'.format(ans.encode('utf8'),que.encode('utf8')),relawords_dict):
-                            result+=1
-                            print que,ans
-                    except:
-                        print 'error in idx %d'%(idx)
-                        print que,ans
-                        print '\n'
             dis_numpy[idx,0]=result
         del relawords_dict
         print dis_numpy.shape
@@ -419,10 +414,10 @@ if __name__=='__main__':
         # print train_ansList[0:20]
         print ''.join(train_lines[0:3])
         print ''.join(test_lines[0:3])
-        total_featurelist_train=features_builder(train_split_idx,train_lines)
-        train_np=format_xgboost(total_featurelist_train,out_path=train_features,target=train_ansList)
         total_featurelist_test=features_builder(test_split_idx,test_lines)
         test_np=format_xgboost(total_featurelist_test,out_path=test_features)
+        total_featurelist_train=features_builder(train_split_idx,train_lines)
+        train_np=format_xgboost(total_featurelist_train,out_path=train_features,target=train_ansList)
         pickle.dump(train_np,open(train_features+'.np','w'))
         pickle.dump(test_np,open(test_features+'.np','w'))
     else:
