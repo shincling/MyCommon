@@ -12,6 +12,8 @@ import scipy.spatial.distance as dist
 from tqdm import tqdm
 
 def find_lcs_len(s1, s2):
+    s1=s1.decode('utf8')
+    s2=s2.decode('utf8')
     m = [[ 0 for x in s2] for y in s1]
     for p1 in range(len(s1)):
         for p2 in range(len(s2)):
@@ -396,7 +398,12 @@ def cal_main(train_file,test_file,score_file,train_target=None,test_target=None)
     else:
         dtrain = xgb.DMatrix(train_file)
     print 'dtrain finished.'
-    dtest = xgb.DMatrix(test_file,test_target)
+    if test_target:
+        test_lable=np.zeros(len(test_target))
+        test_lable[:]=map(int,test_target)
+        dtest = xgb.DMatrix(test_file,test_lable)
+    else:
+        dtest = xgb.DMatrix(test_file)
     print 'dtest finished.'
     # specify parameters via map
     evallist  = [(dtest,'eval'), (dtrain,'train')]
@@ -406,11 +413,12 @@ def cal_main(train_file,test_file,score_file,train_target=None,test_target=None)
              'min_child_weight':50,
              'subsample':1,
              'silent':0,
-             'objective':'binary:logistic',
+             # 'objective':'binary:logistic',
+             'objective':'reg:linear',
              'lambda':0.3,
              'alpha':0.2}
-    num_round = 300
-    bst = xgb.train(param, dtrain, num_round)
+    num_round = 100
+    bst = xgb.train(param, dtrain, num_round ,evallist)
     # make prediction
     train_score=bst.predict(dtrain)
     preds = bst.predict(dtest)
@@ -422,14 +430,14 @@ def cal_main(train_file,test_file,score_file,train_target=None,test_target=None)
 if __name__=='__main__':
     train_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/train7_1'
     test_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/valid3_1'
-    train_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/train_demo'
-    test_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/valid_demo'
+    # train_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/train_demo'
+    # test_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/valid_demo'
     train_features='results/train_ssss.txt'
     test_features='results/test_ssss.txt'
     # train_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.train'
     # test_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.test'
     score_file='results/result_0621_cover&w2v&dists'
-    construct=10
+    construct=0
 
     if construct:
         build_vocab=False
@@ -439,9 +447,9 @@ if __name__=='__main__':
             vocab=pickle.load(open('vocabSet_in_NLPCC_main'))
         train_split_idx,train_ansList,train_lines=construct_train(train_file)
         pickle.dump(train_ansList,open(train_features+'.train_label_np','w'))
-        test_split_idx,_,test_lines=construct_test(test_file)
-        pickle.dump(_,open(test_features+'.test_label_np','w'))
-        del _
+        test_split_idx,test_ansList,test_lines=construct_test(test_file)
+        pickle.dump(test_ansList,open(test_features+'.test_label_np','w'))
+        # del _
         # print train_ansList[0:20]
         print ''.join(train_lines[0:3])
         print ''.join(test_lines[0:3])
