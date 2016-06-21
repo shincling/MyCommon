@@ -11,6 +11,21 @@ import xgboost as xgb
 import scipy.spatial.distance as dist
 from tqdm import tqdm
 
+def find_lcs_len(s1, s2):
+    m = [[ 0 for x in s2] for y in s1]
+    for p1 in range(len(s1)):
+        for p2 in range(len(s2)):
+            if s1[p1] == s2[p2]:
+                if p1 == 0 or p2 == 0:
+                    m[p1][p2] = 1
+                else:
+                    m[p1][p2] = m[p1-1][p2-1]+1
+            elif m[p1-1][p2] < m[p1][p2-1]:
+                m[p1][p2] = m[p1][p2-1]
+            else:               # m[p1][p2-1] < m[p1-1][p2]
+                m[p1][p2] = m[p1-1][p2]
+    return m[-1][-1]
+
 def cos_dis(vector1,vector2):
     return np.dot(vector1,vector2)/(np.linalg.norm(vector1)*np.linalg.norm(vector2))
 
@@ -322,9 +337,21 @@ def features_builder(split_idx,lines):
             dis_numpy[idx,3]=1-dist.cosine(question_vec,answer_vec)
         print dis_numpy.shape
         return dis_numpy
+
+    def max_common(lines):
+        dis_numpy=np.zeros([len(lines),1])
+        for idx,line in enumerate(lines):
+            each=line.split('\t')
+            question,answer=each[0],each[1]
+            dis_numpy[idx,0]=find_lcs_len(question,answer)
+        print dis_numpy.shape
+        return dis_numpy
+
+
     total_featurelist=[]
     total_featurelist.append(word_overlap(lines))
-    total_featurelist.append(word_overlap_rela(lines))
+    total_featurelist.append(max_common(lines))
+    # total_featurelist.append(word_overlap_rela(lines))
     total_featurelist.append(topwords_similarity(lines))
     total_featurelist.append(word2vec_cos(lines))
     total_featurelist.append(word2vec_dis(lines))
@@ -332,6 +359,8 @@ def features_builder(split_idx,lines):
     total_featurelist.append(word2vec_disall_2(lines))
 
     return total_featurelist
+
+
 
 def format_xgboost(total_features,out_path,target=None):
     final_feature=np.concatenate(total_features,axis=1)
@@ -359,7 +388,7 @@ def format_xgboost(total_features,out_path,target=None):
     open(out_path,'w').write(all_lines.strip())
     return final_feature
 
-def cal_main(train_file,test_file,score_file,train_target=None):
+def cal_main(train_file,test_file,score_file,train_target=None,test_target=None):
     if train_target:
         train_lable=np.zeros(len(train_target))
         train_lable[:]=map(int,train_target)
@@ -367,9 +396,10 @@ def cal_main(train_file,test_file,score_file,train_target=None):
     else:
         dtrain = xgb.DMatrix(train_file)
     print 'dtrain finished.'
-    dtest = xgb.DMatrix(test_file)
+    dtest = xgb.DMatrix(test_file,test_target)
     print 'dtest finished.'
     # specify parameters via map
+    evallist  = [(dtest,'eval'), (dtrain,'train')]
     param = {'booster':'gbtree',
              'max_depth':7,
              'eta':0.02,
@@ -398,7 +428,7 @@ if __name__=='__main__':
     test_features='results/test_ssss.txt'
     # train_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.train'
     # test_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.test'
-    score_file='results/result_0620_cover&w2v&dists'
+    score_file='results/result_0621_cover&w2v&dists'
     construct=10
 
     if construct:
@@ -408,8 +438,9 @@ if __name__=='__main__':
         else:
             vocab=pickle.load(open('vocabSet_in_NLPCC_main'))
         train_split_idx,train_ansList,train_lines=construct_train(train_file)
-        pickle.dump(train_ansList,open(train_features+'.label_np','w'))
+        pickle.dump(train_ansList,open(train_features+'.train_label_np','w'))
         test_split_idx,_,test_lines=construct_test(test_file)
+        pickle.dump(_,open(test_features+'.test_label_np','w'))
         del _
         # print train_ansList[0:20]
         print ''.join(train_lines[0:3])
@@ -426,8 +457,9 @@ if __name__=='__main__':
         print 'train feats finished'
     else:
         train_np=pickle.load(open(train_features+'.np'))
-        train_ansList=pickle.load(open(train_features+'.label_np'))
+        train_ansList=pickle.load(open(train_features+'.train_label_np'))
         test_np=pickle.load(open(test_features+'.np'))
+        test_ansList=pickle.load(open(test_features+'.test_label_np'))
 
-    # cal_main(train_np,test_np,score_file,train_target=train_ansList)
+    cal_main(train_np,test_np,score_file,train_target=train_ansList,test_target=test_ansList)
     # cal_main(train_features,test_features,score_file)
