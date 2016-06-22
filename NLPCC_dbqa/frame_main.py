@@ -409,12 +409,12 @@ def cal_main(train_file,test_file,score_file,train_target=None,test_target=None)
     evallist  = [(dtest,'eval'), (dtrain,'train')]
     param = {'booster':'gbtree',
              'max_depth':7,
-             'eta':0.02,
-             'min_child_weight':50,
+             'eta':0.2,
+             'min_child_weight':10,
              'subsample':1,
              'silent':0,
-             # 'objective':'binary:logistic',
-             'objective':'reg:linear',
+             'objective':'binary:logistic',
+             # 'objective':'reg:linear',
              'lambda':0.3,
              'alpha':0.2}
     num_round = 100
