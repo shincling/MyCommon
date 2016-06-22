@@ -7,6 +7,7 @@ import jieba
 import jieba.posseg as pseg
 import jieba.analyse
 import numpy as np
+from numpy import *
 import xgboost as xgb
 import scipy.spatial.distance as dist
 from tqdm import tqdm
@@ -409,8 +410,8 @@ def cal_main(train_file,test_file,score_file,train_target=None,test_target=None)
     evallist  = [(dtest,'eval'), (dtrain,'train')]
     param = {'booster':'gbtree',
              'max_depth':7,
-             'eta':0.2,
-             'min_child_weight':10,
+             'eta':0.02,
+             'min_child_weight':5,
              'subsample':1,
              'silent':0,
              'objective':'binary:logistic',
@@ -465,9 +466,15 @@ if __name__=='__main__':
         print 'train feats finished'
     else:
         train_np=pickle.load(open(train_features+'.np'))
+        tmp1=pickle.load(open('rela_overlap.np.train'))
+        train_np=np.concatenate((tmp1,train_np),axis=1)
         train_ansList=pickle.load(open(train_features+'.train_label_np'))
         test_np=pickle.load(open(test_features+'.np'))
+        tmp2=pickle.load(open('rela_overlap.np.test'))
+        test_np=np.concatenate((tmp2,test_np),axis=1)
         test_ansList=pickle.load(open(test_features+'.test_label_np'))
+
+        print train_np.shape
 
     cal_main(train_np,test_np,score_file,train_target=train_ansList,test_target=test_ansList)
     # cal_main(train_features,test_features,score_file)
