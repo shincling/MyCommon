@@ -465,13 +465,13 @@ if __name__=='__main__':
         pickle.dump(train_np,open(train_features+'.np','w'))
         print 'train feats finished'
     else:
-        train_np=pickle.load(open(train_features+'.np'))
-        tmp1=pickle.load(open('rela_overlap.np.train'))
-        train_np=np.concatenate((tmp1,train_np),axis=1)
+        train_np=pickle.load(open(train_features+'.all_np'))
+        # tmp1=pickle.load(open('rela_overlap.np.train'))
+        # train_np=np.concatenate((tmp1,train_np),axis=1)
         train_ansList=pickle.load(open(train_features+'.train_label_np'))
-        test_np=pickle.load(open(test_features+'.np'))
-        tmp2=pickle.load(open('rela_overlap.np.test'))
-        test_np=np.concatenate((tmp2,test_np),axis=1)
+        test_np=pickle.load(open(test_features+'.all_np'))
+        # tmp2=pickle.load(open('rela_overlap.np.test'))
+        # test_np=np.concatenate((tmp2,test_np),axis=1)
         test_ansList=pickle.load(open(test_features+'.test_label_np'))
 
         print train_np.shape
