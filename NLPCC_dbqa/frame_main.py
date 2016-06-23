@@ -12,6 +12,15 @@ import xgboost as xgb
 import scipy.spatial.distance as dist
 from tqdm import tqdm
 
+
+def fliter_line(lines):
+    lines=lines.replace('请问','')
+    lines=lines.replace('我想知道','')
+    lines=lines.replace('我想好奇','')
+    lines=lines.replace('你知道','')
+    lines=lines.replace('谁知道','')
+    return lines
+
 def find_lcs_len(s1, s2):
     s1=s1.decode('utf8')
     s2=s2.decode('utf8')
@@ -350,7 +359,16 @@ def features_builder(split_idx,lines):
         print dis_numpy.shape
         return dis_numpy
 
+    def parse_keywords(lines):
+        dis_numpy=np.zeros([len(lines),1])
+        for idx,line in enumerate(lines):
+            each=line.split('\t')
+            question,answer=each[0],each[1]
+            dis_numpy[idx,0]=find_lcs_len(question,answer)
+        print dis_numpy.shape
+        return dis_numpy
 
+    lines=[fliter_line(line) for line in lines]
     total_featurelist=[]
     total_featurelist.append(word_overlap(lines))
     total_featurelist.append(max_common(lines))
@@ -438,14 +456,14 @@ if __name__=='__main__':
     # train_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.train'
     # test_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.test'
     score_file='results/result_0621_cover&w2v&dists'
-    construct=0
+    construct=1
 
     if construct:
         build_vocab=False
-        if build_vocab:
-            vocab=get_vocab(train_file,test_file)
-        else:
-            vocab=pickle.load(open('vocabSet_in_NLPCC_main'))
+        # if build_vocab:
+        #     vocab=get_vocab(train_file,test_file)
+        # else:
+        #     vocab=pickle.load(open('vocabSet_in_NLPCC_main'))
         train_split_idx,train_ansList,train_lines=construct_train(train_file)
         pickle.dump(train_ansList,open(train_features+'.train_label_np','w'))
         test_split_idx,test_ansList,test_lines=construct_test(test_file)
