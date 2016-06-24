@@ -373,14 +373,32 @@ def features_builder(split_idx,lines):
     total_featurelist.append(word_overlap(lines))
     total_featurelist.append(max_common(lines))
     # total_featurelist.append(word_overlap_rela(lines))
-    total_featurelist.append(topwords_similarity(lines))
+    # total_featurelist.append(topwords_similarity(lines))
     total_featurelist.append(word2vec_cos(lines))
     total_featurelist.append(word2vec_dis(lines))
     total_featurelist.append(word2vec_disall(lines))
-    total_featurelist.append(word2vec_disall_2(lines))
+    # total_featurelist.append(word2vec_disall_2(lines))
 
     return total_featurelist
 
+def features_builder_passage(split_idx,lines):
+    split_idx.append(len(lines))
+    que_list=[]
+    ans_list=[]
+    for i in range(len(split_idx)):
+        try:
+            question=lines[split_idx[i]].split('\t')[0]
+            one_answer_list=[line.split('\t')[1]  for line in lines[split_idx[i]:split_idx[i+1]]]
+            que_list.append(question)
+            ans_list.append(one_answer_list)
+        except IndexError:
+            pass
+
+    assert len(que_list)==len(ans_list)
+    for question,ansers in zip(que_list,ans_list):
+        pass
+
+    return
 
 
 def format_xgboost(total_features,out_path,target=None):
@@ -428,8 +446,8 @@ def cal_main(train_file,test_file,score_file,train_target=None,test_target=None)
     evallist  = [(dtest,'eval'), (dtrain,'train')]
     param = {'booster':'gbtree',
              'max_depth':7,
-             'eta':0.02,
-             'min_child_weight':5,
+             'eta':0.06,
+             'min_child_weight':30,
              'subsample':1,
              'silent':0,
              'objective':'binary:logistic',
@@ -455,8 +473,8 @@ if __name__=='__main__':
     test_features='results/test_ssss.txt'
     # train_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.train'
     # test_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.test'
-    score_file='results/result_0621_cover&w2v&dists'
-    construct=1
+    score_file='results/result_0623_cover&w2v&dists'
+    construct=10
 
     if construct:
         build_vocab=False
@@ -473,6 +491,7 @@ if __name__=='__main__':
         print ''.join(train_lines[0:3])
         print ''.join(test_lines[0:3])
 
+        total_featurelist_test=features_builder_passage(test_split_idx,test_lines)
         total_featurelist_test=features_builder(test_split_idx,test_lines)
         test_np=format_xgboost(total_featurelist_test,out_path=test_features)
         pickle.dump(test_np,open(test_features+'.np','w'))
@@ -483,13 +502,15 @@ if __name__=='__main__':
         pickle.dump(train_np,open(train_features+'.np','w'))
         print 'train feats finished'
     else:
-        train_np=pickle.load(open(train_features+'.all_np'))
-        # tmp1=pickle.load(open('rela_overlap.np.train'))
-        # train_np=np.concatenate((tmp1,train_np),axis=1)
+        # train_np=pickle.load(open(train_features+'.all_np'))
+        train_np=pickle.load(open(train_features+'.np'))
+        tmp1=pickle.load(open('rela_overlap.np.train'))
+        train_np=np.concatenate((tmp1,train_np),axis=1)
         train_ansList=pickle.load(open(train_features+'.train_label_np'))
-        test_np=pickle.load(open(test_features+'.all_np'))
-        # tmp2=pickle.load(open('rela_overlap.np.test'))
-        # test_np=np.concatenate((tmp2,test_np),axis=1)
+        # test_np=pickle.load(open(test_features+'.all_np'))
+        test_np=pickle.load(open(test_features+'.np'))
+        tmp2=pickle.load(open('rela_overlap.np.test'))
+        test_np=np.concatenate((tmp2,test_np),axis=1)
         test_ansList=pickle.load(open(test_features+'.test_label_np'))
 
         print train_np.shape
