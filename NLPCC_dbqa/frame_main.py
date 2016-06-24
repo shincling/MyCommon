@@ -22,7 +22,7 @@ def postag(sent):
 def fliter_line(lines):
     lines=lines.replace('请问','')
     lines=lines.replace('我想知道','')
-    lines=lines.replace('我想好奇','')
+    lines=lines.replace('我很好奇','')
     lines=lines.replace('你知道','')
     lines=lines.replace('谁知道','')
     return lines
@@ -388,6 +388,44 @@ def features_builder(split_idx,lines):
     return total_featurelist
 
 def features_builder_passage(split_idx,lines):
+    def ques_parser(question,ques_pos,answers):
+        '''answers是list'''
+        '''answers是list'''
+        if '什么' in question:
+            pass
+        elif '谁' in question:
+            pass
+        elif '哪' in question:
+            pass
+        elif '几' in question:
+            pass
+        elif '多少' in question:
+            pass
+        elif '哪' in question:
+            pass
+        elif '怎么' in question:
+            pass
+        elif re.findall('多[重厚快深宽薄大高远长久]',question):
+            pass
+        elif '如何' in question:
+            pass
+        elif '啥' in question:
+            pass
+        elif '怎样' in question:
+            pass
+        elif '时间？' in question:
+            pass
+        else:
+            '''最后这种情况应该就是最后直接带一个问号的'''
+            print question
+
+
+
+
+
+
+
+
     split_idx.append(len(lines))
     que_list=[]
     ans_list=[]
@@ -403,6 +441,8 @@ def features_builder_passage(split_idx,lines):
     assert len(que_list)==len(ans_list)
     for question,ansers in zip(que_list,ans_list):
         question=fliter_line(question)
+        ques_pos=postag(question)
+        ques_parser(question,ques_pos,ansers)
 
         pass
 
@@ -500,6 +540,7 @@ if __name__=='__main__':
         print ''.join(test_lines[0:3])
 
         total_featurelist_test=features_builder_passage(test_split_idx,test_lines)
+        print 1/0
         total_featurelist_test=features_builder(test_split_idx,test_lines)
         test_np=format_xgboost(total_featurelist_test,out_path=test_features)
         pickle.dump(test_np,open(test_features+'.np','w'))
