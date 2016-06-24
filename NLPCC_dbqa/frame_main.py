@@ -12,6 +12,12 @@ import xgboost as xgb
 import scipy.spatial.distance as dist
 from tqdm import tqdm
 
+def postag(sent):
+    result=[]
+    words =pseg.cut(sent)
+    for w in words:
+        result.append((w.word,w.flag))
+    return result
 
 def fliter_line(lines):
     lines=lines.replace('请问','')
@@ -396,6 +402,8 @@ def features_builder_passage(split_idx,lines):
 
     assert len(que_list)==len(ans_list)
     for question,ansers in zip(que_list,ans_list):
+        question=fliter_line(question)
+
         pass
 
     return
