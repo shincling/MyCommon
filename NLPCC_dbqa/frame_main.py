@@ -391,7 +391,39 @@ def features_builder_passage(split_idx,lines):
     def ques_parser(question,ques_pos,answers):
         '''answers是list'''
         '''answers是list'''
+        length=len(question.decode('utf8'))
         if '什么' in question:
+            # position=question.rfind('什么'.decode('utf8'))
+            aim_idx=[length,length]
+            for idx,word in enumerate(ques_pos):
+                if '什么'.decode('utf8') in word[0]:
+                    aim_idx=[idx,idx]
+                    break
+            if ques_pos[aim_idx[0]-1][0]=='是'.decode('utf8'):
+                aim_idx[0]=aim_idx[0]-1
+
+            pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
+
+            dis_1,dis_2,dis_3=[],[],[]
+            for aim in pos_aim:
+                if aim[2]-aim_idx[0]==-1:
+                    dis_1.append(aim)
+                if aim[2]-aim_idx[1]==1:
+                    dis_1.append(aim)
+                if aim[2]-aim_idx[0]==-2:
+                    dis_2.append(aim)
+                if aim[2]-aim_idx[1]==2:
+                    dis_2.append(aim)
+                if aim[2]-aim_idx[0]==-3:
+                    dis_3.append(aim)
+                if aim[2]-aim_idx[1]==3:
+                    dis_3.append(aim)
+
+
+
+
+
+
             pass
         elif '谁' in question:
             pass
@@ -419,6 +451,14 @@ def features_builder_passage(split_idx,lines):
             '''最后这种情况应该就是最后直接带一个问号的'''
             print question
 
+        dis_numpy=np.zeros([length,3])
+        for idx,line in enumerate(answers):
+            for i in dis_1:
+                dis_numpy[idx,0]+=tf-idf(i[0],line)
+            for i in dis_2:
+                dis_numpy[idx,1]+=tf-idf(i[0],line)
+            for i in dis_3:
+                dis_numpy[idx,2]+=tf-idf(i[0],line)
 
 
 
