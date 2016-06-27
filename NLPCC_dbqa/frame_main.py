@@ -757,7 +757,7 @@ def features_builder_passage(split_idx,lines):
 
     final_dis_numpy=np.concatenate(dis_numpy_list,axis=0)
     print 'final_dis_numpy:\n',final_dis_numpy.shape
-    return final_dis_numpy
+    return [final_dis_numpy]
 
 
 def format_xgboost(total_features,out_path,target=None):
@@ -828,12 +828,12 @@ if __name__=='__main__':
     test_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/valid3_1'
     # train_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/train_demo'
     # test_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/valid_demo'
-    train_features='results/train_ssss.txt'
-    test_features='results/test_ssss.txt'
+    train_features='results/train_ssss_27.txt'
+    test_features='results/test_ssss_27.txt'
     # train_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.train'
     # test_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.test'
-    score_file='results/result_0623_cover&w2v&dists'
-    construct=10
+    score_file='results/result_0627_cover&w2v&dists'
+    construct=0
 
     if construct:
         build_vocab=False
@@ -851,25 +851,26 @@ if __name__=='__main__':
         print ''.join(test_lines[0:3])
 
         total_featurelist_test=features_builder_passage(test_split_idx,test_lines)
-        print 1/0
-        total_featurelist_test=features_builder(test_split_idx,test_lines)
+        # print 1/0
+        # total_featurelist_test=features_builder(test_split_idx,test_lines)
         test_np=format_xgboost(total_featurelist_test,out_path=test_features)
         pickle.dump(test_np,open(test_features+'.np','w'))
         print 'test feats finished'
 
-        total_featurelist_train=features_builder(train_split_idx,train_lines)
+        total_featurelist_train=features_builder_passage(train_split_idx,train_lines)
+        # total_featurelist_train=features_builder(train_split_idx,train_lines)
         train_np=format_xgboost(total_featurelist_train,out_path=train_features,target=train_ansList)
         pickle.dump(train_np,open(train_features+'.np','w'))
         print 'train feats finished'
     else:
-        # train_np=pickle.load(open(train_features+'.all_np'))
+        tmp1=pickle.load(open('train_ssss.txt'+'.all_np'))
         train_np=pickle.load(open(train_features+'.np'))
-        tmp1=pickle.load(open('rela_overlap.np.train'))
+        # tmp1=pickle.load(open('rela_overlap.np.train'))
         train_np=np.concatenate((tmp1,train_np),axis=1)
         train_ansList=pickle.load(open(train_features+'.train_label_np'))
-        # test_np=pickle.load(open(test_features+'.all_np'))
+        tmp2=pickle.load(open('test_ssss.txt'+'.all_np'))
         test_np=pickle.load(open(test_features+'.np'))
-        tmp2=pickle.load(open('rela_overlap.np.test'))
+        # tmp2=pickle.load(open('rela_overlap.np.test'))
         test_np=np.concatenate((tmp2,test_np),axis=1)
         test_ansList=pickle.load(open(test_features+'.test_label_np'))
 
