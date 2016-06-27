@@ -392,15 +392,19 @@ def features_builder_passage(split_idx,lines):
         '''answers是list'''
         '''answers是list'''
         def tf_idf(keyword,line,passage=answers):
+            '''这里留下了一个隐患，具体就是计算idf的时候，是否要把目标行去掉'''
+            keyword=keyword.encode('utf8')
             passage=''.join([each for each in passage if each!=line])
             tf=len(re.findall(keyword,line))
             df=len(re.findall(keyword,passage))
             idf=1.0/(df+1)
+            print tf,idf
             return tf*idf
 
+        num_answers=len(answers)
         length=len(question.decode('utf8'))
+        dis_1,dis_2,dis_3=[],[],[]
         if '什么' in question:
-            # position=question.rfind('什么'.decode('utf8'))
             aim_idx=[length,length]
             for idx,word in enumerate(ques_pos):
                 if '什么'.decode('utf8') in word[0]:
@@ -411,7 +415,6 @@ def features_builder_passage(split_idx,lines):
 
             pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
 
-            dis_1,dis_2,dis_3=[],[],[]
             for aim in pos_aim:
                 if aim[2]-aim_idx[0]==-1:
                     dis_1.append(aim)
@@ -425,12 +428,6 @@ def features_builder_passage(split_idx,lines):
                     dis_3.append(aim)
                 if aim[2]-aim_idx[1]==3:
                     dis_3.append(aim)
-
-
-
-
-
-
             pass
         elif '谁' in question:
             pass
@@ -458,7 +455,7 @@ def features_builder_passage(split_idx,lines):
             '''最后这种情况应该就是最后直接带一个问号的'''
             print question
 
-        dis_numpy=np.zeros([length,3])
+        dis_numpy=np.zeros([num_answers,3])
         for idx,line in enumerate(answers):
             for i in dis_1:
                 dis_numpy[idx,0]+=tf_idf(i[0],line)
@@ -466,12 +463,7 @@ def features_builder_passage(split_idx,lines):
                 dis_numpy[idx,1]+=tf_idf(i[0],line)
             for i in dis_3:
                 dis_numpy[idx,2]+=tf_idf(i[0],line)
-
-
-
-
-
-
+        return dis_numpy
 
     split_idx.append(len(lines))
     que_list=[]
@@ -486,14 +478,14 @@ def features_builder_passage(split_idx,lines):
             pass
 
     assert len(que_list)==len(ans_list)
+    dis_numpy_list=[]
     for question,ansers in zip(que_list,ans_list):
         question=fliter_line(question)
         ques_pos=postag(question)
-        ques_parser(question,ques_pos,ansers)
+        dis_numpy_list.append(ques_parser(question,ques_pos,ansers))
 
-        pass
-
-    return
+    final_dis_numpy=np.concatenate(dis_numpy_list,axis=0)
+    return final_dis_numpy
 
 
 def format_xgboost(total_features,out_path,target=None):
