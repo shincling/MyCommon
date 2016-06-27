@@ -398,7 +398,7 @@ def features_builder_passage(split_idx,lines):
             tf=len(re.findall(keyword,line))
             df=len(re.findall(keyword,passage))
             idf=1.0/(df+1)
-            print tf,idf
+            # print tf,idf
             return tf*idf
 
         num_answers=len(answers)
@@ -685,8 +685,11 @@ def features_builder_passage(split_idx,lines):
                 if '时间？'.decode('utf8') in word[0]:
                     aim_idx=[idx,idx]
                     break
-            if ques_pos[aim_idx[0]-1][0]=='是'.decode('utf8'):
-                aim_idx[0]=aim_idx[0]-1
+            try:
+                if ques_pos[aim_idx[0]-1][0]=='是'.decode('utf8'):
+                    aim_idx[0]=aim_idx[0]-1
+            except IndexError:
+                pass
 
             pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
 
@@ -753,6 +756,7 @@ def features_builder_passage(split_idx,lines):
         dis_numpy_list.append(ques_parser(question,ques_pos,ansers))
 
     final_dis_numpy=np.concatenate(dis_numpy_list,axis=0)
+    print 'final_dis_numpy:\n',final_dis_numpy.shape
     return final_dis_numpy
 
 
