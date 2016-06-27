@@ -430,30 +430,298 @@ def features_builder_passage(split_idx,lines):
                     dis_3.append(aim)
             pass
         elif '谁' in question:
+            aim_idx=[length,length]
+            for idx,word in enumerate(ques_pos):
+                if '谁'.decode('utf8') in word[0]:
+                    aim_idx=[idx,idx]
+                    break
+            if ques_pos[aim_idx[0]-1][0]=='是'.decode('utf8'):
+                aim_idx[0]=aim_idx[0]-1
+
+            pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
+
+            for aim in pos_aim:
+                if aim[2]-aim_idx[0]==-1:
+                    dis_1.append(aim)
+                if aim[2]-aim_idx[1]==1:
+                    dis_1.append(aim)
+                if aim[2]-aim_idx[0]==-2:
+                    dis_2.append(aim)
+                if aim[2]-aim_idx[1]==2:
+                    dis_2.append(aim)
+                if aim[2]-aim_idx[0]==-3:
+                    dis_3.append(aim)
+                if aim[2]-aim_idx[1]==3:
+                    dis_3.append(aim)
             pass
         elif '哪' in question:
+            aim_idx=[length,length]
+            for idx,word in enumerate(ques_pos):
+                if '哪'.decode('utf8') in word[0]:
+                    aim_idx=[idx,idx]
+                    break
+            if ques_pos[aim_idx[0]-1][0]=='是'.decode('utf8'):
+                aim_idx[0]=aim_idx[0]-1
+
+            pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
+
+            for aim in pos_aim:
+                if aim[2]-aim_idx[0]==-1:
+                    dis_1.append(aim)
+                if aim[2]-aim_idx[1]==1:
+                    dis_1.append(aim)
+                if aim[2]-aim_idx[0]==-2:
+                    dis_2.append(aim)
+                if aim[2]-aim_idx[1]==2:
+                    dis_2.append(aim)
+                if aim[2]-aim_idx[0]==-3:
+                    dis_3.append(aim)
+                if aim[2]-aim_idx[1]==3:
+                    dis_3.append(aim)
             pass
         elif '几' in question:
+            aim_idx=[length,length]
+            for idx,word in enumerate(ques_pos):
+                if '几'.decode('utf8') in word[0]:
+                    aim_idx=[idx,idx]
+                    break
+            if ques_pos[aim_idx[0]-1][0]=='是'.decode('utf8'):
+                aim_idx[0]=aim_idx[0]-1
+
+            pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
+
+            for aim in pos_aim:
+                if aim[2]-aim_idx[0]==-1:
+                    dis_1.append(aim)
+                if aim[2]-aim_idx[1]==1:
+                    dis_1.append(aim)
+                if aim[2]-aim_idx[0]==-2:
+                    dis_2.append(aim)
+                if aim[2]-aim_idx[1]==2:
+                    dis_2.append(aim)
+                if aim[2]-aim_idx[0]==-3:
+                    dis_3.append(aim)
+                if aim[2]-aim_idx[1]==3:
+                    dis_3.append(aim)
             pass
         elif '多少' in question:
+            aim_idx=[length,length]
+            for idx,word in enumerate(ques_pos):
+                if '多少'.decode('utf8') in word[0]:
+                    aim_idx=[idx,idx]
+                    break
+            if ques_pos[aim_idx[0]-1][0]=='是'.decode('utf8'):
+                aim_idx[0]=aim_idx[0]-1
+
+            pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
+
+            for aim in pos_aim:
+                if aim[2]-aim_idx[0]==-1:
+                    dis_1.append(aim)
+                if aim[2]-aim_idx[1]==1:
+                    dis_1.append(aim)
+                if aim[2]-aim_idx[0]==-2:
+                    dis_2.append(aim)
+                if aim[2]-aim_idx[1]==2:
+                    dis_2.append(aim)
+                if aim[2]-aim_idx[0]==-3:
+                    dis_3.append(aim)
+                if aim[2]-aim_idx[1]==3:
+                    dis_3.append(aim)
             pass
         elif '哪' in question:
+            aim_idx=[length,length]
+            for idx,word in enumerate(ques_pos):
+                if '哪'.decode('utf8') in word[0]:
+                    aim_idx=[idx,idx]
+                    break
+            if ques_pos[aim_idx[0]-1][0]=='是'.decode('utf8'):
+                aim_idx[0]=aim_idx[0]-1
+
+            pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
+
+            for aim in pos_aim:
+                if aim[2]-aim_idx[0]==-1:
+                    dis_1.append(aim)
+                if aim[2]-aim_idx[1]==1:
+                    dis_1.append(aim)
+                if aim[2]-aim_idx[0]==-2:
+                    dis_2.append(aim)
+                if aim[2]-aim_idx[1]==2:
+                    dis_2.append(aim)
+                if aim[2]-aim_idx[0]==-3:
+                    dis_3.append(aim)
+                if aim[2]-aim_idx[1]==3:
+                    dis_3.append(aim)
             pass
         elif '怎么' in question:
+            aim_idx=[length,length]
+            for idx,word in enumerate(ques_pos):
+                if '怎么'.decode('utf8') in word[0]:
+                    aim_idx=[idx,idx]
+                    break
+            if ques_pos[aim_idx[0]-1][0]=='是'.decode('utf8'):
+                aim_idx[0]=aim_idx[0]-1
+
+            pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
+
+            for aim in pos_aim:
+                if aim[2]-aim_idx[0]==-1:
+                    dis_1.append(aim)
+                if aim[2]-aim_idx[1]==1:
+                    dis_1.append(aim)
+                if aim[2]-aim_idx[0]==-2:
+                    dis_2.append(aim)
+                if aim[2]-aim_idx[1]==2:
+                    dis_2.append(aim)
+                if aim[2]-aim_idx[0]==-3:
+                    dis_3.append(aim)
+                if aim[2]-aim_idx[1]==3:
+                    dis_3.append(aim)
             pass
         elif re.findall('多[重厚快深宽薄大高远长久]',question):
+            aim_idx=[length,length]
+            for idx,word in enumerate(ques_pos):
+                if '多'.decode('utf8') in word[0]:
+                    aim_idx=[idx,idx]
+                    break
+            if ques_pos[aim_idx[0]-1][0]=='是'.decode('utf8'):
+                aim_idx[0]=aim_idx[0]-1
+
+            pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
+
+            for aim in pos_aim:
+                if aim[2]-aim_idx[0]==-1:
+                    dis_1.append(aim)
+                if aim[2]-aim_idx[1]==1:
+                    dis_1.append(aim)
+                if aim[2]-aim_idx[0]==-2:
+                    dis_2.append(aim)
+                if aim[2]-aim_idx[1]==2:
+                    dis_2.append(aim)
+                if aim[2]-aim_idx[0]==-3:
+                    dis_3.append(aim)
+                if aim[2]-aim_idx[1]==3:
+                    dis_3.append(aim)
             pass
         elif '如何' in question:
+            aim_idx=[length,length]
+            for idx,word in enumerate(ques_pos):
+                if '如何'.decode('utf8') in word[0]:
+                    aim_idx=[idx,idx]
+                    break
+            if ques_pos[aim_idx[0]-1][0]=='是'.decode('utf8'):
+                aim_idx[0]=aim_idx[0]-1
+
+            pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
+
+            for aim in pos_aim:
+                if aim[2]-aim_idx[0]==-1:
+                    dis_1.append(aim)
+                if aim[2]-aim_idx[1]==1:
+                    dis_1.append(aim)
+                if aim[2]-aim_idx[0]==-2:
+                    dis_2.append(aim)
+                if aim[2]-aim_idx[1]==2:
+                    dis_2.append(aim)
+                if aim[2]-aim_idx[0]==-3:
+                    dis_3.append(aim)
+                if aim[2]-aim_idx[1]==3:
+                    dis_3.append(aim)
             pass
         elif '啥' in question:
+            aim_idx=[length,length]
+            for idx,word in enumerate(ques_pos):
+                if '啥'.decode('utf8') in word[0]:
+                    aim_idx=[idx,idx]
+                    break
+            if ques_pos[aim_idx[0]-1][0]=='是'.decode('utf8'):
+                aim_idx[0]=aim_idx[0]-1
+
+            pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
+
+            for aim in pos_aim:
+                if aim[2]-aim_idx[0]==-1:
+                    dis_1.append(aim)
+                if aim[2]-aim_idx[1]==1:
+                    dis_1.append(aim)
+                if aim[2]-aim_idx[0]==-2:
+                    dis_2.append(aim)
+                if aim[2]-aim_idx[1]==2:
+                    dis_2.append(aim)
+                if aim[2]-aim_idx[0]==-3:
+                    dis_3.append(aim)
+                if aim[2]-aim_idx[1]==3:
+                    dis_3.append(aim)
             pass
         elif '怎样' in question:
+            aim_idx=[length,length]
+            for idx,word in enumerate(ques_pos):
+                if '怎样'.decode('utf8') in word[0]:
+                    aim_idx=[idx,idx]
+                    break
+            if ques_pos[aim_idx[0]-1][0]=='是'.decode('utf8'):
+                aim_idx[0]=aim_idx[0]-1
+
+            pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
+
+            for aim in pos_aim:
+                if aim[2]-aim_idx[0]==-1:
+                    dis_1.append(aim)
+                if aim[2]-aim_idx[1]==1:
+                    dis_1.append(aim)
+                if aim[2]-aim_idx[0]==-2:
+                    dis_2.append(aim)
+                if aim[2]-aim_idx[1]==2:
+                    dis_2.append(aim)
+                if aim[2]-aim_idx[0]==-3:
+                    dis_3.append(aim)
+                if aim[2]-aim_idx[1]==3:
+                    dis_3.append(aim)
             pass
         elif '时间？' in question:
+            aim_idx=[length,length]
+            for idx,word in enumerate(ques_pos):
+                if '时间？'.decode('utf8') in word[0]:
+                    aim_idx=[idx,idx]
+                    break
+            if ques_pos[aim_idx[0]-1][0]=='是'.decode('utf8'):
+                aim_idx[0]=aim_idx[0]-1
+
+            pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
+
+            for aim in pos_aim:
+                if aim[2]-aim_idx[0]==-1:
+                    dis_1.append(aim)
+                if aim[2]-aim_idx[1]==1:
+                    dis_1.append(aim)
+                if aim[2]-aim_idx[0]==-2:
+                    dis_2.append(aim)
+                if aim[2]-aim_idx[1]==2:
+                    dis_2.append(aim)
+                if aim[2]-aim_idx[0]==-3:
+                    dis_3.append(aim)
+                if aim[2]-aim_idx[1]==3:
+                    dis_3.append(aim)
             pass
         else:
             '''最后这种情况应该就是最后直接带一个问号的'''
             print question
+            aim_idx=[length,length]
+            pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
+            for aim in pos_aim:
+                if aim[2]-aim_idx[0]==-1:
+                    dis_1.append(aim)
+                if aim[2]-aim_idx[1]==1:
+                    dis_1.append(aim)
+                if aim[2]-aim_idx[0]==-2:
+                    dis_2.append(aim)
+                if aim[2]-aim_idx[1]==2:
+                    dis_2.append(aim)
+                if aim[2]-aim_idx[0]==-3:
+                    dis_3.append(aim)
+                if aim[2]-aim_idx[1]==3:
+                    dis_3.append(aim)
 
         dis_numpy=np.zeros([num_answers,3])
         for idx,line in enumerate(answers):
