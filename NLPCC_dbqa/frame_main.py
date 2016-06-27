@@ -401,9 +401,14 @@ def features_builder_passage(split_idx,lines):
             # print tf,idf
             return tf*idf
 
+        slot_num=3
+        dis_list=[]
         num_answers=len(answers)
         length=len(question.decode('utf8'))
         dis_1,dis_2,dis_3=[],[],[]
+        for i in range(slot_num):
+            dis_list.append([])
+
         if '什么' in question:
             aim_idx=[length,length]
             for idx,word in enumerate(ques_pos):
@@ -416,18 +421,10 @@ def features_builder_passage(split_idx,lines):
             pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
 
             for aim in pos_aim:
-                if aim[2]-aim_idx[0]==-1:
-                    dis_1.append(aim)
-                if aim[2]-aim_idx[1]==1:
-                    dis_1.append(aim)
-                if aim[2]-aim_idx[0]==-2:
-                    dis_2.append(aim)
-                if aim[2]-aim_idx[1]==2:
-                    dis_2.append(aim)
-                if aim[2]-aim_idx[0]==-3:
-                    dis_3.append(aim)
-                if aim[2]-aim_idx[1]==3:
-                    dis_3.append(aim)
+                for j in range(len(dis_list)):
+                    if aim[2]-aim_idx[0]==j+1 or aim[2]-aim_idx[0]==-(j+1):
+                        dis_list[j].append(aim)
+
             pass
         elif '谁' in question:
             aim_idx=[length,length]
@@ -441,18 +438,10 @@ def features_builder_passage(split_idx,lines):
             pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
 
             for aim in pos_aim:
-                if aim[2]-aim_idx[0]==-1:
-                    dis_1.append(aim)
-                if aim[2]-aim_idx[1]==1:
-                    dis_1.append(aim)
-                if aim[2]-aim_idx[0]==-2:
-                    dis_2.append(aim)
-                if aim[2]-aim_idx[1]==2:
-                    dis_2.append(aim)
-                if aim[2]-aim_idx[0]==-3:
-                    dis_3.append(aim)
-                if aim[2]-aim_idx[1]==3:
-                    dis_3.append(aim)
+                for j in range(len(dis_list)):
+                    if aim[2]-aim_idx[0]==j+1 or aim[2]-aim_idx[0]==-(j+1):
+                        dis_list[j].append(aim)
+
             pass
         elif '哪' in question:
             aim_idx=[length,length]
@@ -466,18 +455,10 @@ def features_builder_passage(split_idx,lines):
             pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
 
             for aim in pos_aim:
-                if aim[2]-aim_idx[0]==-1:
-                    dis_1.append(aim)
-                if aim[2]-aim_idx[1]==1:
-                    dis_1.append(aim)
-                if aim[2]-aim_idx[0]==-2:
-                    dis_2.append(aim)
-                if aim[2]-aim_idx[1]==2:
-                    dis_2.append(aim)
-                if aim[2]-aim_idx[0]==-3:
-                    dis_3.append(aim)
-                if aim[2]-aim_idx[1]==3:
-                    dis_3.append(aim)
+                for j in range(len(dis_list)):
+                    if aim[2]-aim_idx[0]==j+1 or aim[2]-aim_idx[0]==-(j+1):
+                        dis_list[j].append(aim)
+
             pass
         elif '几' in question:
             aim_idx=[length,length]
@@ -491,18 +472,10 @@ def features_builder_passage(split_idx,lines):
             pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
 
             for aim in pos_aim:
-                if aim[2]-aim_idx[0]==-1:
-                    dis_1.append(aim)
-                if aim[2]-aim_idx[1]==1:
-                    dis_1.append(aim)
-                if aim[2]-aim_idx[0]==-2:
-                    dis_2.append(aim)
-                if aim[2]-aim_idx[1]==2:
-                    dis_2.append(aim)
-                if aim[2]-aim_idx[0]==-3:
-                    dis_3.append(aim)
-                if aim[2]-aim_idx[1]==3:
-                    dis_3.append(aim)
+                for j in range(len(dis_list)):
+                    if aim[2]-aim_idx[0]==j+1 or aim[2]-aim_idx[0]==-(j+1):
+                        dis_list[j].append(aim)
+
             pass
         elif '多少' in question:
             aim_idx=[length,length]
@@ -516,18 +489,10 @@ def features_builder_passage(split_idx,lines):
             pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
 
             for aim in pos_aim:
-                if aim[2]-aim_idx[0]==-1:
-                    dis_1.append(aim)
-                if aim[2]-aim_idx[1]==1:
-                    dis_1.append(aim)
-                if aim[2]-aim_idx[0]==-2:
-                    dis_2.append(aim)
-                if aim[2]-aim_idx[1]==2:
-                    dis_2.append(aim)
-                if aim[2]-aim_idx[0]==-3:
-                    dis_3.append(aim)
-                if aim[2]-aim_idx[1]==3:
-                    dis_3.append(aim)
+                for j in range(len(dis_list)):
+                    if aim[2]-aim_idx[0]==j+1 or aim[2]-aim_idx[0]==-(j+1):
+                        dis_list[j].append(aim)
+
             pass
         elif '哪' in question:
             aim_idx=[length,length]
@@ -541,18 +506,10 @@ def features_builder_passage(split_idx,lines):
             pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
 
             for aim in pos_aim:
-                if aim[2]-aim_idx[0]==-1:
-                    dis_1.append(aim)
-                if aim[2]-aim_idx[1]==1:
-                    dis_1.append(aim)
-                if aim[2]-aim_idx[0]==-2:
-                    dis_2.append(aim)
-                if aim[2]-aim_idx[1]==2:
-                    dis_2.append(aim)
-                if aim[2]-aim_idx[0]==-3:
-                    dis_3.append(aim)
-                if aim[2]-aim_idx[1]==3:
-                    dis_3.append(aim)
+                for j in range(len(dis_list)):
+                    if aim[2]-aim_idx[0]==j+1 or aim[2]-aim_idx[0]==-(j+1):
+                        dis_list[j].append(aim)
+
             pass
         elif '怎么' in question:
             aim_idx=[length,length]
@@ -566,18 +523,10 @@ def features_builder_passage(split_idx,lines):
             pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
 
             for aim in pos_aim:
-                if aim[2]-aim_idx[0]==-1:
-                    dis_1.append(aim)
-                if aim[2]-aim_idx[1]==1:
-                    dis_1.append(aim)
-                if aim[2]-aim_idx[0]==-2:
-                    dis_2.append(aim)
-                if aim[2]-aim_idx[1]==2:
-                    dis_2.append(aim)
-                if aim[2]-aim_idx[0]==-3:
-                    dis_3.append(aim)
-                if aim[2]-aim_idx[1]==3:
-                    dis_3.append(aim)
+                for j in range(len(dis_list)):
+                    if aim[2]-aim_idx[0]==j+1 or aim[2]-aim_idx[0]==-(j+1):
+                        dis_list[j].append(aim)
+
             pass
         elif re.findall('多[重厚快深宽薄大高远长久]',question):
             aim_idx=[length,length]
@@ -591,18 +540,10 @@ def features_builder_passage(split_idx,lines):
             pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
 
             for aim in pos_aim:
-                if aim[2]-aim_idx[0]==-1:
-                    dis_1.append(aim)
-                if aim[2]-aim_idx[1]==1:
-                    dis_1.append(aim)
-                if aim[2]-aim_idx[0]==-2:
-                    dis_2.append(aim)
-                if aim[2]-aim_idx[1]==2:
-                    dis_2.append(aim)
-                if aim[2]-aim_idx[0]==-3:
-                    dis_3.append(aim)
-                if aim[2]-aim_idx[1]==3:
-                    dis_3.append(aim)
+                for j in range(len(dis_list)):
+                    if aim[2]-aim_idx[0]==j+1 or aim[2]-aim_idx[0]==-(j+1):
+                        dis_list[j].append(aim)
+
             pass
         elif '如何' in question:
             aim_idx=[length,length]
@@ -616,18 +557,10 @@ def features_builder_passage(split_idx,lines):
             pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
 
             for aim in pos_aim:
-                if aim[2]-aim_idx[0]==-1:
-                    dis_1.append(aim)
-                if aim[2]-aim_idx[1]==1:
-                    dis_1.append(aim)
-                if aim[2]-aim_idx[0]==-2:
-                    dis_2.append(aim)
-                if aim[2]-aim_idx[1]==2:
-                    dis_2.append(aim)
-                if aim[2]-aim_idx[0]==-3:
-                    dis_3.append(aim)
-                if aim[2]-aim_idx[1]==3:
-                    dis_3.append(aim)
+                for j in range(len(dis_list)):
+                    if aim[2]-aim_idx[0]==j+1 or aim[2]-aim_idx[0]==-(j+1):
+                        dis_list[j].append(aim)
+
             pass
         elif '啥' in question:
             aim_idx=[length,length]
@@ -641,18 +574,10 @@ def features_builder_passage(split_idx,lines):
             pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
 
             for aim in pos_aim:
-                if aim[2]-aim_idx[0]==-1:
-                    dis_1.append(aim)
-                if aim[2]-aim_idx[1]==1:
-                    dis_1.append(aim)
-                if aim[2]-aim_idx[0]==-2:
-                    dis_2.append(aim)
-                if aim[2]-aim_idx[1]==2:
-                    dis_2.append(aim)
-                if aim[2]-aim_idx[0]==-3:
-                    dis_3.append(aim)
-                if aim[2]-aim_idx[1]==3:
-                    dis_3.append(aim)
+                for j in range(len(dis_list)):
+                    if aim[2]-aim_idx[0]==j+1 or aim[2]-aim_idx[0]==-(j+1):
+                        dis_list[j].append(aim)
+
             pass
         elif '怎样' in question:
             aim_idx=[length,length]
@@ -666,18 +591,10 @@ def features_builder_passage(split_idx,lines):
             pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
 
             for aim in pos_aim:
-                if aim[2]-aim_idx[0]==-1:
-                    dis_1.append(aim)
-                if aim[2]-aim_idx[1]==1:
-                    dis_1.append(aim)
-                if aim[2]-aim_idx[0]==-2:
-                    dis_2.append(aim)
-                if aim[2]-aim_idx[1]==2:
-                    dis_2.append(aim)
-                if aim[2]-aim_idx[0]==-3:
-                    dis_3.append(aim)
-                if aim[2]-aim_idx[1]==3:
-                    dis_3.append(aim)
+                for j in range(len(dis_list)):
+                    if aim[2]-aim_idx[0]==j+1 or aim[2]-aim_idx[0]==-(j+1):
+                        dis_list[j].append(aim)
+
             pass
         elif '时间？' in question:
             aim_idx=[length,length]
@@ -694,18 +611,10 @@ def features_builder_passage(split_idx,lines):
             pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
 
             for aim in pos_aim:
-                if aim[2]-aim_idx[0]==-1:
-                    dis_1.append(aim)
-                if aim[2]-aim_idx[1]==1:
-                    dis_1.append(aim)
-                if aim[2]-aim_idx[0]==-2:
-                    dis_2.append(aim)
-                if aim[2]-aim_idx[1]==2:
-                    dis_2.append(aim)
-                if aim[2]-aim_idx[0]==-3:
-                    dis_3.append(aim)
-                if aim[2]-aim_idx[1]==3:
-                    dis_3.append(aim)
+                for j in range(len(dis_list)):
+                    if aim[2]-aim_idx[0]==j+1 or aim[2]-aim_idx[0]==-(j+1):
+                        dis_list[j].append(aim)
+
             pass
         else:
             '''最后这种情况应该就是最后直接带一个问号的'''
@@ -713,27 +622,22 @@ def features_builder_passage(split_idx,lines):
             aim_idx=[length,length]
             pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
             for aim in pos_aim:
-                if aim[2]-aim_idx[0]==-1:
-                    dis_1.append(aim)
-                if aim[2]-aim_idx[1]==1:
-                    dis_1.append(aim)
-                if aim[2]-aim_idx[0]==-2:
-                    dis_2.append(aim)
-                if aim[2]-aim_idx[1]==2:
-                    dis_2.append(aim)
-                if aim[2]-aim_idx[0]==-3:
-                    dis_3.append(aim)
-                if aim[2]-aim_idx[1]==3:
-                    dis_3.append(aim)
+                for j in range(len(dis_list)):
+                    if aim[2]-aim_idx[0]==j+1 or aim[2]-aim_idx[0]==-(j+1):
+                        dis_list[j].append(aim)
 
-        dis_numpy=np.zeros([num_answers,3])
+
+        dis_numpy=np.zeros([num_answers,slot_num])
         for idx,line in enumerate(answers):
-            for i in dis_1:
-                dis_numpy[idx,0]+=tf_idf(i[0],line)
-            for i in dis_2:
-                dis_numpy[idx,1]+=tf_idf(i[0],line)
-            for i in dis_3:
-                dis_numpy[idx,2]+=tf_idf(i[0],line)
+            for pos in range(len(dis_list)):
+                for i in dis_list[pos]:
+                    dis_numpy[idx,pos]+=tf_idf(i[0],line)
+            # for i in dis_1:
+            #     dis_numpy[idx,0]+=tf_idf(i[0],line)
+            # for i in dis_2:
+            #     dis_numpy[idx,1]+=tf_idf(i[0],line)
+            # for i in dis_3:
+            #     dis_numpy[idx,2]+=tf_idf(i[0],line)
         return dis_numpy
 
     split_idx.append(len(lines))
@@ -804,7 +708,7 @@ def cal_main(train_file,test_file,score_file,train_target=None,test_target=None)
     # specify parameters via map
     evallist  = [(dtest,'eval'), (dtrain,'train')]
     param = {'booster':'gbtree',
-             'max_depth':7,
+             'max_depth':8,
              'eta':0.06,
              'min_child_weight':30,
              'subsample':1,
@@ -813,7 +717,7 @@ def cal_main(train_file,test_file,score_file,train_target=None,test_target=None)
              # 'objective':'reg:linear',
              'lambda':0.3,
              'alpha':0.2}
-    num_round = 100
+    num_round = 200
     bst = xgb.train(param, dtrain, num_round ,evallist)
     # make prediction
     train_score=bst.predict(dtrain)
@@ -865,13 +769,13 @@ if __name__=='__main__':
     else:
         tmp1=pickle.load(open('train_ssss.txt'+'.all_np'))
         train_np=pickle.load(open(train_features+'.np'))
-        # tmp1=pickle.load(open('rela_overlap.np.train'))
-        train_np=np.concatenate((tmp1,train_np),axis=1)
+        tmp1_1=pickle.load(open('rela_overlap.np.train'))
+        train_np=np.concatenate((tmp1_1,tmp1,train_np),axis=1)
         train_ansList=pickle.load(open(train_features+'.train_label_np'))
         tmp2=pickle.load(open('test_ssss.txt'+'.all_np'))
         test_np=pickle.load(open(test_features+'.np'))
-        # tmp2=pickle.load(open('rela_overlap.np.test'))
-        test_np=np.concatenate((tmp2,test_np),axis=1)
+        tmp2_1=pickle.load(open('rela_overlap.np.test'))
+        test_np=np.concatenate((tmp2_1,tmp2,test_np),axis=1)
         test_ansList=pickle.load(open(test_features+'.test_label_np'))
 
         print train_np.shape
