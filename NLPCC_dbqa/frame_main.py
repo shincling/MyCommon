@@ -391,6 +391,13 @@ def features_builder_passage(split_idx,lines):
     def ques_parser(question,ques_pos,answers):
         '''answers是list'''
         '''answers是list'''
+        def tf_idf(keyword,line,passage=answers):
+            passage=''.join([each for each in passage if each!=line])
+            tf=len(re.findall(keyword,line))
+            df=len(re.findall(keyword,passage))
+            idf=1.0/(df+1)
+            return tf*idf
+
         length=len(question.decode('utf8'))
         if '什么' in question:
             # position=question.rfind('什么'.decode('utf8'))
@@ -454,11 +461,11 @@ def features_builder_passage(split_idx,lines):
         dis_numpy=np.zeros([length,3])
         for idx,line in enumerate(answers):
             for i in dis_1:
-                dis_numpy[idx,0]+=tf-idf(i[0],line)
+                dis_numpy[idx,0]+=tf_idf(i[0],line)
             for i in dis_2:
-                dis_numpy[idx,1]+=tf-idf(i[0],line)
+                dis_numpy[idx,1]+=tf_idf(i[0],line)
             for i in dis_3:
-                dis_numpy[idx,2]+=tf-idf(i[0],line)
+                dis_numpy[idx,2]+=tf_idf(i[0],line)
 
 
 
