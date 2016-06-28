@@ -388,7 +388,7 @@ def features_builder(split_idx,lines):
     return total_featurelist
 
 def features_builder_passage(split_idx,lines):
-    def ques_parser(question,ques_pos,answers):
+    def ques_parser(question,ques_pos,answers,rela_dict):
         '''answers是list'''
         '''answers是list'''
         def tf_idf(keyword,line,passage=answers):
@@ -402,6 +402,23 @@ def features_builder_passage(split_idx,lines):
             # print tf,idf
             return tf*idf
 
+        def tf_idf_rela(keyword,line,passage=answers,rela_dict=rela_dict):
+            '''这里留下了一个隐患，具体就是计算idf的时候，是否要把目标行去掉'''
+            keyword=keyword.encode('utf8')
+            keywords=re.findall('[=#] (.*?{}.*?)\r\n'.format(keyword),rela_dict)
+            keywords=' '.join(keywords).split(' ').replace(' ','')
+
+
+            passage=''.join([each for each in passage])
+            # passage=''.join([each for each in passage if each!=line])
+            tf=0
+            for keyword in keywords:
+                tf+=re.findall(keyword,line)
+
+            df=len(re.findall(keyword,passage))
+            idf=1.0/(df+1)
+            # print tf,idf
+            return tf*idf
         slot_num=3
         dis_list=[]
         num_answers=len(answers)
@@ -636,11 +653,12 @@ def features_builder_passage(split_idx,lines):
                         dis_list[j].append(aim)
 
 
-        dis_numpy=np.zeros([num_answers,slot_num])
+        dis_numpy=np.zeros([num_answers,2*slot_num])
         for idx,line in enumerate(answers):
             for pos in range(len(dis_list)):
                 for i in dis_list[pos]:
                     dis_numpy[idx,pos]+=tf_idf(i[0],line)
+                    dis_numpy[idx,3+pos]+=tf_idf_rela(i[0],line)
             # for i in dis_1:
             #     dis_numpy[idx,0]+=tf_idf(i[0],line)
             # for i in dis_2:
@@ -663,10 +681,11 @@ def features_builder_passage(split_idx,lines):
 
     assert len(que_list)==len(ans_list)
     dis_numpy_list=[]
+    rela_dict=open('relative_words.txt').read()
     for question,ansers in zip(que_list,ans_list):
         question=fliter_line(question)
         ques_pos=postag(question)
-        dis_numpy_list.append(ques_parser(question,ques_pos,ansers))
+        dis_numpy_list.append(ques_parser(question,ques_pos,ansers,rela_dict))
 
     final_dis_numpy=np.concatenate(dis_numpy_list,axis=0)
     print 'final_dis_numpy:\n',final_dis_numpy.shape
@@ -746,7 +765,7 @@ if __name__=='__main__':
     # train_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.train'
     # test_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.test'
     score_file='results/result_0628_2waymix'
-    construct=0
+    construct=10
 
     if construct:
         build_vocab=False
