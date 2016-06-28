@@ -394,7 +394,8 @@ def features_builder_passage(split_idx,lines):
         def tf_idf(keyword,line,passage=answers):
             '''这里留下了一个隐患，具体就是计算idf的时候，是否要把目标行去掉'''
             keyword=keyword.encode('utf8')
-            passage=''.join([each for each in passage if each!=line])
+            passage=''.join([each for each in passage])
+            # passage=''.join([each for each in passage if each!=line])
             tf=len(re.findall(keyword,line))
             df=len(re.findall(keyword,passage))
             idf=1.0/(df+1)
@@ -405,7 +406,7 @@ def features_builder_passage(split_idx,lines):
         dis_list=[]
         num_answers=len(answers)
         length=len(question.decode('utf8'))
-        dis_1,dis_2,dis_3=[],[],[]
+        # dis_1,dis_2,dis_3=[],[],[]
         for i in range(slot_num):
             dis_list.append([])
 
@@ -434,6 +435,10 @@ def features_builder_passage(split_idx,lines):
                     break
             if ques_pos[aim_idx[0]-1][0]=='是'.decode('utf8'):
                 aim_idx[0]=aim_idx[0]-1
+            if ques_pos[aim_idx[0]-1][0]=='由'.decode('utf8'):
+                aim_idx[0]=aim_idx[0]-1
+            if ques_pos[aim_idx[0]-1][0]=='在'.decode('utf8'):
+                aim_idx[0]=aim_idx[0]-1
 
             pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
 
@@ -451,6 +456,8 @@ def features_builder_passage(split_idx,lines):
                     break
             if ques_pos[aim_idx[0]-1][0]=='是'.decode('utf8'):
                 aim_idx[0]=aim_idx[0]-1
+            if ques_pos[aim_idx[0]-1][0]=='在'.decode('utf8'):
+                aim_idx[0]=aim_idx[0]-1
 
             pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
 
@@ -467,6 +474,8 @@ def features_builder_passage(split_idx,lines):
                     aim_idx=[idx,idx]
                     break
             if ques_pos[aim_idx[0]-1][0]=='是'.decode('utf8'):
+                aim_idx[0]=aim_idx[0]-1
+            if ques_pos[aim_idx[0]-1][0]=='有'.decode('utf8'):
                 aim_idx[0]=aim_idx[0]-1
 
             pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
@@ -494,23 +503,23 @@ def features_builder_passage(split_idx,lines):
                         dis_list[j].append(aim)
 
             pass
-        elif '哪' in question:
-            aim_idx=[length,length]
-            for idx,word in enumerate(ques_pos):
-                if '哪'.decode('utf8') in word[0]:
-                    aim_idx=[idx,idx]
-                    break
-            if ques_pos[aim_idx[0]-1][0]=='是'.decode('utf8'):
-                aim_idx[0]=aim_idx[0]-1
-
-            pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
-
-            for aim in pos_aim:
-                for j in range(len(dis_list)):
-                    if aim[2]-aim_idx[0]==j+1 or aim[2]-aim_idx[0]==-(j+1):
-                        dis_list[j].append(aim)
-
-            pass
+        # elif '哪' in question:
+        #     aim_idx=[length,length]
+        #     for idx,word in enumerate(ques_pos):
+        #         if '哪'.decode('utf8') in word[0]:
+        #             aim_idx=[idx,idx]
+        #             break
+        #     if ques_pos[aim_idx[0]-1][0]=='是'.decode('utf8'):
+        #         aim_idx[0]=aim_idx[0]-1
+        #
+        #     pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
+        #
+        #     for aim in pos_aim:
+        #         for j in range(len(dis_list)):
+        #             if aim[2]-aim_idx[0]==j+1 or aim[2]-aim_idx[0]==-(j+1):
+        #                 dis_list[j].append(aim)
+        #
+        #     pass
         elif '怎么' in question:
             aim_idx=[length,length]
             for idx,word in enumerate(ques_pos):
@@ -708,9 +717,9 @@ def cal_main(train_file,test_file,score_file,train_target=None,test_target=None)
     # specify parameters via map
     evallist  = [(dtest,'eval'), (dtrain,'train')]
     param = {'booster':'gbtree',
-             'max_depth':8,
+             'max_depth':7,
              'eta':0.06,
-             'min_child_weight':30,
+             'min_child_weight':10,
              'subsample':1,
              'silent':0,
              'objective':'binary:logistic',
@@ -736,7 +745,7 @@ if __name__=='__main__':
     test_features='results/test_ssss_27.txt'
     # train_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.train'
     # test_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.test'
-    score_file='results/result_0627_cover&w2v&dists'
+    score_file='results/result_0628_2waymix'
     construct=0
 
     if construct:
@@ -780,5 +789,18 @@ if __name__=='__main__':
 
         print train_np.shape
 
+    if 0:
+        tmp1=pickle.load(open('a3_train.np')).reshape([-1,1])
+        tmp1_1=pickle.load(open('b3_train.np')).reshape([-1,1])
+        train_np=np.concatenate((tmp1_1,tmp1),axis=1)
+        tmp2=pickle.load(open('a3_test.np')).reshape([-1,1])
+        tmp2_1=pickle.load(open('b3_test.np')).reshape([-1,1])
+        test_np=np.concatenate((tmp2_1,tmp2),axis=1)
+        train_ansList=pickle.load(open(train_features+'.train_label_np'))
+        test_ansList=pickle.load(open(test_features+'.test_label_np'))
+
+
     cal_main(train_np,test_np,score_file,train_target=train_ansList,test_target=test_ansList)
     # cal_main(train_features,test_features,score_file)
+
+
