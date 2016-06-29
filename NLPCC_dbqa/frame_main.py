@@ -406,14 +406,18 @@ def features_builder_passage(split_idx,lines):
             '''这里留下了一个隐患，具体就是计算idf的时候，是否要把目标行去掉'''
             keyword=keyword.encode('utf8')
             keywords=re.findall('[=#] (.*?{}.*?)\r\n'.format(keyword),rela_dict)
-            keywords=' '.join(keywords).split(' ').replace(' ','')
-
+            keywords=' '.join(keywords).split(' ')
+            try:
+                keywords.remove(keyword)
+                keywords.remove(' ')
+            except ValueError:
+                pass
 
             passage=''.join([each for each in passage])
             # passage=''.join([each for each in passage if each!=line])
             tf=0
             for keyword in keywords:
-                tf+=re.findall(keyword,line)
+                tf+=len(re.findall(keyword,line))
 
             df=len(re.findall(keyword,passage))
             idf=1.0/(df+1)
@@ -426,6 +430,8 @@ def features_builder_passage(split_idx,lines):
         # dis_1,dis_2,dis_3=[],[],[]
         for i in range(slot_num):
             dis_list.append([])
+
+        count_parser=1
 
         if '什么' in question:
             aim_idx=[length,length]
@@ -442,6 +448,9 @@ def features_builder_passage(split_idx,lines):
                 for j in range(len(dis_list)):
                     if aim[2]-aim_idx[0]==j+1 or aim[2]-aim_idx[0]==-(j+1):
                         dis_list[j].append(aim)
+
+                        pass
+
 
             pass
         elif '谁' in question:
@@ -653,12 +662,26 @@ def features_builder_passage(split_idx,lines):
                         dis_list[j].append(aim)
 
 
-        dis_numpy=np.zeros([num_answers,2*slot_num])
+        dis_numpy=np.zeros([num_answers,slot_num+1])
         for idx,line in enumerate(answers):
+            # dis_numpy[idx,-1]=dis_list[-1]
             for pos in range(len(dis_list)):
                 for i in dis_list[pos]:
                     dis_numpy[idx,pos]+=tf_idf(i[0],line)
-                    dis_numpy[idx,3+pos]+=tf_idf_rela(i[0],line)
+                    # dis_numpy[idx,3+pos]+=tf_idf_rela(i[0],line)
+            if count_parser:
+                if re.findall('什么时[候间]|多久|多长时间',question):
+                    if re.findall('[年月日时分秒]',line):
+                        dis_numpy[idx,-1]=1
+                elif re.findall('几|多少',question):
+                    if re.findall('[0-9]一二三四五六七八九十零]',line):
+                        dis_numpy[idx,-1]=1
+                elif re.findall('谁|叫什么',question):
+                    postag=jieba.posseg.cut(line)
+                    postag=[i.flag for i in postag]
+                    # if re.findall('n[rstz]',postag):
+                    if ('nr' in postag or 'ns' in postag or 'nt' in postag or 'nz' in postag):
+                        dis_numpy[idx,-1]=1
             # for i in dis_1:
             #     dis_numpy[idx,0]+=tf_idf(i[0],line)
             # for i in dis_2:
@@ -682,7 +705,7 @@ def features_builder_passage(split_idx,lines):
     assert len(que_list)==len(ans_list)
     dis_numpy_list=[]
     rela_dict=open('relative_words.txt').read()
-    for question,ansers in zip(que_list,ans_list):
+    for question,ansers in tqdm(zip(que_list,ans_list)):
         question=fliter_line(question)
         ques_pos=postag(question)
         dis_numpy_list.append(ques_parser(question,ques_pos,ansers,rela_dict))
@@ -736,16 +759,16 @@ def cal_main(train_file,test_file,score_file,train_target=None,test_target=None)
     # specify parameters via map
     evallist  = [(dtest,'eval'), (dtrain,'train')]
     param = {'booster':'gbtree',
-             'max_depth':7,
+             'max_depth':8,
              'eta':0.06,
-             'min_child_weight':10,
+             'min_child_weight':3,
              'subsample':1,
              'silent':0,
              'objective':'binary:logistic',
              # 'objective':'reg:linear',
              'lambda':0.3,
              'alpha':0.2}
-    num_round = 200
+    num_round = 250
     bst = xgb.train(param, dtrain, num_round ,evallist)
     # make prediction
     train_score=bst.predict(dtrain)
@@ -764,8 +787,8 @@ if __name__=='__main__':
     test_features='results/test_ssss_27.txt'
     # train_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.train'
     # test_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.test'
-    score_file='results/result_0628_2waymix'
-    construct=10
+    score_file='results/result_0629_allmix'
+    construct=0
 
     if construct:
         build_vocab=False
