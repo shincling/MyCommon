@@ -439,20 +439,26 @@ def features_builder_passage(split_idx,lines):
         def tf_idf(keyword,line,passage=answers):
             '''这里留下了一个隐患，具体就是计算idf的时候，是否要把目标行去掉'''
             keyword=keyword.encode('utf8')
-            passage=''.join([each for each in passage])
-            # passage=''.join([each for each in passage if each!=line])
-            tf=len(re.findall(keyword,line))
+            # passage=''.join([each for each in passage])
+            passage=''.join([each for each in passage if each!=line])
+            # tf=len(re.findall(keyword,line))
+            tf=1 if (re.findall(keyword,line)) else 0
             if keyword=='时间' or  keyword=='时候':
-                tf+=len(re.findall('[年月日时分秒]',line))
+                # tf+=len(re.findall('[年月日时分秒]',line))
+                if re.findall('[年月日时分秒]',line):
+                    tf=0.5
+
             if keyword=='地方' or  keyword=='地点':
-                tf+=len(re.findall('[省市县国村镇乡区]',line))
-            if keyword=='名字' or '名' in keyword:
-                postag=jieba.posseg.cut(line)
-                postag=[i.flag for i in postag]
-                if ('nr' in postag or 'ns' in postag or 'nt' in postag or 'nz' in postag):
-                    tf+=1
+                # tf+=len(re.findall('[省市县国村镇乡区]',line))
+                if (re.findall('[省市县国村镇乡区]',line)):
+                    tf=1
+            # if keyword=='名字' or '名' in keyword:
+            #     postag=jieba.posseg.cut(line)
+            #     postag=[i.flag for i in postag]
+            #     if ('nr' in postag or 'ns' in postag or 'nt' in postag or 'nz' in postag):
+            #         tf=0.5
             df=len(re.findall(keyword,passage))
-            idf=1.0/(df+1)
+            idf=1.0/((df+1)**3)
             # print tf,idf
             return tf*idf
 
@@ -816,12 +822,12 @@ def cal_main(train_file,test_file,score_file,train_target=None,test_target=None)
     evallist  = [(dtest,'eval'), (dtrain,'train')]
     param = {'booster':'gbtree',
              'max_depth':7,
-             'eta':0.15,
+             'eta':0.06,
              'min_child_weight':30,
              'subsample':1,
              'silent':0,
              'objective':'binary:logistic',
-             'max_delta_step':10,
+             'max_delta_step':50,
              # 'objective':'reg:linear',
              'lambda':0.3,
              'alpha':0.2}
