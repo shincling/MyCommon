@@ -200,6 +200,50 @@ def features_builder(split_idx,lines):
         print dis_numpy.shape
         return dis_numpy
 
+    def word2vec_disall_300(lines):
+        dis_numpy=np.zeros([len(lines),7])
+        word_dict=open('NLPCC2016QA-Update/model/dbqa/dbqa.word2vec').readlines()[1:]
+        final_dict={}
+        for line in word_dict:
+            line=line.split(' ')
+            word=line[0]
+            vector=np.array(map(float,line[1:]))
+            final_dict[word]=vector
+        word_dict=final_dict
+        del final_dict
+
+        for idx,line in enumerate(lines):
+            each=line.split('\t')
+            question=jieba._lcut(each[0])
+            question_vector=np.zeros(300)
+            for word in question:
+                try:
+                    one_vec=word_dict[word.encode('utf8')]
+                except  KeyError:
+                    one_vec=np.random.normal(size=(300))
+                question_vector+=one_vec
+
+            answer=jieba._lcut(each[1])
+            answer_vector=np.zeros(300)
+            for word in answer:
+                try:
+                    one_vec=word_dict[word.encode('utf8')]
+                except KeyError:
+                    one_vec=np.random.normal(size=(300))
+                answer_vector+=one_vec
+
+            # question_vec_01,answer_vec_01=binary_twosent(question,answer)
+            dis_numpy[idx,0]=1-dist.correlation(question_vector,answer_vector)
+            dis_numpy[idx,1]=1-dist.jaccard(question_vector,answer_vector)
+            dis_numpy[idx,2]=1-dist.hamming(question_vector,answer_vector)
+            dis_numpy[idx,3]=1-dist.rogerstanimoto(question_vector,answer_vector)
+            dis_numpy[idx,4]=1-dist.cityblock(question_vector,answer_vector)
+            dis_numpy[idx,5]=1-dist.matching(question_vector,answer_vector)
+            dis_numpy[idx,6]=1-dist.cosine(question_vector,answer_vector)
+
+        del word_dict
+        print dis_numpy.shape
+        return dis_numpy
     def word2vec_disall(lines):
         dis_numpy=np.zeros([len(lines),6])
         word_dict=pickle.load(open('nlpcc_dict_20160605'))
@@ -376,13 +420,14 @@ def features_builder(split_idx,lines):
 
     lines=[fliter_line(line) for line in lines]
     total_featurelist=[]
-    total_featurelist.append(word_overlap(lines))
-    total_featurelist.append(max_common(lines))
+    # total_featurelist.append(word_overlap(lines))
+    # total_featurelist.append(max_common(lines))
     # total_featurelist.append(word_overlap_rela(lines))
     # total_featurelist.append(topwords_similarity(lines))
-    total_featurelist.append(word2vec_cos(lines))
-    total_featurelist.append(word2vec_dis(lines))
-    total_featurelist.append(word2vec_disall(lines))
+    # total_featurelist.append(word2vec_cos(lines))
+    # total_featurelist.append(word2vec_dis(lines))
+    # total_featurelist.append(word2vec_disall(lines))
+    total_featurelist.append(word2vec_disall_300(lines))
     # total_featurelist.append(word2vec_disall_2(lines))
 
     return total_featurelist
@@ -397,6 +442,15 @@ def features_builder_passage(split_idx,lines):
             passage=''.join([each for each in passage])
             # passage=''.join([each for each in passage if each!=line])
             tf=len(re.findall(keyword,line))
+            if keyword=='时间' or  keyword=='时候':
+                tf+=len(re.findall('[年月日时分秒]',line))
+            if keyword=='地方' or  keyword=='地点':
+                tf+=len(re.findall('[省市县国村镇乡区]',line))
+            if keyword=='名字' or '名' in keyword:
+                postag=jieba.posseg.cut(line)
+                postag=[i.flag for i in postag]
+                if ('nr' in postag or 'ns' in postag or 'nt' in postag or 'nz' in postag):
+                    tf+=1
             df=len(re.findall(keyword,passage))
             idf=1.0/(df+1)
             # print tf,idf
@@ -668,6 +722,7 @@ def features_builder_passage(split_idx,lines):
             for pos in range(len(dis_list)):
                 for i in dis_list[pos]:
                     dis_numpy[idx,pos]+=tf_idf(i[0],line)
+                    open('log.txt','a').write(i[0].encode('utf8')+'\n')
                     # dis_numpy[idx,3+pos]+=tf_idf_rela(i[0],line)
             if count_parser:
                 if re.findall('什么时[候间]|多久|多长时间',question):
@@ -761,11 +816,12 @@ def cal_main(train_file,test_file,score_file,train_target=None,test_target=None)
     evallist  = [(dtest,'eval'), (dtrain,'train')]
     param = {'booster':'gbtree',
              'max_depth':7,
-             'eta':0.06,
-             'min_child_weight':15,
+             'eta':0.15,
+             'min_child_weight':30,
              'subsample':1,
              'silent':0,
              'objective':'binary:logistic',
+             'max_delta_step':10,
              # 'objective':'reg:linear',
              'lambda':0.3,
              'alpha':0.2}
@@ -788,9 +844,11 @@ if __name__=='__main__':
     # test_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/valid_demo'
     train_features='results/train_ssss_27.txt'
     test_features='results/test_ssss_27.txt'
+    # train_features='results/cross/train_ssss_29.txt'
+    # test_features='results/cross/test_ssss_29.txt'
     # train_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.train'
     # test_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.test'
-    score_file='results/result_0629_allmix'
+    score_file='results/result_0630_allmix_1'
     construct=0
 
     if construct:
@@ -810,29 +868,29 @@ if __name__=='__main__':
 
         total_featurelist_test=features_builder_passage(test_split_idx,test_lines)
         # print 1/0
-        # total_featurelist_test=features_builder(test_split_idx,test_lines)
+        # total_featurelist_test+=features_builder(test_split_idx,test_lines)
         test_np=format_xgboost(total_featurelist_test,out_path=test_features)
         pickle.dump(test_np,open(test_features+'.np','w'))
         print 'test feats finished'
 
         total_featurelist_train=features_builder_passage(train_split_idx,train_lines)
-        # total_featurelist_train=features_builder(train_split_idx,train_lines)
+        # total_featurelist_train+=features_builder(train_split_idx,train_lines)
         train_np=format_xgboost(total_featurelist_train,out_path=train_features,target=train_ansList)
         pickle.dump(train_np,open(train_features+'.np','w'))
         print 'train feats finished'
     else:
-        tmp1=pickle.load(open('train_ssss.txt'+'.all_np'))
-        train_np=pickle.load(open(train_features+'.np'))
-        tmp1_1=pickle.load(open('rela_overlap.np.train'))
-        train_np=np.concatenate((tmp1_1,tmp1,train_np),axis=1)
-        train_ansList=pickle.load(open(train_features+'.train_label_np'))
-        tmp2=pickle.load(open('test_ssss.txt'+'.all_np'))
-        test_np=pickle.load(open(test_features+'.np'))
-        tmp2_1=pickle.load(open('rela_overlap.np.test'))
-        test_np=np.concatenate((tmp2_1,tmp2,test_np),axis=1)
-        test_ansList=pickle.load(open(test_features+'.test_label_np'))
-
-        print train_np.shape
+        if 1:
+            tmp1=pickle.load(open('train_ssss.txt'+'.all_np'))
+            train_np=pickle.load(open(train_features+'.np'))
+            tmp1_1=pickle.load(open('rela_overlap.np.train'))
+            train_np=np.concatenate((tmp1_1,tmp1,train_np),axis=1)
+            train_ansList=pickle.load(open(train_features+'.train_label_np'))
+            tmp2=pickle.load(open('test_ssss.txt'+'.all_np'))
+            test_np=pickle.load(open(test_features+'.np'))
+            tmp2_1=pickle.load(open('rela_overlap.np.test'))
+            test_np=np.concatenate((tmp2_1,tmp2,test_np),axis=1)
+            test_ansList=pickle.load(open(test_features+'.test_label_np'))
+            print train_np.shape
 
     if 0:
         tmp1=pickle.load(open('rule_train.np')).reshape([-1,1])
@@ -850,6 +908,12 @@ if __name__=='__main__':
         # train_ansList=pickle.load(open(train_features+'.train_label_np'))
         # test_ansList=pickle.load(open(test_features+'.test_label_np'))
         print train_np.shape
+
+    if 0:
+        train_np=pickle.load(open(train_features+'.np'))
+        train_ansList=pickle.load(open(train_features+'.train_label_np'))
+        test_np=pickle.load(open(test_features+'.np'))
+        test_ansList=pickle.load(open(test_features+'.test_label_np'))
 
     cal_main(train_np,test_np,score_file,train_target=train_ansList,test_target=test_ansList)
     # cal_main(train_features,test_features,score_file)
