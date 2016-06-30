@@ -431,7 +431,7 @@ def features_builder_passage(split_idx,lines):
         for i in range(slot_num):
             dis_list.append([])
 
-        count_parser=1
+        count_parser=0
 
         if '什么' in question:
             aim_idx=[length,length]
@@ -662,7 +662,7 @@ def features_builder_passage(split_idx,lines):
                         dis_list[j].append(aim)
 
 
-        dis_numpy=np.zeros([num_answers,slot_num+1])
+        dis_numpy=np.zeros([num_answers,slot_num+1]) if count_parser else np.zeros([num_answers,slot_num])
         for idx,line in enumerate(answers):
             # dis_numpy[idx,-1]=dis_list[-1]
             for pos in range(len(dis_list)):
@@ -711,6 +711,7 @@ def features_builder_passage(split_idx,lines):
         dis_numpy_list.append(ques_parser(question,ques_pos,ansers,rela_dict))
 
     final_dis_numpy=np.concatenate(dis_numpy_list,axis=0)
+    # pickle.dump(final_dis_numpy[:,-1],open('rela.np','w'))
     print 'final_dis_numpy:\n',final_dis_numpy.shape
     return [final_dis_numpy]
 
@@ -759,9 +760,9 @@ def cal_main(train_file,test_file,score_file,train_target=None,test_target=None)
     # specify parameters via map
     evallist  = [(dtest,'eval'), (dtrain,'train')]
     param = {'booster':'gbtree',
-             'max_depth':8,
+             'max_depth':7,
              'eta':0.06,
-             'min_child_weight':3,
+             'min_child_weight':15,
              'subsample':1,
              'silent':0,
              'objective':'binary:logistic',
@@ -773,6 +774,8 @@ def cal_main(train_file,test_file,score_file,train_target=None,test_target=None)
     # make prediction
     train_score=bst.predict(dtrain)
     preds = bst.predict(dtest)
+    # pickle.dump(train_score,open('score_train.np','w'))
+    # pickle.dump(preds,open('score_test.np','w'))
     print bst.get_fscore()
     open(score_file+'_valid','w').write('\r\n'.join([str(i) for i in preds]))
     open(score_file+'_train','w').write('\r\n'.join([str(i) for i in train_score]))
@@ -832,15 +835,21 @@ if __name__=='__main__':
         print train_np.shape
 
     if 0:
-        tmp1=pickle.load(open('a3_train.np')).reshape([-1,1])
-        tmp1_1=pickle.load(open('b3_train.np')).reshape([-1,1])
+        tmp1=pickle.load(open('rule_train.np')).reshape([-1,1])
+        # tmp1_1=pickle.load(open('b3_train.np')).reshape([-1,1])
+        tmp1_1=pickle.load(open('score_train.np')).reshape([-1,1])
         train_np=np.concatenate((tmp1_1,tmp1),axis=1)
-        tmp2=pickle.load(open('a3_test.np')).reshape([-1,1])
-        tmp2_1=pickle.load(open('b3_test.np')).reshape([-1,1])
+        # np.savetxt('tmp_result_train.txt',tmp1_1+tmp1)
+        open(score_file+'_train','w').write('\r\n'.join([str(i) for i in tmp1_1+tmp1]))
+        tmp2=pickle.load(open('rule_test.np')).reshape([-1,1])
+        # tmp2_1=pickle.load(open('b3_test.np')).reshape([-1,1])
+        tmp2_1=pickle.load(open('score_test.np')).reshape([-1,1])
         test_np=np.concatenate((tmp2_1,tmp2),axis=1)
-        train_ansList=pickle.load(open(train_features+'.train_label_np'))
-        test_ansList=pickle.load(open(test_features+'.test_label_np'))
-
+        # np.savetxt('tmp_result_test.txt',tmp2_1+tmp2)
+        open(score_file+'_valid','w').write('\r\n'.join([str(i) for i in tmp2_1+tmp2]))
+        # train_ansList=pickle.load(open(train_features+'.train_label_np'))
+        # test_ansList=pickle.load(open(test_features+'.test_label_np'))
+        print train_np.shape
 
     cal_main(train_np,test_np,score_file,train_target=train_ansList,test_target=test_ansList)
     # cal_main(train_features,test_features,score_file)
