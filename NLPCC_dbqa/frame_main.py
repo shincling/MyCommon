@@ -143,7 +143,7 @@ def construct_test(input_path):
 def features_builder(split_idx,lines):
     def word2vec_cos(lines):
         dis_numpy=np.zeros([len(lines),1])
-        word_dict=pickle.load(open('nlpcc_dict_20160605'))
+        word_dict=pickle.load(open('nlpcc_dict_all'))
         for idx,line in enumerate(lines):
             each=line.split('\t')
             question=jieba._lcut(each[0])
@@ -172,7 +172,7 @@ def features_builder(split_idx,lines):
 
     def word2vec_dis(lines):
         dis_numpy=np.zeros([len(lines),1])
-        word_dict=pickle.load(open('nlpcc_dict_20160605'))
+        word_dict=pickle.load(open('nlpcc_dict_all'))
         for idx,line in enumerate(lines):
             each=line.split('\t')
             question=jieba._lcut(each[0])
@@ -246,7 +246,7 @@ def features_builder(split_idx,lines):
         return dis_numpy
     def word2vec_disall(lines):
         dis_numpy=np.zeros([len(lines),6])
-        word_dict=pickle.load(open('nlpcc_dict_20160605'))
+        word_dict=pickle.load(open('nlpcc_dict_all'))
         for idx,line in enumerate(lines):
             each=line.split('\t')
             question=jieba._lcut(each[0])
@@ -289,7 +289,7 @@ def features_builder(split_idx,lines):
 
     def word2vec_disall_2(lines):
         dis_numpy=np.zeros([len(lines),3])
-        word_dict=pickle.load(open('nlpcc_dict_20160605'))
+        word_dict=pickle.load(open('nlpcc_dict_all'))
         for idx,line in enumerate(lines):
             each=line.split('\t')
             question=jieba._lcut(each[0])
@@ -465,22 +465,28 @@ def features_builder_passage(split_idx,lines):
         def tf_idf_rela(keyword,line,passage=answers,rela_dict=rela_dict):
             '''这里留下了一个隐患，具体就是计算idf的时候，是否要把目标行去掉'''
             keyword=keyword.encode('utf8')
-            keywords=re.findall('[=#] (.*?{}.*?)\r\n'.format(keyword),rela_dict)
+            keywords=re.findall('[=#](.*? {} .*?)\r\n'.format(keyword),rela_dict)
             keywords=' '.join(keywords).split(' ')
-            try:
-                keywords.remove(keyword)
-                keywords.remove(' ')
-            except ValueError:
-                pass
+            # keywords.remove('')
+            keywords=[word for word in keywords if len(word.decode('utf8'))>1]
+            keywords=[word for word in keywords if word!=keyword]
+            # try:
+            #     keywords.remove(keyword)
+            #     keywords.remove(' ')
+            # except ValueError:
+            #     pass
 
-            passage=''.join([each for each in passage])
-            # passage=''.join([each for each in passage if each!=line])
+            # passage=''.join([each for each in passage])
+            passage=''.join([each for each in passage if each!=line])
             tf=0
-            for keyword in keywords:
-                tf+=len(re.findall(keyword,line))
-
-            df=len(re.findall(keyword,passage))
-            idf=1.0/(df+1)
+            aim_keyword=keyword
+            for word in keywords:
+                if word in line:
+                    aim_keyword=word
+                    tf=1
+                # tf+=len(re.findall(keyword,line))
+            df=len(re.findall(aim_keyword,passage))
+            idf=1.0/((df+1)**3)
             # print tf,idf
             return tf*idf
         slot_num=3
@@ -722,14 +728,14 @@ def features_builder_passage(split_idx,lines):
                         dis_list[j].append(aim)
 
 
-        dis_numpy=np.zeros([num_answers,slot_num+1]) if count_parser else np.zeros([num_answers,slot_num])
+        dis_numpy=np.zeros([num_answers,slot_num+1]) if count_parser else np.zeros([num_answers,2*slot_num])
         for idx,line in enumerate(answers):
             # dis_numpy[idx,-1]=dis_list[-1]
             for pos in range(len(dis_list)):
                 for i in dis_list[pos]:
                     dis_numpy[idx,pos]+=tf_idf(i[0],line)
-                    open('log.txt','a').write(i[0].encode('utf8')+'\n')
-                    # dis_numpy[idx,3+pos]+=tf_idf_rela(i[0],line)
+                    # open('log.txt','a').write(i[0].encode('utf8')+'\n')
+                    dis_numpy[idx,3+pos]+=tf_idf_rela(i[0],line)
             if count_parser:
                 if re.findall('什么时[候间]|多久|多长时间',question):
                     if re.findall('[年月日时分秒]',line):
@@ -855,7 +861,7 @@ if __name__=='__main__':
     # train_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.train'
     # test_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.test'
     score_file='results/result_0630_allmix_1'
-    construct=0
+    construct=10
 
     if construct:
         build_vocab=False
