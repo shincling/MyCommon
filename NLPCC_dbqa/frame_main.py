@@ -451,12 +451,12 @@ def features_builder_passage(split_idx,lines):
             if keyword=='地方' or  keyword=='地点':
                 # tf+=len(re.findall('[省市县国村镇乡区]',line))
                 if (re.findall('[省市县国村镇乡区]',line)):
-                    tf=1
+                    tf=0.8
             # if keyword=='名字' or '名' in keyword:
             #     postag=jieba.posseg.cut(line)
             #     postag=[i.flag for i in postag]
             #     if ('nr' in postag or 'ns' in postag or 'nt' in postag or 'nz' in postag):
-            #         tf=0.5
+            #         tf=0.2
             df=len(re.findall(keyword,passage))
             idf=1.0/((df+1)**3)
             # print tf,idf
