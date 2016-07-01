@@ -4,7 +4,7 @@ import numpy as np
 import pickle
 from tqdm import tqdm
 
-vocab_NLPCC=pickle.load(open('vocabSet_in_NLPCC'))
+vocab_NLPCC=pickle.load(open('vocabSet_in_NLPCC_0701'))
 # vocab_total=pickle.load(open('word2vec_wordlist_20160603'))
 vocab_total=pickle.load(open('word2vec_dict_20160603'))
 print 'vocab_nlpcc:{}'.format(len(vocab_NLPCC))
@@ -22,7 +22,7 @@ print 'cover_idx:',cover_idx,float(cover_idx)/len(vocab_NLPCC)
 
 print 'nlpcc_dict:',len(nlpcc_dict)
 
-pickle.dump(nlpcc_dict,open('nlpcc_dict_20160605','w'))
+pickle.dump(nlpcc_dict,open('nlpcc_dict_20160701','w'))
 # print nlpcc_dict
 '''
 vocab_nlpcc:232476

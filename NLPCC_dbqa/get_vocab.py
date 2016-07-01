@@ -5,6 +5,7 @@ import pickle
 import jieba
 
 input_path='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/nlpcc-iccpol-2016.dbqa.training-data'
+input_path='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/NLPCC2016QA-Update/evatestdata2-dbqa.testing-data-answers'
 f_input=open(input_path,'r').readlines()
 print 'total lines of input is {}'.format(len(f_input))
 sent_set=set()
@@ -27,5 +28,5 @@ for sent in sent_set:
     for word in words:
         vocab.add(word)
 print len(vocab)
-pickle.dump(vocab,open('vocabSet_in_NLPCC','w'))
+pickle.dump(vocab,open('vocabSet_in_NLPCC_0701','w'))
 
