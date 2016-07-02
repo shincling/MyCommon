@@ -140,6 +140,315 @@ def construct_test(input_path):
     print 'total num of questions is :{}\n'.format(len(new_question_indexList))
     return new_question_indexList,result_list,f_input
 
+def features_new(split_idx,lines):
+    def word2vec_cos(lines):
+        dis_numpy=np.zeros([len(lines),1])
+        word_dict=pickle.load(open('nlpcc_dict_all'))
+        for idx,line in enumerate(lines):
+            each=line.split('\t')
+            question=jieba._lcut(each[0])
+            question_vector=np.zeros(100)
+            for word in question:
+                try:
+                    one_vec=word_dict[word.encode('utf8')]
+                except  KeyError:
+                    one_vec=np.random.normal(size=(100))
+                question_vector+=one_vec
+
+            answer=jieba._lcut(each[1])
+            answer_vector=np.zeros(100)
+            for word in answer:
+                try:
+                    one_vec=word_dict[word.encode('utf8')]
+                except KeyError:
+                    one_vec=np.random.normal(size=(100))
+                answer_vector+=one_vec
+
+            dis=cos_dis(question_vector,answer_vector)
+            dis_numpy[idx,0]=dis
+        del word_dict
+        print dis_numpy.shape
+        return dis_numpy
+
+    def word2vec_dis(lines):
+        dis_numpy=np.zeros([len(lines),1])
+        word_dict=pickle.load(open('nlpcc_dict_all'))
+        for idx,line in enumerate(lines):
+            each=line.split('\t')
+            question=jieba._lcut(each[0])
+            question_vector=np.zeros(100)
+            for word in question:
+                try:
+                    one_vec=word_dict[word.encode('utf8')]
+                except  KeyError:
+                    one_vec=np.random.normal(size=(100))
+                question_vector+=one_vec
+
+            answer=jieba._lcut(each[1])
+            answer_vector=np.zeros(100)
+            for word in answer:
+                try:
+                    one_vec=word_dict[word.encode('utf8')]
+                except KeyError:
+                    one_vec=np.random.normal(size=(100))
+                answer_vector+=one_vec
+
+            # dis=cos_dis(question_vector,answer_vector)
+            dis = np.linalg.norm(question_vector-answer_vector)
+            dis_numpy[idx,0]=dis
+        del word_dict
+        print dis_numpy.shape
+        return dis_numpy
+
+    def word2vec_disall_300(lines):
+        dis_numpy=np.zeros([len(lines),7])
+        word_dict=open('NLPCC2016QA-Update/model/dbqa/dbqa.word2vec').readlines()[1:]
+        final_dict={}
+        for line in word_dict:
+            line=line.split(' ')
+            word=line[0]
+            vector=np.array(map(float,line[1:]))
+            final_dict[word]=vector
+        word_dict=final_dict
+        del final_dict
+
+        for idx,line in enumerate(lines):
+            each=line.split('\t')
+            question=jieba._lcut(each[0])
+            question_vector=np.zeros(300)
+            for word in question:
+                try:
+                    one_vec=word_dict[word.encode('utf8')]
+                except  KeyError:
+                    one_vec=np.random.normal(size=(300))
+                question_vector+=one_vec
+
+            answer=jieba._lcut(each[1])
+            answer_vector=np.zeros(300)
+            for word in answer:
+                try:
+                    one_vec=word_dict[word.encode('utf8')]
+                except KeyError:
+                    one_vec=np.random.normal(size=(300))
+                answer_vector+=one_vec
+
+            # question_vec_01,answer_vec_01=binary_twosent(question,answer)
+            dis_numpy[idx,0]=1-dist.correlation(question_vector,answer_vector)
+            dis_numpy[idx,1]=1-dist.jaccard(question_vector,answer_vector)
+            dis_numpy[idx,2]=1-dist.hamming(question_vector,answer_vector)
+            dis_numpy[idx,3]=1-dist.rogerstanimoto(question_vector,answer_vector)
+            dis_numpy[idx,4]=1-dist.cityblock(question_vector,answer_vector)
+            dis_numpy[idx,5]=1-dist.matching(question_vector,answer_vector)
+            dis_numpy[idx,6]=1-dist.cosine(question_vector,answer_vector)
+
+        del word_dict
+        print dis_numpy.shape
+        return dis_numpy
+    def word2vec_disall(lines):
+        dis_numpy=np.zeros([len(lines),6])
+        word_dict=pickle.load(open('nlpcc_dict_all'))
+        for idx,line in enumerate(lines):
+            each=line.split('\t')
+            question=jieba._lcut(each[0])
+            question_vector=np.zeros(100)
+            for word in question:
+                try:
+                    one_vec=word_dict[word.encode('utf8')]
+                except  KeyError:
+                    one_vec=np.random.normal(size=(100))
+                question_vector+=one_vec
+
+            answer=jieba._lcut(each[1])
+            answer_vector=np.zeros(100)
+            for word in answer:
+                try:
+                    one_vec=word_dict[word.encode('utf8')]
+                except KeyError:
+                    one_vec=np.random.normal(size=(100))
+                answer_vector+=one_vec
+
+            question_vec_01,answer_vec_01=binary_twosent(question,answer)
+
+            dis_numpy[idx,0]=1-dist.correlation(question_vector,answer_vector)
+            # dis_numpy[idx,1]=1-dist.correlation(question_vec_01,answer_vec_01)
+            dis_numpy[idx,1]=1-dist.jaccard(question_vec_01,answer_vec_01)
+            dis_numpy[idx,2]=1-dist.hamming(question_vec_01,answer_vec_01)
+            # dis_numpy[idx,3]=1-dist.correlation(question_vec_01,answer_vec_01)
+            # dis_numpy[idx,4]=1-dist.correlation(question_vector,answer_vector)
+            # dis_numpy[idx,5]=1-dist.jaccard(question_vec_01,answer_vec_01)
+            # dis_numpy[idx,6]=1-dist.hamming(question_vec_01,answer_vec_01)
+            # dis_numpy[idx,7]=1-dist.correlation(question_vec_01,answer_vec_01)
+            # dis_numpy[idx,4]=dis_numpy[idx,3]
+            dis_numpy[idx,3]=1-dist.rogerstanimoto(question_vec_01,answer_vec_01)
+            dis_numpy[idx,4]=1-dist.cityblock(question_vec_01,answer_vec_01)
+            dis_numpy[idx,5]=1-dist.matching(question_vec_01,answer_vec_01)
+
+        del word_dict
+        print dis_numpy.shape
+        return dis_numpy
+
+    def word2vec_disall_2(lines):
+        dis_numpy=np.zeros([len(lines),3])
+        word_dict=pickle.load(open('nlpcc_dict_all'))
+        for idx,line in enumerate(lines):
+            each=line.split('\t')
+            question=jieba._lcut(each[0])
+            question_vector=np.zeros(100)
+            for word in question:
+                try:
+                    one_vec=word_dict[word.encode('utf8')]
+                except  KeyError:
+                    one_vec=np.random.normal(size=(100))
+                question_vector+=one_vec
+
+            answer=jieba._lcut(each[1])
+            answer_vector=np.zeros(100)
+            for word in answer:
+                try:
+                    one_vec=word_dict[word.encode('utf8')]
+                except KeyError:
+                    one_vec=np.random.normal(size=(100))
+                answer_vector+=one_vec
+
+            question_vec_01,answer_vec_01=binary_twosent(question,answer)
+
+            # dis_numpy[idx,0]=1-dist.correlation(question_vector,answer_vector)
+            # dis_numpy[idx,1]=1-dist.jaccard(question_vec_01,answer_vec_01)
+            # dis_numpy[idx,2]=1-dist.hamming(question_vec_01,answer_vec_01)
+            # dis_numpy[idx,3]=1-dist.correlation(question_vec_01,answer_vec_01)
+            # dis_numpy[idx,4]=1-dist.correlation(question_vector,answer_vector)
+            # dis_numpy[idx,5]=1-dist.jaccard(question_vec_01,answer_vec_01)
+            # dis_numpy[idx,6]=1-dist.hamming(question_vec_01,answer_vec_01)
+            # dis_numpy[idx,7]=1-dist.correlation(question_vec_01,answer_vec_01)
+            # dis_numpy[idx,4]=dis_numpy[idx,3]
+            dis_numpy[idx,0]=1-dist.rogerstanimoto(question_vec_01,answer_vec_01)
+            dis_numpy[idx,1]=1-dist.cityblock(question_vec_01,answer_vec_01)
+            dis_numpy[idx,2]=1-dist.matching(question_vec_01,answer_vec_01)
+
+        del word_dict
+        print dis_numpy.shape
+        return dis_numpy
+    def word_overlap(lines):
+        dis_numpy=np.zeros([len(lines),1])
+        for idx,line in enumerate(lines):
+            each=line.split('\t')
+            question,answer=each[0],each[1]
+            question=jieba._lcut(question)
+            answer=jieba._lcut(answer)
+
+            result=0
+            for que in question:
+                for ans in answer:
+                    if ans==que:
+                        result+=1
+            dis_numpy[idx,0]=result
+        print dis_numpy.shape
+        return dis_numpy
+
+    def word_overlap_rela(lines):
+        dis_numpy=np.zeros([len(lines),1])
+        relawords_dict=open('relative_words.txt').read()
+        # for idx,line in tqdm(enumerate(lines)):
+        for idx,line in enumerate(lines):
+            # print '\n'
+            # print line.strip()
+            each=line.split('\t')
+            question,answer=each[0],each[1]
+            question=jieba._lcut(question)
+            answer=jieba._lcut(answer)
+
+            result=0
+            question_relalist=[]
+            relalist=relawords_dict.split('\n')
+            for que in question:
+                for one in relalist:
+                    wordslist=one.split(' ')[1:]
+                    if que.encode('utf8') in wordslist:
+                        question_relalist+=wordslist
+            # print ' '.join(question_relalist)
+
+            for ans in answer:
+                if ans.encode('utf8') in question_relalist:
+                    result+=1
+                    # print ans
+
+            dis_numpy[idx,0]=result
+        del relawords_dict
+        print dis_numpy.shape
+        pickle.dump(dis_numpy,open('rela_overlap.np.{}'.format(time.ctime()),'w'))
+        return dis_numpy
+
+    def topwords_similarity(lines):
+        dis_numpy=np.zeros([len(lines),4])
+        for idx,line in enumerate(lines):
+            each=line.split('\t')
+            question,answer=each[0],each[1]
+            question=jieba.analyse.extract_tags(question,5)
+            answer=jieba.analyse.extract_tags(answer,5)
+
+            result=0
+            for que in question:
+                for ans in answer:
+                    if ans==que:
+                        result+=1
+            dis_numpy[idx,0]=result
+
+            question_vec,answer_vec=binary_twosent(question,answer)
+            dis_numpy[idx,1]=1-dist.jaccard(question_vec,answer_vec)
+            dis_numpy[idx,2]=1-dist.hamming(question_vec,answer_vec)
+            dis_numpy[idx,3]=1-dist.cosine(question_vec,answer_vec)
+        print dis_numpy.shape
+        return dis_numpy
+
+    def max_common_ratio(lines):
+        dis_numpy=np.zeros([len(lines),1])
+        for idx,line in enumerate(lines):
+            each=line.split('\t')
+            question,answer=each[0],each[1]
+            dis_numpy[idx,0]=float(find_lcs_len(question,answer))/len(question)
+        print dis_numpy.shape
+        return dis_numpy
+
+    def parse_keywords(lines):
+        dis_numpy=np.zeros([len(lines),1])
+        for idx,line in enumerate(lines):
+            each=line.split('\t')
+            question,answer=each[0],each[1]
+            dis_numpy[idx,0]=find_lcs_len(question,answer)
+        print dis_numpy.shape
+        return dis_numpy
+
+    def word_diff(lines):
+        dis_numpy=np.zeros([len(lines),1])
+        for idx,line in enumerate(lines):
+            each=line.split('\t')
+            question,answer=each[0],each[1]
+            question=jieba._lcut(question)
+            answer=jieba._lcut(answer)
+
+            result=0
+            for ans in answer:
+                if ans not in question:
+                    result+=1
+            dis_numpy[idx,0]=1-float(result)/len(answer)
+        print dis_numpy.shape
+        return dis_numpy
+
+    lines=[fliter_line(line) for line in lines]
+    total_featurelist=[]
+    total_featurelist.append(word_diff(lines))
+    # total_featurelist.append(word_overlap(lines))
+    total_featurelist.append(max_common_ratio(lines))
+    # total_featurelist.append(word_overlap_rela(lines))
+    # total_featurelist.append(topwords_similarity(lines))
+    # total_featurelist.append(word2vec_cos(lines))
+    # total_featurelist.append(word2vec_dis(lines))
+    # total_featurelist.append(word2vec_disall(lines))
+    # total_featurelist.append(word2vec_disall_300(lines))
+    # total_featurelist.append(word2vec_disall_2(lines))
+
+    return total_featurelist
+
 def features_builder(split_idx,lines):
     def word2vec_cos(lines):
         dis_numpy=np.zeros([len(lines),1])
@@ -809,7 +1118,7 @@ def format_xgboost(total_features,out_path,target=None):
     open(out_path,'w').write(all_lines.strip())
     return final_feature
 
-def cal_main(train_file,test_file,score_file,train_target=None,test_target=None):
+def cal_main(train_file,test_file,score_file,train_target=None,test_target=None,index=''):
     if train_target:
         train_lable=np.zeros(len(train_target))
         train_lable[:]=map(int,train_target)
@@ -833,7 +1142,7 @@ def cal_main(train_file,test_file,score_file,train_target=None,test_target=None)
              'subsample':1,
              'silent':0,
              'objective':'binary:logistic',
-             'max_delta_step':50,
+             # 'max_delta_step':50,
              # 'objective':'reg:linear',
              'lambda':0.3,
              'alpha':0.2}
@@ -845,8 +1154,8 @@ def cal_main(train_file,test_file,score_file,train_target=None,test_target=None)
     # pickle.dump(train_score,open('score_train.np','w'))
     # pickle.dump(preds,open('score_test.np','w'))
     print bst.get_fscore()
-    open(score_file+'_valid','w').write('\r\n'.join([str(i) for i in preds]))
-    open(score_file+'_train','w').write('\r\n'.join([str(i) for i in train_score]))
+    open(score_file+'_valid'+index,'w').write('\r\n'.join([str(i) for i in preds]))
+    open(score_file+'_traid'+index,'w').write('\r\n'.join([str(i) for i in train_score]))
     # return preds
 
 if __name__=='__main__':
@@ -854,14 +1163,16 @@ if __name__=='__main__':
     test_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/valid3_1'
     # train_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/train_demo'
     # test_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/valid_demo'
-    train_features='results/train_ssss_27.txt'
-    test_features='results/test_ssss_27.txt'
+    train_features='results/train_ssss_71.txt'
+    test_features='results/test_ssss_71.txt'
+    # train_features='results/train_ssss_71.txt'
+    # test_features='results/test_ssss_71.txt'
     # train_features='results/cross/train_ssss_29.txt'
     # test_features='results/cross/test_ssss_29.txt'
     # train_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.train'
     # test_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.test'
     score_file='results/result_0630_allmix_1'
-    construct=10
+    construct=0
 
     if construct:
         build_vocab=False
@@ -878,14 +1189,16 @@ if __name__=='__main__':
         print ''.join(train_lines[0:3])
         print ''.join(test_lines[0:3])
 
-        total_featurelist_test=features_builder_passage(test_split_idx,test_lines)
+        # total_featurelist_test=features_builder_passage(test_split_idx,test_lines)
+        total_featurelist_test=features_new(test_split_idx,test_lines)
         # print 1/0
         # total_featurelist_test+=features_builder(test_split_idx,test_lines)
         test_np=format_xgboost(total_featurelist_test,out_path=test_features)
         pickle.dump(test_np,open(test_features+'.np','w'))
         print 'test feats finished'
 
-        total_featurelist_train=features_builder_passage(train_split_idx,train_lines)
+        # total_featurelist_train=features_builder_passage(train_split_idx,train_lines)
+        total_featurelist_train=features_new(train_split_idx,train_lines)
         # total_featurelist_train+=features_builder(train_split_idx,train_lines)
         train_np=format_xgboost(total_featurelist_train,out_path=train_features,target=train_ansList)
         pickle.dump(train_np,open(train_features+'.np','w'))
@@ -894,15 +1207,34 @@ if __name__=='__main__':
         if 1:
             tmp1=pickle.load(open('train_ssss.txt'+'.all_np'))
             train_np=pickle.load(open(train_features+'.np'))
+            tmp1_0=pickle.load(open('train_ssss_soso.txt'+'.np'))
             tmp1_1=pickle.load(open('rela_overlap.np.train'))
-            train_np=np.concatenate((tmp1_1,tmp1,train_np),axis=1)
+            train_np=np.concatenate((train_np,tmp1_0,tmp1_1,tmp1),axis=1)
             train_ansList=pickle.load(open(train_features+'.train_label_np'))
             tmp2=pickle.load(open('test_ssss.txt'+'.all_np'))
             test_np=pickle.load(open(test_features+'.np'))
+            tmp2_0=pickle.load(open('test_ssss_soso.txt'+'.np'))
             tmp2_1=pickle.load(open('rela_overlap.np.test'))
-            test_np=np.concatenate((tmp2_1,tmp2,test_np),axis=1)
+            test_np=np.concatenate((test_np,tmp2_0,tmp2_1,tmp2),axis=1)
             test_ansList=pickle.load(open(test_features+'.test_label_np'))
             print train_np.shape
+            # train_np[:,[0,1,2]]+=train_np[:,[3,4,5]]
+            # train_np=np.delete(train_np,[3,4,5],axis=1)
+            # test_np[:,[0,1,2]]+=test_np[:,[3,4,5]]
+            # test_np=np.delete(test_np,[3,4,5],axis=1)
+            # train_np_tmp=np.delete(train_np,[3,4,5,10],axis=1)
+            # test_np_tmp=np.delete(test_np,[3,4,5,10],axis=1)
+            # print train_np_tmp.shape
+            # cal_main(train_np_tmp,test_np_tmp,score_file,train_target=train_ansList,test_target=test_ansList,index='_'+str(34510))
+            '''
+            for i in range(3,test_np.shape[1]+1):
+                print '\n\n'
+                print 'The index to:',i
+                train_np_tmp=np.delete(train_np,i,axis=1)
+                test_np_tmp=np.delete(test_np,i,axis=1)
+                print train_np_tmp.shape
+                cal_main(train_np_tmp,test_np_tmp,score_file,train_target=train_ansList,test_target=test_ansList,index='_'+str(i))
+            '''
 
     if 0:
         tmp1=pickle.load(open('rule_train.np')).reshape([-1,1])
