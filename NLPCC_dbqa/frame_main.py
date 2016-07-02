@@ -1174,6 +1174,7 @@ def features_passage_new(split_idx,lines):
             dis_list.append([])
 
         count_parser=0
+        special_rule=1
 
         if '什么' in question:
             aim_idx=[length,length]
@@ -1391,7 +1392,7 @@ def features_passage_new(split_idx,lines):
             pass
         else:
             '''最后这种情况应该就是最后直接带一个问号的'''
-            print question
+            # print question
             aim_idx=[length,length]
             pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
             for aim in pos_aim:
@@ -1422,6 +1423,15 @@ def features_passage_new(split_idx,lines):
                     # if re.findall('n[rstz]',postag):
                     if ('nr' in postag or 'ns' in postag or 'nt' in postag or 'nz' in postag):
                         dis_numpy[idx,-1]=1
+            if special_rule:
+                if re.findall('第[0-9一二三四五六七八九十零]+?章是什么',question):
+                    print question
+                    number=re.findall('第([0-9一二三四五六七八九十零]+?)章是什么',question)[0]
+                    if re.findall('[^0-9一二三四五六七八九十零]'+number+'章',line) :
+                        print line
+                        dis_numpy[idx,0]+=1
+
+
             # for i in dis_1:
             #     dis_numpy[idx,0]+=tf_idf(i[0],line)
             # for i in dis_2:
