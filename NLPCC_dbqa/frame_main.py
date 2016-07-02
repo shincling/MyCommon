@@ -40,7 +40,7 @@ def fliter_title(question,answer):
                 break
         except IndexError:
             pass
-
+    result='' if len(result)<2 else result
     return question.replace(result,'').encode('utf8')
 
 def find_lcs_len(s1, s2):
@@ -1200,10 +1200,10 @@ def features_passage_new(split_idx,lines):
                     break
             if ques_pos[aim_idx[0]-1][0]=='是'.decode('utf8'):
                 aim_idx[0]=aim_idx[0]-1
-            if ques_pos[aim_idx[0]-1][0]=='由'.decode('utf8'):
-                aim_idx[0]=aim_idx[0]-1
-            if ques_pos[aim_idx[0]-1][0]=='在'.decode('utf8'):
-                aim_idx[0]=aim_idx[0]-1
+            # if ques_pos[aim_idx[0]-1][0]=='由'.decode('utf8'):
+            #     aim_idx[0]=aim_idx[0]-1
+            # if ques_pos[aim_idx[0]-1][0]=='在'.decode('utf8'):
+            #     aim_idx[0]=aim_idx[0]-1
 
             pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
 
@@ -1221,8 +1221,8 @@ def features_passage_new(split_idx,lines):
                     break
             if ques_pos[aim_idx[0]-1][0]=='是'.decode('utf8'):
                 aim_idx[0]=aim_idx[0]-1
-            if ques_pos[aim_idx[0]-1][0]=='在'.decode('utf8'):
-                aim_idx[0]=aim_idx[0]-1
+            # if ques_pos[aim_idx[0]-1][0]=='在'.decode('utf8'):
+            #     aim_idx[0]=aim_idx[0]-1
 
             pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
 
@@ -1240,8 +1240,8 @@ def features_passage_new(split_idx,lines):
                     break
             if ques_pos[aim_idx[0]-1][0]=='是'.decode('utf8'):
                 aim_idx[0]=aim_idx[0]-1
-            if ques_pos[aim_idx[0]-1][0]=='有'.decode('utf8'):
-                aim_idx[0]=aim_idx[0]-1
+            # if ques_pos[aim_idx[0]-1][0]=='有'.decode('utf8'):
+            #     aim_idx[0]=aim_idx[0]-1
 
             pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
 
@@ -1425,10 +1425,10 @@ def features_passage_new(split_idx,lines):
                         dis_numpy[idx,-1]=1
             if special_rule:
                 if re.findall('第[0-9一二三四五六七八九十零]+?章是什么',question):
-                    print question
+                    # print question
                     number=re.findall('第([0-9一二三四五六七八九十零]+?)章是什么',question)[0]
                     if re.findall('[^0-9一二三四五六七八九十零]'+number+'章',line) :
-                        print line
+                        # print line
                         dis_numpy[idx,0]+=1
 
 
@@ -1546,7 +1546,7 @@ if __name__=='__main__':
     # train_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.train'
     # test_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.test'
     score_file='results/result_0630_allmix_1'
-    construct=10
+    construct=0
 
     if construct:
         build_vocab=False
