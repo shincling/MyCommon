@@ -1,4 +1,5 @@
 #coding=utf8
+from __future__ import division
 import sys
 import time
 import re
@@ -11,6 +12,7 @@ from numpy import *
 import xgboost as xgb
 import scipy.spatial.distance as dist
 from tqdm import tqdm
+
 
 def postag(sent):
     result=[]
@@ -26,6 +28,20 @@ def fliter_line(lines):
     lines=lines.replace('你知道','')
     lines=lines.replace('谁知道','')
     return lines
+
+def fliter_title(question,answer):
+    question,answer=question.decode('utf8'),answer.decode('utf8')
+    result=''
+    for idx in range(len(answer)):
+        try:
+            if answer[:(idx+1)] in question:
+                result=answer[:(idx+1)]
+            else:
+                break
+        except IndexError:
+            pass
+
+    return question.replace(result,'').encode('utf8')
 
 def find_lcs_len(s1, s2):
     s1=s1.decode('utf8')
@@ -328,7 +344,7 @@ def features_new(split_idx,lines):
         del word_dict
         print dis_numpy.shape
         return dis_numpy
-    def word_overlap(lines):
+    def word_overlap_ratio(lines):
         dis_numpy=np.zeros([len(lines),1])
         for idx,line in enumerate(lines):
             each=line.split('\t')
@@ -341,7 +357,7 @@ def features_new(split_idx,lines):
                 for ans in answer:
                     if ans==que:
                         result+=1
-            dis_numpy[idx,0]=result
+            dis_numpy[idx,0]=float(result)/len(question)
         print dis_numpy.shape
         return dis_numpy
 
@@ -437,7 +453,7 @@ def features_new(split_idx,lines):
     lines=[fliter_line(line) for line in lines]
     total_featurelist=[]
     total_featurelist.append(word_diff(lines))
-    # total_featurelist.append(word_overlap(lines))
+    total_featurelist.append(word_overlap_ratio(lines))
     total_featurelist.append(max_common_ratio(lines))
     # total_featurelist.append(word_overlap_rela(lines))
     # total_featurelist.append(topwords_similarity(lines))
@@ -1091,6 +1107,354 @@ def features_builder_passage(split_idx,lines):
     print 'final_dis_numpy:\n',final_dis_numpy.shape
     return [final_dis_numpy]
 
+def features_passage_new(split_idx,lines):
+    def ques_parser(question,ques_pos,answers,rela_dict):
+        '''answers是list'''
+        '''answers是list'''
+        def tf_idf(keyword,line,passage=answers):
+            '''这里留下了一个隐患，具体就是计算idf的时候，是否要把目标行去掉'''
+            keyword=keyword.encode('utf8')
+            # passage=''.join([each for each in passage])
+            passage=''.join([each for each in passage if each!=line])
+            # tf=len(re.findall(keyword,line))
+            tf=1 if (re.findall(keyword,line)) else 0
+            if keyword=='时间' or  keyword=='时候':
+                # tf+=len(re.findall('[年月日时分秒]',line))
+                if re.findall('[年月日时分秒]',line):
+                    tf=0.5
+
+            if keyword=='地方' or  keyword=='地点':
+                # tf+=len(re.findall('[省市县国村镇乡区]',line))
+                if (re.findall('[省市县国村镇乡区]',line)):
+                    tf=0.8
+            # if keyword=='名字' or '名' in keyword:
+            #     postag=jieba.posseg.cut(line)
+            #     postag=[i.flag for i in postag]
+            #     if ('nr' in postag or 'ns' in postag or 'nt' in postag or 'nz' in postag):
+            #         tf=0.2
+            df=len(re.findall(keyword,passage))
+            idf=1.0/((df+1)**3)
+            # print tf,idf
+            return tf*idf
+
+        def tf_idf_rela(keyword,line,passage=answers,rela_dict=rela_dict):
+            '''这里留下了一个隐患，具体就是计算idf的时候，是否要把目标行去掉'''
+            keyword=keyword.encode('utf8')
+            keywords=re.findall('[=#](.*? {} .*?)\r\n'.format(keyword),rela_dict)
+            keywords=' '.join(keywords).split(' ')
+            # keywords.remove('')
+            keywords=[word for word in keywords if len(word.decode('utf8'))>1]
+            keywords=[word for word in keywords if word!=keyword]
+            # try:
+            #     keywords.remove(keyword)
+            #     keywords.remove(' ')
+            # except ValueError:
+            #     pass
+
+            # passage=''.join([each for each in passage])
+            passage=''.join([each for each in passage if each!=line])
+            tf=0
+            aim_keyword=keyword
+            for word in keywords:
+                if word in line:
+                    aim_keyword=word
+                    tf=1
+                # tf+=len(re.findall(keyword,line))
+            df=len(re.findall(aim_keyword,passage))
+            idf=1.0/((df+1)**3)
+            # print tf,idf
+            return tf*idf
+
+        slot_num=3
+        dis_list=[]
+        num_answers=len(answers)
+        length=len(question.decode('utf8'))
+        # dis_1,dis_2,dis_3=[],[],[]
+        for i in range(slot_num):
+            dis_list.append([])
+
+        count_parser=0
+
+        if '什么' in question:
+            aim_idx=[length,length]
+            for idx,word in enumerate(ques_pos):
+                if '什么'.decode('utf8') in word[0]:
+                    aim_idx=[idx,idx]
+                    break
+            if ques_pos[aim_idx[0]-1][0]=='是'.decode('utf8'):
+                aim_idx[0]=aim_idx[0]-1
+
+            pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
+            for aim in pos_aim:
+                for j in range(len(dis_list)):
+                    if aim[2]-aim_idx[0]==j+1 or aim[2]-aim_idx[0]==-(j+1):
+                        dis_list[j].append(aim)
+
+            pass
+        elif '谁' in question:
+            aim_idx=[length,length]
+            for idx,word in enumerate(ques_pos):
+                if '谁'.decode('utf8') in word[0]:
+                    aim_idx=[idx,idx]
+                    break
+            if ques_pos[aim_idx[0]-1][0]=='是'.decode('utf8'):
+                aim_idx[0]=aim_idx[0]-1
+            if ques_pos[aim_idx[0]-1][0]=='由'.decode('utf8'):
+                aim_idx[0]=aim_idx[0]-1
+            if ques_pos[aim_idx[0]-1][0]=='在'.decode('utf8'):
+                aim_idx[0]=aim_idx[0]-1
+
+            pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
+
+            for aim in pos_aim:
+                for j in range(len(dis_list)):
+                    if aim[2]-aim_idx[0]==j+1 or aim[2]-aim_idx[0]==-(j+1):
+                        dis_list[j].append(aim)
+
+            pass
+        elif '哪' in question:
+            aim_idx=[length,length]
+            for idx,word in enumerate(ques_pos):
+                if '哪'.decode('utf8') in word[0]:
+                    aim_idx=[idx,idx]
+                    break
+            if ques_pos[aim_idx[0]-1][0]=='是'.decode('utf8'):
+                aim_idx[0]=aim_idx[0]-1
+            if ques_pos[aim_idx[0]-1][0]=='在'.decode('utf8'):
+                aim_idx[0]=aim_idx[0]-1
+
+            pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
+
+            for aim in pos_aim:
+                for j in range(len(dis_list)):
+                    if aim[2]-aim_idx[0]==j+1 or aim[2]-aim_idx[0]==-(j+1):
+                        dis_list[j].append(aim)
+
+            pass
+        elif '几' in question:
+            aim_idx=[length,length]
+            for idx,word in enumerate(ques_pos):
+                if '几'.decode('utf8') in word[0]:
+                    aim_idx=[idx,idx]
+                    break
+            if ques_pos[aim_idx[0]-1][0]=='是'.decode('utf8'):
+                aim_idx[0]=aim_idx[0]-1
+            if ques_pos[aim_idx[0]-1][0]=='有'.decode('utf8'):
+                aim_idx[0]=aim_idx[0]-1
+
+            pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
+
+            for aim in pos_aim:
+                for j in range(len(dis_list)):
+                    if aim[2]-aim_idx[0]==j+1 or aim[2]-aim_idx[0]==-(j+1):
+                        dis_list[j].append(aim)
+
+            pass
+        elif '多少' in question:
+            aim_idx=[length,length]
+            for idx,word in enumerate(ques_pos):
+                if '多少'.decode('utf8') in word[0]:
+                    aim_idx=[idx,idx]
+                    break
+            if ques_pos[aim_idx[0]-1][0]=='是'.decode('utf8'):
+                aim_idx[0]=aim_idx[0]-1
+
+            pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
+
+            for aim in pos_aim:
+                for j in range(len(dis_list)):
+                    if aim[2]-aim_idx[0]==j+1 or aim[2]-aim_idx[0]==-(j+1):
+                        dis_list[j].append(aim)
+
+            pass
+        # elif '哪' in question:
+        #     aim_idx=[length,length]
+        #     for idx,word in enumerate(ques_pos):
+        #         if '哪'.decode('utf8') in word[0]:
+        #             aim_idx=[idx,idx]
+        #             break
+        #     if ques_pos[aim_idx[0]-1][0]=='是'.decode('utf8'):
+        #         aim_idx[0]=aim_idx[0]-1
+        #
+        #     pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
+        #
+        #     for aim in pos_aim:
+        #         for j in range(len(dis_list)):
+        #             if aim[2]-aim_idx[0]==j+1 or aim[2]-aim_idx[0]==-(j+1):
+        #                 dis_list[j].append(aim)
+        #
+        #     pass
+        elif '怎么' in question:
+            aim_idx=[length,length]
+            for idx,word in enumerate(ques_pos):
+                if '怎么'.decode('utf8') in word[0]:
+                    aim_idx=[idx,idx]
+                    break
+            if ques_pos[aim_idx[0]-1][0]=='是'.decode('utf8'):
+                aim_idx[0]=aim_idx[0]-1
+
+            pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
+
+            for aim in pos_aim:
+                for j in range(len(dis_list)):
+                    if aim[2]-aim_idx[0]==j+1 or aim[2]-aim_idx[0]==-(j+1):
+                        dis_list[j].append(aim)
+
+            pass
+        elif re.findall('多[重厚快深宽薄大高远长久]',question):
+            aim_idx=[length,length]
+            for idx,word in enumerate(ques_pos):
+                if '多'.decode('utf8') in word[0]:
+                    aim_idx=[idx,idx]
+                    break
+            if ques_pos[aim_idx[0]-1][0]=='是'.decode('utf8'):
+                aim_idx[0]=aim_idx[0]-1
+
+            pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
+
+            for aim in pos_aim:
+                for j in range(len(dis_list)):
+                    if aim[2]-aim_idx[0]==j+1 or aim[2]-aim_idx[0]==-(j+1):
+                        dis_list[j].append(aim)
+
+            pass
+        elif '如何' in question:
+            aim_idx=[length,length]
+            for idx,word in enumerate(ques_pos):
+                if '如何'.decode('utf8') in word[0]:
+                    aim_idx=[idx,idx]
+                    break
+            if ques_pos[aim_idx[0]-1][0]=='是'.decode('utf8'):
+                aim_idx[0]=aim_idx[0]-1
+
+            pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
+
+            for aim in pos_aim:
+                for j in range(len(dis_list)):
+                    if aim[2]-aim_idx[0]==j+1 or aim[2]-aim_idx[0]==-(j+1):
+                        dis_list[j].append(aim)
+
+            pass
+        elif '啥' in question:
+            aim_idx=[length,length]
+            for idx,word in enumerate(ques_pos):
+                if '啥'.decode('utf8') in word[0]:
+                    aim_idx=[idx,idx]
+                    break
+            if ques_pos[aim_idx[0]-1][0]=='是'.decode('utf8'):
+                aim_idx[0]=aim_idx[0]-1
+
+            pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
+
+            for aim in pos_aim:
+                for j in range(len(dis_list)):
+                    if aim[2]-aim_idx[0]==j+1 or aim[2]-aim_idx[0]==-(j+1):
+                        dis_list[j].append(aim)
+
+            pass
+        elif '怎样' in question:
+            aim_idx=[length,length]
+            for idx,word in enumerate(ques_pos):
+                if '怎样'.decode('utf8') in word[0]:
+                    aim_idx=[idx,idx]
+                    break
+            if ques_pos[aim_idx[0]-1][0]=='是'.decode('utf8'):
+                aim_idx[0]=aim_idx[0]-1
+
+            pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
+
+            for aim in pos_aim:
+                for j in range(len(dis_list)):
+                    if aim[2]-aim_idx[0]==j+1 or aim[2]-aim_idx[0]==-(j+1):
+                        dis_list[j].append(aim)
+
+            pass
+        elif '时间？' in question:
+            aim_idx=[length,length]
+            for idx,word in enumerate(ques_pos):
+                if '时间？'.decode('utf8') in word[0]:
+                    aim_idx=[idx,idx]
+                    break
+            try:
+                if ques_pos[aim_idx[0]-1][0]=='是'.decode('utf8'):
+                    aim_idx[0]=aim_idx[0]-1
+            except IndexError:
+                pass
+
+            pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
+
+            for aim in pos_aim:
+                for j in range(len(dis_list)):
+                    if aim[2]-aim_idx[0]==j+1 or aim[2]-aim_idx[0]==-(j+1):
+                        dis_list[j].append(aim)
+
+            pass
+        else:
+            '''最后这种情况应该就是最后直接带一个问号的'''
+            print question
+            aim_idx=[length,length]
+            pos_aim=[(i[0],i[1],idx) for idx,i in enumerate(ques_pos) if ('n' in i[1] or 'v' in i[1])]
+            for aim in pos_aim:
+                for j in range(len(dis_list)):
+                    if aim[2]-aim_idx[0]==j+1 or aim[2]-aim_idx[0]==-(j+1):
+                        dis_list[j].append(aim)
+
+
+        dis_numpy=np.zeros([num_answers,slot_num+1]) if count_parser else np.zeros([num_answers,slot_num])
+        for idx,line in enumerate(answers):
+            # dis_numpy[idx,-1]=dis_list[-1]
+            for pos in range(len(dis_list)):
+                for i in dis_list[pos]:
+                    dis_numpy[idx,pos]+=tf_idf(i[0],line)
+                # dis_numpy[idx,pos]=dis_numpy[idx,pos]/(len(dis_list[pos])) if len(dis_list[pos]) else dis_numpy[idx,pos]
+                    # open('log.txt','a').write(i[0].encode('utf8')+'\n')
+                    # dis_numpy[idx,3+pos]+=tf_idf_rela(i[0],line)
+            if count_parser:
+                if re.findall('什么时[候间]|多久|多长时间',question):
+                    if re.findall('[年月日时分秒]',line):
+                        dis_numpy[idx,-1]=1
+                elif re.findall('几|多少',question):
+                    if re.findall('[0-9]一二三四五六七八九十零]',line):
+                        dis_numpy[idx,-1]=1
+                elif re.findall('谁|叫什么',question):
+                    postag=jieba.posseg.cut(line)
+                    postag=[i.flag for i in postag]
+                    # if re.findall('n[rstz]',postag):
+                    if ('nr' in postag or 'ns' in postag or 'nt' in postag or 'nz' in postag):
+                        dis_numpy[idx,-1]=1
+            # for i in dis_1:
+            #     dis_numpy[idx,0]+=tf_idf(i[0],line)
+            # for i in dis_2:
+            #     dis_numpy[idx,1]+=tf_idf(i[0],line)
+            # for i in dis_3:
+            #     dis_numpy[idx,2]+=tf_idf(i[0],line)
+        return dis_numpy
+
+    split_idx.append(len(lines))
+    que_list=[]
+    ans_list=[]
+    for i in range(len(split_idx)):
+        try:
+            question=lines[split_idx[i]].split('\t')[0]
+            one_answer_list=[line.split('\t')[1]  for line in lines[split_idx[i]:split_idx[i+1]]]
+            que_list.append(question)
+            ans_list.append(one_answer_list)
+        except IndexError:
+            pass
+
+    assert len(que_list)==len(ans_list)
+    dis_numpy_list=[]
+    rela_dict=open('relative_words.txt').read()
+    for question,ansers in tqdm(zip(que_list,ans_list)):
+        question=fliter_line(question)
+        question=fliter_title(question,ansers[0])
+        ques_pos=postag(question)
+        dis_numpy_list.append(ques_parser(question,ques_pos,ansers,rela_dict))
+
+    final_dis_numpy=np.concatenate(dis_numpy_list,axis=0)
+    # pickle.dump(final_dis_numpy[:,-1],open('rela.np','w'))
+    print 'final_dis_numpy:\n',final_dis_numpy.shape
+    return [final_dis_numpy]
 
 def format_xgboost(total_features,out_path,target=None):
     final_feature=np.concatenate(total_features,axis=1)
@@ -1142,7 +1506,7 @@ def cal_main(train_file,test_file,score_file,train_target=None,test_target=None,
              'subsample':1,
              'silent':0,
              'objective':'binary:logistic',
-             # 'max_delta_step':50,
+             'max_delta_step':50,
              # 'objective':'reg:linear',
              'lambda':0.3,
              'alpha':0.2}
@@ -1172,7 +1536,7 @@ if __name__=='__main__':
     # train_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.train'
     # test_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.test'
     score_file='results/result_0630_allmix_1'
-    construct=0
+    construct=10
 
     if construct:
         build_vocab=False
@@ -1190,7 +1554,8 @@ if __name__=='__main__':
         print ''.join(test_lines[0:3])
 
         # total_featurelist_test=features_builder_passage(test_split_idx,test_lines)
-        total_featurelist_test=features_new(test_split_idx,test_lines)
+        # total_featurelist_test=features_new(test_split_idx,test_lines)
+        total_featurelist_test=features_passage_new(test_split_idx,test_lines)
         # print 1/0
         # total_featurelist_test+=features_builder(test_split_idx,test_lines)
         test_np=format_xgboost(total_featurelist_test,out_path=test_features)
@@ -1198,7 +1563,8 @@ if __name__=='__main__':
         print 'test feats finished'
 
         # total_featurelist_train=features_builder_passage(train_split_idx,train_lines)
-        total_featurelist_train=features_new(train_split_idx,train_lines)
+        # total_featurelist_train=features_new(train_split_idx,train_lines)
+        total_featurelist_train=features_passage_new(train_split_idx,train_lines)
         # total_featurelist_train+=features_builder(train_split_idx,train_lines)
         train_np=format_xgboost(total_featurelist_train,out_path=train_features,target=train_ansList)
         pickle.dump(train_np,open(train_features+'.np','w'))
@@ -1209,13 +1575,13 @@ if __name__=='__main__':
             train_np=pickle.load(open(train_features+'.np'))
             tmp1_0=pickle.load(open('train_ssss_soso.txt'+'.np'))
             tmp1_1=pickle.load(open('rela_overlap.np.train'))
-            train_np=np.concatenate((train_np,tmp1_0,tmp1_1,tmp1),axis=1)
+            train_np=np.concatenate((train_np,tmp1_1,tmp1),axis=1)
             train_ansList=pickle.load(open(train_features+'.train_label_np'))
             tmp2=pickle.load(open('test_ssss.txt'+'.all_np'))
             test_np=pickle.load(open(test_features+'.np'))
             tmp2_0=pickle.load(open('test_ssss_soso.txt'+'.np'))
             tmp2_1=pickle.load(open('rela_overlap.np.test'))
-            test_np=np.concatenate((test_np,tmp2_0,tmp2_1,tmp2),axis=1)
+            test_np=np.concatenate((test_np,tmp2_1,tmp2),axis=1)
             test_ansList=pickle.load(open(test_features+'.test_label_np'))
             print train_np.shape
             # train_np[:,[0,1,2]]+=train_np[:,[3,4,5]]
