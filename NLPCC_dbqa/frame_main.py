@@ -29,7 +29,11 @@ def fliter_line(lines):
     lines=lines.replace('谁知道','')
     return lines
 
-def fliter_title(question,answer):
+def fliter_title(question,ans_list):
+    answer=ans_list[0]
+    if '《' in answer:
+        answer=answer.replace('《','')
+        answer=answer.replace('》','')
     question,answer=question.decode('utf8'),answer.decode('utf8')
     result=''
     for idx in range(len(answer)):
@@ -40,6 +44,10 @@ def fliter_title(question,answer):
                 break
         except IndexError:
             pass
+
+    if result=='':
+        pass
+
     result='' if len(result)<2 else result
     return question.replace(result,'').encode('utf8')
 
@@ -1457,7 +1465,7 @@ def features_passage_new(split_idx,lines):
     rela_dict=open('relative_words.txt').read()
     for question,ansers in tqdm(zip(que_list,ans_list)):
         question=fliter_line(question)
-        question=fliter_title(question,ansers[0])
+        question=fliter_title(question,ansers)
         ques_pos=postag(question)
         dis_numpy_list.append(ques_parser(question,ques_pos,ansers,rela_dict))
 
