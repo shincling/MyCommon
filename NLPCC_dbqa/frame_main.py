@@ -21,6 +21,17 @@ def postag(sent):
         result.append((w.word,w.flag))
     return result
 
+def fliter_ans(line):
+    if line.find(':')<20 or ' ' in line[:15]:
+        if re.findall('.*? .*?:',line):
+            # print line
+            line=line.replace(' ','')
+            # print line
+        if len(re.findall('[a-zA-Z]',line))<40:
+            line=line.replace(' ','')
+    return line
+
+
 def fliter_line(lines):
     lines=lines.replace('请问','')
     lines=lines.replace('我想知道','')
@@ -1116,7 +1127,7 @@ def features_builder_passage(split_idx,lines):
     return [final_dis_numpy]
 
 def features_passage_new(split_idx,lines):
-    def ques_parser(question,ques_pos,answers,rela_dict):
+    def ques_parser(question,ques_pos,answers,rela_dict,stop_dict):
         '''answers是list'''
         '''answers是list'''
         def tf_idf(keyword,line,passage=answers):
@@ -1145,14 +1156,17 @@ def features_passage_new(split_idx,lines):
             # print tf,idf
             return tf*idf
 
-        def tf_idf_rela(keyword,line,passage=answers,rela_dict=rela_dict):
+        def tf_idf_rela(keyword,line,passage=answers,rela_dict=rela_dict,stopdict=stop_dict):
             '''这里留下了一个隐患，具体就是计算idf的时候，是否要把目标行去掉'''
             keyword=keyword.encode('utf8')
+            # print keyword
             keywords=re.findall('[=#](.*? {} .*?)\r\n'.format(keyword),rela_dict)
             keywords=' '.join(keywords).split(' ')
             # keywords.remove('')
-            keywords=[word for word in keywords if len(word.decode('utf8'))>1]
-            keywords=[word for word in keywords if word!=keyword]
+            keywords=[word for word in keywords if len(word.decode('utf8'))>0 and word not in stop_dict]
+            # keywords=[word for word in keywords if word!=keyword]
+            keywords=list(set(keywords))
+            # print ' '.join(keywords)
             # try:
             #     keywords.remove(keyword)
             #     keywords.remove(' ')
@@ -1166,11 +1180,12 @@ def features_passage_new(split_idx,lines):
             for word in keywords:
                 if word in line:
                     aim_keyword=word
-                    tf=1
+                    # print 'success:',line
+                    tf=1 if aim_keyword==keyword else 0.5
+                    break
                 # tf+=len(re.findall(keyword,line))
             df=len(re.findall(aim_keyword,passage))
-            idf=1.0/((df+1)**3)
-            # print tf,idf
+            idf=1.0/((df+1)**1.5)
             return tf*idf
 
         slot_num=3
@@ -1183,6 +1198,7 @@ def features_passage_new(split_idx,lines):
 
         count_parser=0
         special_rule=1
+        len_ratio=0
 
         if '什么' in question:
             aim_idx=[length,length]
@@ -1409,15 +1425,21 @@ def features_passage_new(split_idx,lines):
                         dis_list[j].append(aim)
 
 
-        dis_numpy=np.zeros([num_answers,slot_num+1]) if count_parser else np.zeros([num_answers,slot_num])
+        dis_numpy=np.zeros([num_answers,slot_num+1]) if count_parser else np.zeros([num_answers,2*slot_num])
+        # dis_numpy=np.zeros([num_answers,slot_num+1]) if len_ratio else np.zeros([num_answers,slot_num])
+        max_len=max([len(line) for line in answers])
         for idx,line in enumerate(answers):
+            line=fliter_ans(line)
             # dis_numpy[idx,-1]=dis_list[-1]
             for pos in range(len(dis_list)):
                 for i in dis_list[pos]:
                     dis_numpy[idx,pos]+=tf_idf(i[0],line)
                 # dis_numpy[idx,pos]=dis_numpy[idx,pos]/(len(dis_list[pos])) if len(dis_list[pos]) else dis_numpy[idx,pos]
                     # open('log.txt','a').write(i[0].encode('utf8')+'\n')
-                    # dis_numpy[idx,3+pos]+=tf_idf_rela(i[0],line)
+                    dis_numpy[idx,3+pos]+=tf_idf_rela(i[0],line)
+            if len_ratio:
+                dis_numpy[idx,-1]=len(line)/float(max_len)
+
             if count_parser:
                 if re.findall('什么时[候间]|多久|多长时间',question):
                     if re.findall('[年月日时分秒]',line):
@@ -1463,11 +1485,13 @@ def features_passage_new(split_idx,lines):
     assert len(que_list)==len(ans_list)
     dis_numpy_list=[]
     rela_dict=open('relative_words.txt').read()
+    stop_dict=open('stopDict.dic').readlines()
+    stop_dict=[word.strip() for word in stop_dict]
     for question,ansers in tqdm(zip(que_list,ans_list)):
         question=fliter_line(question)
         question=fliter_title(question,ansers)
         ques_pos=postag(question)
-        dis_numpy_list.append(ques_parser(question,ques_pos,ansers,rela_dict))
+        dis_numpy_list.append(ques_parser(question,ques_pos,ansers,rela_dict,stop_dict))
 
     final_dis_numpy=np.concatenate(dis_numpy_list,axis=0)
     # pickle.dump(final_dis_numpy[:,-1],open('rela.np','w'))
@@ -1602,12 +1626,12 @@ if __name__=='__main__':
             test_np=np.concatenate((test_np,tmp2_1,tmp2),axis=1)
             test_ansList=pickle.load(open(test_features+'.test_label_np'))
             print train_np.shape
-            # train_np[:,[0,1,2]]+=train_np[:,[3,4,5]]
+            # train_np[:,[0,1,2]]+=5*train_np[:,[3,4,5]]
             # train_np=np.delete(train_np,[3,4,5],axis=1)
-            # test_np[:,[0,1,2]]+=test_np[:,[3,4,5]]
+            # test_np[:,[0,1,2]]+=5*test_np[:,[3,4,5]]
             # test_np=np.delete(test_np,[3,4,5],axis=1)
-            # train_np_tmp=np.delete(train_np,[3,4,5,10],axis=1)
-            # test_np_tmp=np.delete(test_np,[3,4,5,10],axis=1)
+            # train_np=np.delete(train_np,[3,4,5],axis=1)
+            # test_np=np.delete(test_np,[10],axis=1)
             # print train_np_tmp.shape
             # cal_main(train_np_tmp,test_np_tmp,score_file,train_target=train_ansList,test_target=test_ansList,index='_'+str(34510))
             '''
