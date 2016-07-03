@@ -1544,7 +1544,7 @@ def cal_main(train_file,test_file,score_file,train_target=None,test_target=None,
     param = {'booster':'gbtree',
              'max_depth':7,
              'eta':0.06,
-             'min_child_weight':30,
+             'min_child_weight':100,
              'subsample':1,
              'silent':0,
              'objective':'binary:logistic',
@@ -1569,8 +1569,8 @@ if __name__=='__main__':
     test_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/valid3_1'
     # train_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/train_demo'
     # test_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/valid_demo'
-    train_features='results/train_ssss_71.txt'
-    test_features='results/test_ssss_71.txt'
+    train_features='results/train_ssss_74_featsnew.txt'
+    test_features='results/test_ssss_74_featsnew.txt'
     # train_features='results/train_ssss_71.txt'
     # test_features='results/test_ssss_71.txt'
     # train_features='results/cross/train_ssss_29.txt'
@@ -1596,8 +1596,8 @@ if __name__=='__main__':
         print ''.join(test_lines[0:3])
 
         # total_featurelist_test=features_builder_passage(test_split_idx,test_lines)
-        # total_featurelist_test=features_new(test_split_idx,test_lines)
-        total_featurelist_test=features_passage_new(test_split_idx,test_lines)
+        total_featurelist_test=features_new(test_split_idx,test_lines)
+        # total_featurelist_test=features_passage_new(test_split_idx,test_lines)
         # print 1/0
         # total_featurelist_test+=features_builder(test_split_idx,test_lines)
         test_np=format_xgboost(total_featurelist_test,out_path=test_features)
@@ -1605,8 +1605,8 @@ if __name__=='__main__':
         print 'test feats finished'
 
         # total_featurelist_train=features_builder_passage(train_split_idx,train_lines)
-        # total_featurelist_train=features_new(train_split_idx,train_lines)
-        total_featurelist_train=features_passage_new(train_split_idx,train_lines)
+        total_featurelist_train=features_new(train_split_idx,train_lines)
+        # total_featurelist_train=features_passage_new(train_split_idx,train_lines)
         # total_featurelist_train+=features_builder(train_split_idx,train_lines)
         train_np=format_xgboost(total_featurelist_train,out_path=train_features,target=train_ansList)
         pickle.dump(train_np,open(train_features+'.np','w'))
@@ -1615,15 +1615,15 @@ if __name__=='__main__':
         if 1:
             tmp1=pickle.load(open('train_ssss.txt'+'.all_np'))
             train_np=pickle.load(open(train_features+'.np'))
-            tmp1_0=pickle.load(open('train_ssss_soso.txt'+'.np'))
+            tmp1_0=pickle.load(open('train_ssss_71.txt'+'.np'))
             tmp1_1=pickle.load(open('rela_overlap.np.train'))
-            train_np=np.concatenate((train_np,tmp1_1,tmp1),axis=1)
+            train_np=np.concatenate((train_np,tmp1_0,tmp1),axis=1)
             train_ansList=pickle.load(open(train_features+'.train_label_np'))
             tmp2=pickle.load(open('test_ssss.txt'+'.all_np'))
             test_np=pickle.load(open(test_features+'.np'))
-            tmp2_0=pickle.load(open('test_ssss_soso.txt'+'.np'))
+            tmp2_0=pickle.load(open('test_ssss_71.txt'+'.np'))
             tmp2_1=pickle.load(open('rela_overlap.np.test'))
-            test_np=np.concatenate((test_np,tmp2_1,tmp2),axis=1)
+            test_np=np.concatenate((test_np,tmp2_0,tmp2),axis=1)
             test_ansList=pickle.load(open(test_features+'.test_label_np'))
             print train_np.shape
             # train_np[:,[0,1,2]]+=5*train_np[:,[3,4,5]]
