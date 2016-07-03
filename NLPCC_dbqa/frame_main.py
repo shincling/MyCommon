@@ -764,15 +764,15 @@ def features_builder(split_idx,lines):
 
     lines=[fliter_line(line) for line in lines]
     total_featurelist=[]
-    # total_featurelist.append(word_overlap(lines))
-    # total_featurelist.append(max_common(lines))
+    total_featurelist.append(word_overlap(lines))
+    total_featurelist.append(max_common(lines))
     # total_featurelist.append(word_overlap_rela(lines))
-    # total_featurelist.append(topwords_similarity(lines))
-    # total_featurelist.append(word2vec_cos(lines))
-    # total_featurelist.append(word2vec_dis(lines))
-    # total_featurelist.append(word2vec_disall(lines))
+    total_featurelist.append(topwords_similarity(lines))
+    total_featurelist.append(word2vec_cos(lines))
+    total_featurelist.append(word2vec_dis(lines))
+    total_featurelist.append(word2vec_disall(lines))
     total_featurelist.append(word2vec_disall_300(lines))
-    # total_featurelist.append(word2vec_disall_2(lines))
+    total_featurelist.append(word2vec_disall_2(lines))
 
     return total_featurelist
 
@@ -1496,6 +1496,7 @@ def features_passage_new(split_idx,lines):
     final_dis_numpy=np.concatenate(dis_numpy_list,axis=0)
     # pickle.dump(final_dis_numpy[:,-1],open('rela.np','w'))
     print 'final_dis_numpy:\n',final_dis_numpy.shape
+    print '\n'
     return [final_dis_numpy]
 
 def format_xgboost(total_features,out_path,target=None):
@@ -1565,20 +1566,26 @@ def cal_main(train_file,test_file,score_file,train_target=None,test_target=None,
     # return preds
 
 if __name__=='__main__':
-    train_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/train7_1'
-    test_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/valid3_1'
+    train_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/train7_3'
+    test_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/valid3_3'
+    real_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/NLPCC2016QA-Update/evatestdata2-dbqa.testing-data-answers'
     # train_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/train_demo'
     # test_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/valid_demo'
+    # real_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/valid_demo'
     train_features='results/train_ssss_74_featsnew.txt'
     test_features='results/test_ssss_74_featsnew.txt'
+    real_features='results/real_ssss_74_featsnew.txt'
+    train_features='results/final/train_ssss_74_featsnew.txt'
+    test_features='results/final/test_ssss_74_featsnew.txt'
+    real_features='results/final/real_ssss_74_featsnew.txt'
     # train_features='results/train_ssss_71.txt'
     # test_features='results/test_ssss_71.txt'
     # train_features='results/cross/train_ssss_29.txt'
     # test_features='results/cross/test_ssss_29.txt'
     # train_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.train'
     # test_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.test'
-    score_file='results/result_0630_allmix_1'
-    construct=0
+    score_file='results/result_0703_allmix_1'
+    construct=10
 
     if construct:
         build_vocab=False
@@ -1590,27 +1597,36 @@ if __name__=='__main__':
         pickle.dump(train_ansList,open(train_features+'.train_label_np','w'))
         test_split_idx,test_ansList,test_lines=construct_test(test_file)
         pickle.dump(test_ansList,open(test_features+'.test_label_np','w'))
+        real_split_idx,real_ansList,real_lines=construct_test(real_file)
+        # pickle.dump(real_ansList,open(real_features+'.real_label_np','w'))
         # del _
         # print train_ansList[0:20]
         print ''.join(train_lines[0:3])
         print ''.join(test_lines[0:3])
 
         # total_featurelist_test=features_builder_passage(test_split_idx,test_lines)
-        total_featurelist_test=features_new(test_split_idx,test_lines)
-        # total_featurelist_test=features_passage_new(test_split_idx,test_lines)
-        # print 1/0
-        # total_featurelist_test+=features_builder(test_split_idx,test_lines)
+        total_featurelist_test=features_passage_new(test_split_idx,test_lines)
+        total_featurelist_test+=features_new(test_split_idx,test_lines)
+        total_featurelist_test+=features_builder(test_split_idx,test_lines)
         test_np=format_xgboost(total_featurelist_test,out_path=test_features)
         pickle.dump(test_np,open(test_features+'.np','w'))
-        print 'test feats finished'
+        print 'test feats finished',test_np.shape
 
         # total_featurelist_train=features_builder_passage(train_split_idx,train_lines)
-        total_featurelist_train=features_new(train_split_idx,train_lines)
-        # total_featurelist_train=features_passage_new(train_split_idx,train_lines)
-        # total_featurelist_train+=features_builder(train_split_idx,train_lines)
+        total_featurelist_train=features_passage_new(train_split_idx,train_lines)
+        total_featurelist_train+=features_new(train_split_idx,train_lines)
+        total_featurelist_train+=features_builder(train_split_idx,train_lines)
         train_np=format_xgboost(total_featurelist_train,out_path=train_features,target=train_ansList)
         pickle.dump(train_np,open(train_features+'.np','w'))
-        print 'train feats finished'
+        print 'train feats finished',train_np.shape
+        
+        # total_featurelist_real=features_builder_passage(real_split_idx,real_lines)
+        total_featurelist_real=features_passage_new(real_split_idx,real_lines)
+        total_featurelist_real+=features_new(real_split_idx,real_lines)
+        total_featurelist_real+=features_builder(real_split_idx,real_lines)
+        real_np=format_xgboost(total_featurelist_real,out_path=real_features)
+        pickle.dump(real_np,open(real_features+'.np','w'))
+        print 'real feats finished',real_np.shape
     else:
         if 1:
             tmp1=pickle.load(open('train_ssss.txt'+'.all_np'))
