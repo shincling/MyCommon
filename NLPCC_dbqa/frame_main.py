@@ -41,6 +41,23 @@ def fliter_line(lines):
     return lines
 
 def fliter_title(question,ans_list):
+    def find_title(question,answer):
+        result=''
+        if re.findall('.*?名(?:称)?[:：]'.decode('utf8'),answer):
+            # print answer
+            answer=re.sub('.*?名(?:称)?[:：]'.decode('utf8'),'',answer,1)
+            answer=answer.replace(' ','',1)
+            # print answer
+            for idx in range(len(answer)):
+                try:
+                    if answer[:(idx+1)] in question:
+                        result=answer[:(idx+1)]
+                    else:
+                        break
+                except IndexError:
+                    pass
+        return result
+
     answer=ans_list[0]
     if '《' in answer:
         answer=answer.replace('《','')
@@ -58,7 +75,13 @@ def fliter_title(question,ans_list):
             pass
 
     if result=='':
-        pass
+        for ans in ans_list:
+            aim=find_title(question,ans.decode('utf8'))
+            if aim:
+                result=aim
+                print question
+                break
+
 
     result='' if len(result)<2 else result
     question=question.replace(result,'')
