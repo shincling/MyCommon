@@ -6,7 +6,7 @@ def main(train_file,test_file,train_result,test_result):
     test_result=open(test_result).readlines()
     assert len(test_file)==len(test_result)
 
-    output_file=open('error_count_all_real.txt','a')
+    output_file=open('error_count_all_real_78.txt','a')
     for line,score in zip(test_file,test_result):
         spl=line.split('\t')
         question=spl[0]

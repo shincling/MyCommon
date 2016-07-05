@@ -84,7 +84,7 @@ def fliter_title(question,ans_list):
                 break
 
     if result=='':
-        print question
+        # print question
         story=' '.join(ans_list)
         words=jieba.posseg.cut(question)
         now_string=''
@@ -95,7 +95,7 @@ def fliter_title(question,ans_list):
                     now_string+=tmp
                 else:
                     break
-        print 'sucess:',now_string
+        # print 'sucess:',now_string
         result=now_string
 
 
@@ -1479,7 +1479,7 @@ def features_passage_new(split_idx,lines):
                         dis_list[j].append(aim)
 
 
-        dis_numpy=np.zeros([num_answers,slot_num+1]) if count_parser else np.zeros([num_answers,slot_num])
+        dis_numpy=np.zeros([num_answers,slot_num+1]) if count_parser else np.zeros([num_answers,2*slot_num])
         # dis_numpy=np.zeros([num_answers,slot_num+1]) if len_ratio else np.zeros([num_answers,slot_num])
         max_len=max([len(line) for line in answers])
         for idx,line in enumerate(answers):
@@ -1490,7 +1490,7 @@ def features_passage_new(split_idx,lines):
                     dis_numpy[idx,pos]+=tf_idf(i[0],line)
                 # dis_numpy[idx,pos]=dis_numpy[idx,pos]/(len(dis_list[pos])) if len(dis_list[pos]) else dis_numpy[idx,pos]
                     # open('log.txt','a').write(i[0].encode('utf8')+'\n')
-                    # dis_numpy[idx,3+pos]+=tf_idf_rela(i[0],line)
+                    dis_numpy[idx,3+pos]+=tf_idf_rela(i[0],line)
             if len_ratio:
                 dis_numpy[idx,-1]=len(line)/float(max_len)
 
@@ -1600,6 +1600,7 @@ def cal_main(train_file,test_file,score_file,train_target=None,test_target=None,
     print 'dtest finished.'
     # specify parameters via map
     evallist  = [(dtest,'eval'), (dtrain,'train')]
+    evallist  = [ (dtrain,'train')]
     param = {'booster':'gbtree',
              'max_depth':7,
              'eta':0.06,
@@ -1625,18 +1626,18 @@ def cal_main(train_file,test_file,score_file,train_target=None,test_target=None,
     # return preds
 
 if __name__=='__main__':
-    train_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/train7_1'
-    test_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/valid3_1'
+    train_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/train7_3'
+    test_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/valid3_3'
     real_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/NLPCC2016QA-Update/evatestdata2-dbqa.test'
     # train_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/train_demo'
     # test_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/valid_demo'
     # real_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/valid_demo'
-    train_features='results/train_ssss_711_featsnew.txt'
-    test_features='results/test_ssss_711_featsnew.txt'
-    real_features='results/real_ssss_711_featsnew.txt'
-    # train_features='results/final/train_ssss_74_featsnew.txt'
-    # test_features='results/final/test_ssss_74_featsnew.txt'
-    # real_features='results/final/real_ssss_74_featsnew.txt'
+    # train_features='results/train_ssss_711_featsnew.txt'
+    # test_features='results/test_ssss_711_featsnew.txt'
+    # real_features='results/real_ssss_711_featsnew.txt'
+    train_features='results/final/train_ssss_75_featsnew.txt'
+    test_features='results/final/test_ssss_75_featsnew.txt'
+    real_features='results/final/real_ssss_75_featsnew.txt'
     # train_features='results/train_ssss_71.txt'
     # test_features='results/test_ssss_71.txt'
     # train_features='results/cross/train_ssss_29.txt'
@@ -1678,6 +1679,7 @@ if __name__=='__main__':
         train_np=format_xgboost(total_featurelist_train,out_path=train_features,target=train_ansList)
         pickle.dump(train_np,open(train_features+'.np','w'))
         print 'train feats finished',train_np.shape
+        1/0
         
         # total_featurelist_real=features_builder_passage(real_split_idx,real_lines)
         total_featurelist_real,real_lines=features_passage_new(real_split_idx,real_lines)
@@ -1686,7 +1688,7 @@ if __name__=='__main__':
         real_np=format_xgboost(total_featurelist_real,out_path=real_features)
         pickle.dump(real_np,open(real_features+'.np','w'))
         print 'real feats finished',real_np.shape
-        # 1/0
+        1/0
     else:
         if 1:
 
@@ -1702,10 +1704,10 @@ if __name__=='__main__':
             # tmp2_1=pickle.load(open('rela_overlap.np.test'))
             # test_np=np.concatenate((test_np,tmp2_0,tmp2),axis=1)
             test_ansList=pickle.load(open(test_features+'.test_label_np'))
-            # real_np=pickle.load(open(real_features+'.np'))
+            real_np=pickle.load(open(real_features+'.np'))
             # real_ansList=pickle.load(open(real_features+'.real_label_np'))
             print train_np.shape,test_np.shape
-            # print real_np.shape
+            print real_np.shape
 
 
             # train_np[:,[0,1,2]]+=5*train_np[:,[3,4,5]]
@@ -1749,8 +1751,8 @@ if __name__=='__main__':
         test_np=pickle.load(open(test_features+'.np'))
         test_ansList=pickle.load(open(test_features+'.test_label_np'))
 
-    cal_main(train_np,test_np,score_file,train_target=train_ansList,test_target=test_ansList)
-    # cal_main(np.concatenate([train_np,test_np],axis=0),real_np,score_file,train_target=np.concatenate([train_ansList,test_ansList],axis=0))
+    # cal_main(train_np,test_np,score_file,train_target=train_ansList,test_target=test_ansList)
+    cal_main(np.concatenate([train_np,test_np],axis=0),real_np,score_file,train_target=np.concatenate([train_ansList,test_ansList],axis=0))
     # cal_main(train_features,test_features,score_file)
 
 
