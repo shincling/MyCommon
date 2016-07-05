@@ -83,6 +83,24 @@ def fliter_title(question,ans_list):
                 # print question
                 break
 
+    if result=='':
+        print question
+        story=' '.join(ans_list)
+        words=jieba.posseg.cut(question)
+        now_string=''
+        for word in words:
+            if word.flag!='x':
+                if len(re.findall(word.word,story.decode('utf8')))>=3:
+                    tmp=word.word
+                    now_string+=tmp
+                else:
+                    break
+        print 'sucess:',now_string
+        result=now_string
+
+
+
+
 
     result='' if len(result)<2 else result
     question=question.replace(result,'')
@@ -107,6 +125,9 @@ def find_lcs_len(s1, s2):
             else:               # m[p1][p2-1] < m[p1-1][p2]
                 m[p1][p2] = m[p1-1][p2]
     return m[-1][-1]
+
+
+
 
 def cos_dis(vector1,vector2):
     return np.dot(vector1,vector2)/(np.linalg.norm(vector1)*np.linalg.norm(vector2))
@@ -1582,7 +1603,7 @@ def cal_main(train_file,test_file,score_file,train_target=None,test_target=None,
     param = {'booster':'gbtree',
              'max_depth':7,
              'eta':0.06,
-             'min_child_weight':30,
+             'min_child_weight':80,
              'subsample':1,
              'silent':0,
              'objective':'binary:logistic',
@@ -1590,7 +1611,7 @@ def cal_main(train_file,test_file,score_file,train_target=None,test_target=None,
              # 'objective':'reg:linear',
              'lambda':0.3,
              'alpha':0.2}
-    num_round = 250
+    num_round = 150
     bst = xgb.train(param, dtrain, num_round ,evallist)
     # bst = xgb.train(param, dtrain, num_round )
     # make prediction
@@ -1610,9 +1631,9 @@ if __name__=='__main__':
     # train_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/train_demo'
     # test_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/valid_demo'
     # real_file='/home/shin/MyGit/Common/MyCommon/NLPCC_dbqa/data_valid/valid_demo'
-    train_features='results/train_ssss_71_featsnew.txt'
-    test_features='results/test_ssss_71_featsnew.txt'
-    real_features='results/real_ssss_71_featsnew.txt'
+    train_features='results/train_ssss_711_featsnew.txt'
+    test_features='results/test_ssss_711_featsnew.txt'
+    real_features='results/real_ssss_711_featsnew.txt'
     # train_features='results/final/train_ssss_74_featsnew.txt'
     # test_features='results/final/test_ssss_74_featsnew.txt'
     # real_features='results/final/real_ssss_74_featsnew.txt'
@@ -1623,7 +1644,7 @@ if __name__=='__main__':
     # train_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.train'
     # test_features='/home/shin/XGBoost/xgboost/demo/binary_classification/agaricus.txt.test'
     score_file='results/result_0703_allmix_1'
-    construct=10
+    construct=0
 
     if construct:
         build_vocab=False
@@ -1659,12 +1680,13 @@ if __name__=='__main__':
         print 'train feats finished',train_np.shape
         
         # total_featurelist_real=features_builder_passage(real_split_idx,real_lines)
-        # total_featurelist_real,real_lines=features_passage_new(real_split_idx,real_lines)
-        # total_featurelist_real+=features_new(real_split_idx,real_lines)
-        # total_featurelist_real+=features_builder(real_split_idx,real_lines)
-        # real_np=format_xgboost(total_featurelist_real,out_path=real_features)
-        # pickle.dump(real_np,open(real_features+'.np','w'))
-        # print 'real feats finished',real_np.shape
+        total_featurelist_real,real_lines=features_passage_new(real_split_idx,real_lines)
+        total_featurelist_real+=features_new(real_split_idx,real_lines)
+        total_featurelist_real+=features_builder(real_split_idx,real_lines)
+        real_np=format_xgboost(total_featurelist_real,out_path=real_features)
+        pickle.dump(real_np,open(real_features+'.np','w'))
+        print 'real feats finished',real_np.shape
+        # 1/0
     else:
         if 1:
 
