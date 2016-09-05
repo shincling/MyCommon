@@ -4,10 +4,10 @@ from keras.models import Sequential
 from keras.layers import Dense, Activation
 
 def make_data():
-    data=numpy.zeros(10,10000)
+    data=numpy.zeros([10000,10])
     for i in range(10):
        for j in range(1000):
-           data[i][j]=numpy.array([0]+[numpy.random.random]*9)
+           data[i*1000+j]=numpy.array([i]+[numpy.random.random()]*9)
     return data
 
 
@@ -18,7 +18,8 @@ Dense(10),
 Activation('softmax'),
 ])
 
+cc=make_data()
 model.compile(optimizer='rmsprop', loss='categorical_crossentropy',metrics=['accuracy'])
-
+model.fit(cc,cc[:,0])
 
 
