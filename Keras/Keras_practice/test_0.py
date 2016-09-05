@@ -10,7 +10,7 @@ def make_data():
            data[i*1000+j]=numpy.array([i]+[numpy.random.random()]*9)
     return data
 
-
+print '2hhhhh'
 model = Sequential([
 Dense(32, input_dim=10),
 Activation('relu'),
