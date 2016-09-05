@@ -19,7 +19,10 @@ Activation('softmax'),
 ])
 
 cc=make_data()
+labels=numpy.zeros_like(cc)
+for idx,line in enumerate(labels):
+    line[cc[idx,0]]=1
 model.compile(optimizer='rmsprop', loss='categorical_crossentropy',metrics=['accuracy'])
-model.fit(cc,cc[:,0])
+model.fit(cc,labels,batch_size=10)
 
 
