@@ -11,6 +11,8 @@ def make_data():
     return data
 
 print '2hhhhh'
+print 'hhhh'
+
 model = Sequential([
 Dense(32, input_dim=10),
 Activation('relu'),
