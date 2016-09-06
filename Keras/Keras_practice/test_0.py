@@ -27,4 +27,7 @@ for idx,line in enumerate(labels):
 model.compile(optimizer='rmsprop', loss='categorical_crossentropy',metrics=['accuracy'])
 model.fit(cc,labels,batch_size=10,nb_epoch=30)
 
+# bb=model.get_weights()
+# pass
+
 
