@@ -38,3 +38,5 @@ y_val = np.random.random((100, nb_classes))
 decoder.fit([x_train_a, x_train_b], y_train,
             batch_size=64, nb_epoch=15,
             validation_data=([x_val_a, x_val_b], y_val))
+# decoder.fit([x_train_a, x_train_b], y_train,
+#             batch_size=64, nb_epoch=15)
