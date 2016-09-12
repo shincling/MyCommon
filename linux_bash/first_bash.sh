@@ -11,3 +11,4 @@ echo "Welcome,$NAME"
 
 #传递形参 例如 test a b c 
 echo auto Input is : $1 $2 $3
+echo 'The position is :'$0
