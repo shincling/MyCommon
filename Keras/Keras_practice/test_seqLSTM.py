@@ -25,10 +25,14 @@ model.compile(loss='categorical_crossentropy',
 # generate dummy training data
 x_train = np.random.random((batch_size * 10, timesteps, data_dim))
 y_train = np.random.random((batch_size * 10, nb_classes))
+x_train=np.float32(x_train)
+y_train=np.float32(y_train)
 
 # generate dummy validation data
 x_val = np.random.random((batch_size * 3, timesteps, data_dim))
 y_val = np.random.random((batch_size * 3, nb_classes))
+x_val=np.float32(x_val)
+y_val=np.float32(y_val)
 
 model.fit(x_train, y_train,
           batch_size=batch_size, nb_epoch=5,
