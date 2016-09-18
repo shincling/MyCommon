@@ -14,8 +14,8 @@ hi
 
 function plus()
 {
-#echo 'expr $1 + $2'
-E= expr $1 + $2
+echo `expr $1 + $2`
+E=`expr $1 + $2`
 }
 #D= 'plus 100 200'
 #echo 'D='$D
