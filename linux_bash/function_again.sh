@@ -1,9 +1,10 @@
 # !/bin/bash/
-sum()
+function sum()
 {
-　a = $1;
-　b = $2;
-　echo $[$a + $b ];
+a=$1
+b=$2
+echo `expr $a + $b`
+echo $(expr $a + $b)
 }
 sum 3 4
 
