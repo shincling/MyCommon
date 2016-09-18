@@ -7,6 +7,7 @@ echo `expr $a + $b`
 echo $(expr $a + $b)
 }
 sum 3 4
+sum $1 $2
 
 function LoopPrint()
 {
