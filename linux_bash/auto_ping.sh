@@ -1,5 +1,5 @@
 # !/bin/bash
-while 1>0  
+while true 
 do
     echo gogogo
     sleep 500
