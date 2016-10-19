@@ -37,7 +37,8 @@ l_in = lasagne.layers.InputLayer(shape=(None, 1,dimention))
 l_theta = lasagne.layers.DenseLayer(l_in,3,W=lasagne.init.Normal(std=1))
 l_mu=lasagne.layers.NonlinearityLayer(l_theta,nonlinearity=lasagne.nonlinearities.softmax)
 
-'''正确的输入写法应该是l_in:x,因为x才是拟定的变量x_shared只是一个输入,但是这里是通用的其实'''
+'''正确的输入写法应该是l_in:x,因为x才是拟定的变量x_shared只是一个输入,但是这里是通用的其实
+　　当用x_shared的时候,底下的givens的　x:x_shared其实就没用了'''
 probas = lasagne.layers.helper.get_output(l_mu, {l_in: x})
 # probas = lasagne.layers.helper.get_output(l_mu, {l_in: x_shared})
 pred = T.argmax(probas, axis=1)
