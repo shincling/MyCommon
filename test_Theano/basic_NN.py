@@ -40,17 +40,17 @@ l_mu=lasagne.layers.NonlinearityLayer(l_theta,nonlinearity=lasagne.nonlinearitie
 '''正确的输入写法应该是l_in:x,因为x才是拟定的变量x_shared只是一个输入,但是这里是通用的其实
 　　当用x_shared的时候,底下的givens的　x:x_shared其实就没用了'''
 probas = lasagne.layers.helper.get_output(l_mu, {l_in: x})
-# probas = lasagne.layers.helper.get_output(l_mu, {l_in: x_shared})
+probas = lasagne.layers.helper.get_output(l_mu, {l_in: x_shared})
 pred = T.argmax(probas, axis=1)
-cost = T.nnet.categorical_crossentropy(probas, y).sum()
+cost = T.nnet.categorical_crossentropy(probas, y_shared).sum()
 params = lasagne.layers.helper.get_all_params(l_mu, trainable=True)
 grads = T.grad(cost, params)
 updates = lasagne.updates.sgd(grads, params, learning_rate=0.05)
 
 
 givens = {
-    x: x_shared,
-    y: y_shared,
+    # x: x_shared,
+    # y: y_shared,
     }
 
 train_model = theano.function([], [cost,pred], givens=givens,updates=updates,on_unused_input='ignore',allow_input_downcast=True)
