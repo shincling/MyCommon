@@ -43,7 +43,9 @@ probas = lasagne.layers.helper.get_output(l_mu, {l_in: x})
 probas = lasagne.layers.helper.get_output(l_mu, {l_in: x_shared})
 pred = T.argmax(probas, axis=1)
 cost = T.nnet.categorical_crossentropy(probas, y_shared).sum()
-params = lasagne.layers.helper.get_all_params(l_mu, trainable=True)
+params_all = lasagne.layers.helper.get_params(l_mu, trainable=True)
+'''这里就有意思了，可以通过tag选择训练的参数'''
+params = lasagne.layers.helper.get_all_params(l_mu, regularizable=False)
 grads = T.grad(cost, params)
 updates = lasagne.updates.sgd(grads, params, learning_rate=0.05)
 
@@ -65,6 +67,9 @@ for epoch in range(n_epoch):
         x_shared.set_value(x_batch)
         y_shared.set_value(np.int32(y_batch))
         cost,pred=train_model()
+        params_all = lasagne.layers.helper.get_all_param_values(l_mu, trainable=True)
+        for pp in params_all:
+            print pp
         cost+=cost
 
         count=np.count_nonzero(pred-target)
