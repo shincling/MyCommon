@@ -33,7 +33,7 @@ x_shared=theano.shared(np.zeros((batch_size,dimention),dtype=theano.config.float
 y_shared=theano.shared(np.zeros((batch_size,1),dtype=np.int32),borrow=True)
 
 l_in = lasagne.layers.InputLayer(shape=(None, 1,dimention))
-# l_in1=lasagne.layers.DenseLayer(l_in,30,W=lasagne.init.Normal(std=1),nonlinearity=lasagne.nonlinearities.softmax)
+l_in1=lasagne.layers.DenseLayer(l_in,30,W=lasagne.init.Normal(std=1),nonlinearity=lasagne.nonlinearities.softmax)
 l_theta = lasagne.layers.DenseLayer(l_in,3,W=lasagne.init.Normal(std=1))
 '''这里演示一个给已经定义了的层增加标签的方法，去除标签可以用remove()'''
 l_theta.params.values()[0].add('shin')
@@ -49,6 +49,12 @@ cost = T.nnet.categorical_crossentropy(probas, y_shared).sum()
 params_all = lasagne.layers.helper.get_all_params(l_mu, trainable=True)
 '''这里就有意思了，可以通过tag选择训练的参数'''
 params = lasagne.layers.helper.get_all_params(l_mu, regularizable=False)
+
+'''这里是另外一种方式，直接从params中移除某个参数，有效果'''
+if 0:
+    params.pop()
+    print params
+
 params = lasagne.layers.helper.get_all_params(l_mu, shin=True)
 grads = T.grad(cost, params)
 updates = lasagne.updates.sgd(grads, params, learning_rate=0.05)
