@@ -1,7 +1,8 @@
 __author__ = 'shin'
 import numpy
 from keras.models import Sequential
-from keras.layers import Dense, Activation
+from keras.layers import Dense, Activation, Input
+from keras.models import Model
 
 def make_data():
     data=numpy.zeros([10000,10])
@@ -13,17 +14,24 @@ def make_data():
 print '2hhhhh'
 print 'hhhh'
 
-model = Sequential([
-Dense(32, input_dim=10),
-Activation('relu'),
-Dense(10),
-Activation('softmax'),
-])
+# model = Sequential([
+# Dense(32, input_dim=10),
+# Activation('relu'),
+# Dense(10),
+# Activation('softmax'),
+# ])
+
+input=Input(shape=[10])
+layer=Dense(32)(input)
+layer=Activation('relu')(layer)
+layer=Dense(10)(layer)
+layer=Activation('softmax')(layer)
+model=Model(inputs=input,outputs=layer)
 
 cc=make_data()
 labels=numpy.zeros_like(cc)
 for idx,line in enumerate(labels):
-    line[cc[idx,0]]=1
+    line[int(cc[idx,0])]=1
 model.compile(optimizer='rmsprop', loss='categorical_crossentropy',metrics=['accuracy'])
 model.fit(cc,labels,batch_size=10,nb_epoch=30)
 
