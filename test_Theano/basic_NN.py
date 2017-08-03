@@ -33,7 +33,7 @@ x_shared=theano.shared(np.zeros((batch_size,dimention),dtype=theano.config.float
 y_shared=theano.shared(np.zeros((batch_size,1),dtype=np.int32),borrow=True)
 
 l_in = lasagne.layers.InputLayer(shape=(None, 1,dimention))
-# l_in1=lasagne.layers.DenseLayer(l_in,30,W=lasagne.init.Normal(std=1),nonlinearity=lasagne.nonlinearities.softmax)
+l_in1=lasagne.layers.DenseLayer(l_in,30,W=lasagne.init.Normal(std=1),nonlinearity=lasagne.nonlinearities.softmax)
 l_theta = lasagne.layers.DenseLayer(l_in,3,W=lasagne.init.Normal(std=1))
 l_theta = lasagne.layers.BatchNormLayer(l_theta)
 print 'batchnorm'
@@ -45,7 +45,16 @@ probas = lasagne.layers.helper.get_output(l_mu, {l_in: x})
 probas = lasagne.layers.helper.get_output(l_mu, {l_in: x_shared})
 pred = T.argmax(probas, axis=1)
 cost = T.nnet.categorical_crossentropy(probas, y_shared).sum()
-params = lasagne.layers.helper.get_all_params(l_mu, trainable=True)
+params_all = lasagne.layers.helper.get_all_params(l_mu, trainable=True)
+'''这里就有意思了，可以通过tag选择训练的参数'''
+params = lasagne.layers.helper.get_all_params(l_mu, regularizable=False)
+
+'''这里是另外一种方式，直接从params中移除某个参数，有效果'''
+if 0:
+    params.pop()
+    print params
+
+params = lasagne.layers.helper.get_all_params(l_mu, shin=True)
 grads = T.grad(cost, params)
 updates = lasagne.updates.sgd(grads, params, learning_rate=0.05)
 
@@ -67,6 +76,9 @@ for epoch in range(n_epoch):
         x_shared.set_value(x_batch)
         y_shared.set_value(np.int32(y_batch))
         cost,pred=train_model()
+        params_all = lasagne.layers.helper.get_all_param_values(l_mu, trainable=True)
+        for pp in params_all:
+            print pp
         cost+=cost
 
         count=np.count_nonzero(pred-target)
