@@ -2,6 +2,8 @@ import theano
 import theano.tensor as T
 import lasagne
 import numpy as np
+import time
+import pickle
 
 def create_sequence(total,len,embedding_size):
     # data=np.random.randint(-5,2,[total,len,embedding_size])
@@ -21,7 +23,7 @@ X=T.tensor3()
 Y=T.imatrix()
 # Y=T.iscalar()
 l_in=lasagne.layers.InputLayer(shape=(None,None,hidden_size))
-rnn=lasagne.layers.GRULayer(l_in,output_size,hid_init=lasagne.init.Normal(std=1),only_return_final=True)
+rnn=lasagne.layers.GRULayer(l_in,output_size,only_return_final=True)
 output=lasagne.layers.flatten(rnn)
 # output=rnn
 output=lasagne.layers.DenseLayer(rnn,1,nonlinearity=lasagne.nonlinearities.sigmoid)
@@ -30,7 +32,7 @@ result=lasagne.layers.helper.get_output(output,{l_in:X})
 cost=T.nnet.binary_crossentropy(result,Y).sum()
 params = lasagne.layers.helper.get_all_params(output, trainable=True)
 grads = T.grad(cost, params)
-updates = lasagne.updates.rmsprop(grads, params, learning_rate=0.0001)
+updates = lasagne.updates.rmsprop(grads, params, learning_rate=0.001)
 # updates = lasagne.updates.sgd(grads, params, learning_rate=0.01)
 
 train_model = theano.function([X,Y], [cost,result], updates=updates)
@@ -54,6 +56,10 @@ for _ in range(total_epoch):
             break
     if str(cost)=='nan' or cost<0.01:
         break
+
+prev_weights = lasagne.layers.helper.get_all_param_values(output)
+pickle.dump(prev_weights,open('/home/sw/Shin/Codes/Deep-Rein4cement/One-shot-PGD/Omniglot/params_contRNN_{}'.format(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())),'wb'))
+print 'save params !'
 
 test_data=create_sequence(batch_size,length+2,1)
 test_data[:5]=np.zeros([length+2,1])
