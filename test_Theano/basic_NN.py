@@ -35,6 +35,8 @@ y_shared=theano.shared(np.zeros((batch_size,1),dtype=np.int32),borrow=True)
 l_in = lasagne.layers.InputLayer(shape=(None, 1,dimention))
 # l_in1=lasagne.layers.DenseLayer(l_in,30,W=lasagne.init.Normal(std=1),nonlinearity=lasagne.nonlinearities.softmax)
 l_theta = lasagne.layers.DenseLayer(l_in,3,W=lasagne.init.Normal(std=1))
+l_theta = lasagne.layers.BatchNormLayer(l_theta)
+print 'batchnorm'
 l_mu=lasagne.layers.NonlinearityLayer(l_theta,nonlinearity=lasagne.nonlinearities.softmax)
 
 '''正确的输入写法应该是l_in:x,因为x才是拟定的变量x_shared只是一个输入,但是这里是通用的其实
