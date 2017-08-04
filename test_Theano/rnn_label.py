@@ -24,13 +24,14 @@ Y=T.imatrix()
 # Y=T.iscalar()
 l_in=lasagne.layers.InputLayer(shape=(None,None,hidden_size))
 rnn=lasagne.layers.GRULayer(l_in,output_size,only_return_final=True)
-output=lasagne.layers.flatten(rnn)
+# output=lasagne.layers.flatten(rnn)
 # output=rnn
 output=lasagne.layers.DenseLayer(rnn,1,nonlinearity=lasagne.nonlinearities.sigmoid)
 
 result=lasagne.layers.helper.get_output(output,{l_in:X})
 cost=T.nnet.binary_crossentropy(result,Y).sum()
 params = lasagne.layers.helper.get_all_params(output, trainable=True)
+print params
 grads = T.grad(cost, params)
 updates = lasagne.updates.rmsprop(grads, params, learning_rate=0.001)
 # updates = lasagne.updates.sgd(grads, params, learning_rate=0.01)
@@ -57,7 +58,7 @@ for _ in range(total_epoch):
     if str(cost)=='nan' or cost<0.01:
         break
 
-prev_weights = lasagne.layers.helper.get_all_param_values(output)
+prev_weights = lasagne.layers.helper.get_all_param_values(output,trainable=True)
 pickle.dump(prev_weights,open('/home/sw/Shin/Codes/Deep-Rein4cement/One-shot-PGD/Omniglot/params_contRNN_{}'.format(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())),'wb'))
 print 'save params !'
 
