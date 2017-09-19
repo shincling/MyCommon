@@ -7,7 +7,14 @@ class ss(object):
     def __add__(self, other):
         print 'test add'
         pass
+    def __copy__(self):
+        print 'copy'
+    def __str__(self):
+        return '__str__'
 
 c=ss()
 c.__pp__(2)
 c+c
+
+c.__copy__()
+print c
