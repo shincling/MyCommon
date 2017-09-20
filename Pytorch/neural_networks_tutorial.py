@@ -203,11 +203,13 @@ print(loss.grad_fn.next_functions[0][0].next_functions[0][0])  # ReLU
 net.zero_grad()     # zeroes the gradient buffers of all parameters
 
 print('conv1.bias.grad before backward')
+print(net.conv1.bias)
 print(net.conv1.bias.grad)
 
 loss.backward()
 
 print('conv1.bias.grad after backward')
+print(net.conv1.bias) # 值并没有变，只是导数改变了
 print(net.conv1.bias.grad)
 
 ########################################################################
