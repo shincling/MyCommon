@@ -40,7 +40,17 @@ class Net(torch.nn.Module):
         x = self.out(x)
         return x
 
-net = Net(n_feature=2, n_hidden=10, n_output=2)     # define the network
+net2 = torch.nn.Sequential(
+    torch.nn.Linear(2, 10),
+    torch.nn.ReLU(),
+    torch.nn.Linear(10, 2)
+)
+
+if 0:
+    net = Net(n_feature=2, n_hidden=10, n_output=2)     # define the network
+else:
+    net=net2
+
 print(net)  # net architecture
 
 optimizer = torch.optim.SGD(net.parameters(), lr=0.02)
