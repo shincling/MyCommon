@@ -29,14 +29,13 @@ class Net(torch.nn.Module):
         self.hidden = torch.nn.Linear(n_feature, n_hidden)   # hidden layer
         self.hidden1 = torch.nn.Linear(n_hidden, n_hidden)   # hidden layer
         self.hidden2 = torch.nn.Linear(n_hidden, n_hidden)   # hidden layer
-        # self.hidden2.weight=self.hidden1.weight
+        if 0:# share weights of the two layer
+            self.hidden2.weight=self.hidden1.weight
         self.out = torch.nn.Linear(n_hidden, n_output)   # output layer
 
     def forward(self, x):
         # x = F.relu(self.hidden1(F.relu(self.hidden1(F.relu(self.hidden(x))))))      # activation function for hidden layer
         x = F.relu(self.hidden2(F.relu(self.hidden1(F.relu(self.hidden(x))))))      # activation function for hidden layer
-        # x = F.relu(self.hidden1(F.relu(self.hidden1(F.relu(self.hidden1(x))))))      # activation function for hidden layer
-        # x = F.relu(self.hidden1(F.relu(self.hidden1(F.relu(self.hidden1(x))))))      # activation function for hidden layer
         # x = F.relu(self.hidden1(F.relu(self.hidden1(F.relu(self.hidden1(x))))))      # activation function for hidden layer
         x = self.out(x)
         return x
@@ -45,7 +44,8 @@ net = Net(n_feature=2, n_hidden=10, n_output=2)     # define the network
 print(net)  # net architecture
 
 optimizer = torch.optim.SGD(net.parameters(), lr=0.02)
-for i in net.parameters():
+cc=net.parameters()
+for i in cc:
     print i
 loss_func = torch.nn.CrossEntropyLoss()  # the target label is NOT an one-hotted
 # loss_func = torch.nn.CrossEntropyLoss(torch.FloatTensor([99,1])) #这个数字是带权重的更新，对于数据有不平衡的时候有很好的效果 # the target label is NOT an one-hotted
@@ -53,7 +53,7 @@ loss_func = torch.nn.CrossEntropyLoss()  # the target label is NOT an one-hotted
 plt.ion()   # something about plotting
 
 tt=time.time()
-for t in range(10):
+for t in range(100):
     out = net(x)                 # input x and predict based on x
     loss = loss_func(out, y)     # must be (1. nn output, 2. target), the target label is NOT one-hotted
 
