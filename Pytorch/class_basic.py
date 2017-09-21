@@ -36,6 +36,7 @@ class Net(torch.nn.Module):
 
     def forward(self, x):
         # x = F.relu(self.hidden1(F.relu(self.hidden1(F.relu(self.hidden(x))))))      # activation function for hidden layer
+        # x = F.relu(self.hidden1(F.relu(self.hidden(x))))      # activation function for hidden layer
         x = F.relu(self.hidden2(F.relu(self.hidden1(F.relu(self.hidden(x))))))      # activation function for hidden layer
         # x = F.relu(self.hidden1(F.relu(self.hidden1(F.relu(self.hidden1(x))))))      # activation function for hidden layer
         x = self.out(x)
@@ -66,6 +67,7 @@ plt.ion()   # something about plotting
 tt=time.time()
 for t in range(100):
     out = net(x)                 # input x and predict based on x
+    # print out
     loss = loss_func(out, y)     # must be (1. nn output, 2. target), the target label is NOT one-hotted
 
     optimizer.zero_grad()   # clear gradients for next train
