@@ -29,8 +29,9 @@ class Net(torch.nn.Module):
         self.hidden = torch.nn.Linear(n_feature, n_hidden)   # hidden layer
         self.hidden1 = torch.nn.Linear(n_hidden, n_hidden)   # hidden layer
         self.hidden2 = torch.nn.Linear(n_hidden, n_hidden)   # hidden layer
-        if 0:# share weights of the two layer
+        if 1:# share weights of the two layer
             self.hidden2.weight=self.hidden1.weight
+            self.hidden2.bias=self.hidden1.bias
         self.out = torch.nn.Linear(n_hidden, n_output)   # output layer
 
     def forward(self, x):
@@ -46,7 +47,7 @@ net2 = torch.nn.Sequential(
     torch.nn.Linear(10, 2)
 )
 
-if 0:
+if 1:
     net = Net(n_feature=2, n_hidden=10, n_output=2)     # define the network
 else:
     net=net2
