@@ -40,6 +40,7 @@ class Lstm(nn.Module):
             input_size=input_size,
             hidden_size=hidden_size,
             num_layers=1,
+            batch_first=True
         )
         self.Linear=nn.Linear(hidden_size,n_classes)
 
