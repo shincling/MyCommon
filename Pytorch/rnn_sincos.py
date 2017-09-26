@@ -38,7 +38,7 @@ class RNN(nn.Module):
         # x (batch, time_step, input_size)
         # h_state (n_layers, batch, hidden_size)
         # r_out (batch, time_step, hidden_size)
-        r_out, h_state = self.rnn(x, h_state)
+        r_out, h_state = self.rnn(x, h_state) #shin:这个RNN的h_t确实都是只是最后一个step的东西。
 
         outs = []    # save all predictions
         for time_step in range(r_out.size(1)):    # calculate output for each time step
@@ -77,7 +77,7 @@ for step in range(60):
 
     loss = loss_func(prediction, y)         # cross entropy loss
     optimizer.zero_grad()                   # clear gradients for this training step
-    optimizer.param_groups[0]['lr']=0.01 #可以用这种方式来设定学习率，在train的过程中变化。
+    optimizer.param_groups[0]['lr']=0.01 # shin: 可以用这种方式来设定学习率，在train的过程中变化。
     loss.backward()                         # backpropagation, compute gradients
     optimizer.step()                        # apply gradients
 
