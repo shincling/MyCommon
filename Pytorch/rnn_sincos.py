@@ -73,7 +73,10 @@ for step in range(60):
 
     prediction, h_state = rnn(x, h_state)   # rnn output
     # !! next step is important !!
-    h_state = Variable(h_state.data)        # repack the hidden state, break the connection from last iteration
+    if 1:
+        h_state = Variable(h_state.data)        # repack the hidden state, break the connection from last iteration
+    else:
+        h_state = None # 这是一个很好的测试，如果每一个初试h_state都是None,那么每一个sin开始的那个地方，它不知道往上还是往下，必须得有个数据之后才知道。所以学习初来一个很有意思的曲线。
 
     loss = loss_func(prediction, y)         # cross entropy loss
     optimizer.zero_grad()                   # clear gradients for this training step
