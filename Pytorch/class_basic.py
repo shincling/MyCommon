@@ -17,7 +17,7 @@ x = torch.cat((x0, x1), 0).type(torch.FloatTensor)  # shape (200, 2) FloatTensor
 y = torch.cat((y0, y1), 0).type(torch.LongTensor)    # shape (200,) LongTensor = 64-bit integer
 
 # torch can only train on Variable, so convert them to Variable
-x, y = Variable(x), Variable(y)
+x, y = Variable(x).cuda(), Variable(y).cuda()
 
 # plt.scatter(x.data.numpy()[:, 0], x.data.numpy()[:, 1], c=y.data.numpy(), s=100, lw=0, cmap='RdYlGn')
 # plt.show()
@@ -58,6 +58,7 @@ if 1:
 else:
     net=net2
 
+net=net.cuda()
 print(net)  # net architecture
 
 optimizer = torch.optim.SGD(net.parameters(), lr=0.02)
@@ -83,9 +84,9 @@ for t in range(100):
         # plot and show learning process
         plt.cla()
         prediction = torch.max(out, 1)[1]
-        pred_y = prediction.data.numpy().squeeze()
-        target_y = y.data.numpy()
-        plt.scatter(x.data.numpy()[:, 0], x.data.numpy()[:, 1], c=pred_y, s=100, lw=0, cmap='RdYlGn')
+        pred_y = prediction.data.cpu().numpy().squeeze()
+        target_y = y.data.cpu().numpy()
+        plt.scatter(x.data.cpu().numpy()[:, 0], x.data.cpu().numpy()[:, 1], c=pred_y, s=100, lw=0, cmap='RdYlGn')
         accuracy = sum(pred_y == target_y)/200.
         print accuracy
         plt.text(1.5, -4, 'Accuracy=%.2f' % accuracy, fontdict={'size': 20, 'color':  'red'})
