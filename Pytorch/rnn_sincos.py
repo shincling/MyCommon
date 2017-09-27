@@ -61,10 +61,21 @@ h_state = None      # for initial hidden state
 plt.figure(1, figsize=(12, 5))
 plt.ion()           # continuously plot
 
+dynamic=1
+d_step=0
 for step in range(60):
-    start, end = step * np.pi, (step+1)*np.pi   # time range
-    # use sin predicts cos
-    steps = np.linspace(start, end, TIME_STEP, dtype=np.float32)
+    if dynamic:
+        dynamic_steps = np.random.randint(1, 4)  # 随机 time step 长度
+        start, end = d_step * np.pi, (d_step + dynamic_steps) * np.pi  # different time steps length
+        d_step += dynamic_steps
+
+        # use sin predicts cos
+        steps = np.linspace(start, end, 10 * dynamic_steps, dtype=np.float32)
+        print dynamic_steps
+    else:
+        start, end = step * np.pi, (step+1)*np.pi   # time range
+        # use sin predicts cos
+        steps = np.linspace(start, end, TIME_STEP, dtype=np.float32)
     x_np = np.sin(steps)    # float32 for converting torch FloatTensor
     y_np = np.cos(steps)
 
