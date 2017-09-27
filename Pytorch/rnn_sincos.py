@@ -50,7 +50,7 @@ class RNN(nn.Module):
         # outs = self.out(r_out)
         # return outs, h_state
 
-rnn = RNN()
+rnn = RNN().cuda()
 print(rnn)
 
 optimizer = torch.optim.Adam(rnn.parameters(), lr=LR)   # optimize all cnn parameters
@@ -79,8 +79,8 @@ for step in range(60):
     x_np = np.sin(steps)    # float32 for converting torch FloatTensor
     y_np = np.cos(steps)
 
-    x = Variable(torch.from_numpy(x_np[np.newaxis, :, np.newaxis]))    # shape (batch, time_step, input_size)
-    y = Variable(torch.from_numpy(y_np[np.newaxis, :, np.newaxis]))
+    x = Variable(torch.from_numpy(x_np[np.newaxis, :, np.newaxis])).cuda()    # shape (batch, time_step, input_size)
+    y = Variable(torch.from_numpy(y_np[np.newaxis, :, np.newaxis])).cuda()
 
     prediction, h_state = rnn(x, h_state)   # rnn output
     # !! next step is important !!
@@ -97,7 +97,7 @@ for step in range(60):
 
     # plotting
     plt.plot(steps, y_np.flatten(), 'r-')
-    plt.plot(steps, prediction.data.numpy().flatten(), 'b-')
+    plt.plot(steps, prediction.data.cpu().numpy().flatten(), 'b-')
     plt.draw(); plt.pause(0.05)
 
 plt.ioff()
