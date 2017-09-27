@@ -32,7 +32,9 @@ class Net(torch.nn.Module):
         if 1:# share weights of the two layer
             self.hidden2.weight=self.hidden1.weight
             self.hidden2.bias=self.hidden1.bias
-        self.out = torch.nn.Linear(n_hidden, n_output)   # output layer
+        self.out = torch.nn.Linear(n_hidden,100)   # output layer
+        self.bn=torch.nn.BatchNorm1d(100)
+        self.final= torch.nn.Linear(100, n_output)   # output layer
 
     def forward(self, x):
         # x = F.relu(self.hidden1(F.relu(self.hidden1(F.relu(self.hidden(x))))))      # activation function for hidden layer
@@ -40,12 +42,15 @@ class Net(torch.nn.Module):
         x = F.relu(self.hidden2(F.relu(self.hidden1(F.relu(self.hidden(x))))))      # activation function for hidden layer
         # x = F.relu(self.hidden1(F.relu(self.hidden1(F.relu(self.hidden1(x))))))      # activation function for hidden layer
         x = self.out(x)
+        x= self.bn(x)
+        x=self.final(x)
         return x
 
 net2 = torch.nn.Sequential(
     torch.nn.Linear(2, 10),
     torch.nn.ReLU(),
     torch.nn.Linear(10, 2)
+
 )
 
 if 1:
