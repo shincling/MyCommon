@@ -1,9 +1,11 @@
+#coding=utf8
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
 import torch.nn.functional as F
 import numpy as np
 import gym
+import time
 
 # Hyper Parameters
 BATCH_SIZE = 32
@@ -91,6 +93,7 @@ for i_episode in range(400):
     s = env.reset()
     ep_r = 0
     while True:
+        # print dqn.memory_counter
         env.render()
         a = dqn.choose_action(s)
 
@@ -106,6 +109,7 @@ for i_episode in range(400):
         dqn.store_transition(s, a, r, s_)
 
         ep_r += r
+        # 先存满Memory，然后开始每一步都学习网络（每次sample然后更新这样的）
         if dqn.memory_counter > MEMORY_CAPACITY:
             dqn.learn()
             if done:
