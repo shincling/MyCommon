@@ -42,6 +42,7 @@ class Net(torch.nn.Module):
         x = F.relu(self.hidden2(F.relu(self.hidden1(F.relu(self.hidden(x))))))      # activation function for hidden layer
         # x = F.relu(self.hidden1(F.relu(self.hidden1(F.relu(self.hidden1(x))))))      # activation function for hidden layer
         x = self.out(x)
+        x =torch.clamp(x,0.5,1) #这个是限定范围的一个函数，这个函数居然都可以，这个反传怎么实现的啊，有点厉害了吧。
         x= self.bn(x)
         x=self.final(x)
         return x
