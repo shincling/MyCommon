@@ -119,14 +119,14 @@ def extract_features_msr_vtt(cfg, video_path, feat_path):
         if not path.exists(feat_path):
             makedirs(feat_path)
 
-        video_list = glob.glob(path.join(video_path, '*.mp4'))
+        video_list = glob.glob(path.join(video_path, '*.mpg'))#原来.mp4形式的
         for video in tqdm(video_list):
             video_id = video.split("/")[-1].split(".")[0]
             dst = video_id
             extract_frames(video, dst)
 
             image_list = sorted(glob.glob(path.join(dst, '*.jpg')))
-            samples = np.round(np.linspace(0, len(image_list) - 1, cfg.n_frame_step))
+            samples = np.round(np.linspace(0, len(image_list) - 1, cfg.n_frame_step)) #这里是等间隔取文件
             image_list = [image_list[int(sample)] for sample in samples]
 
             mixed_10_activations = np.zeros((len(image_list), cfg.dim_image), dtype=np.float32)
@@ -143,7 +143,7 @@ def extract_features_msr_vtt(cfg, video_path, feat_path):
 
 def main(args):
     # Download Inception_V3 model def
-    maybe_download_and_extract()
+    # maybe_download_and_extract()
     if args.dataset == "MSR-VTT":
         cfg = msr_vtt_cfg()
 
@@ -175,7 +175,7 @@ if __name__ == "__main__":
                      MSR-VTT and Flickr30k datasets'
     )
 
-    parser.add_argument("--dataset", dest='dataset', type=str, required=True,
+    parser.add_argument("--dataset", dest='dataset', type=str, required=False,default='MSR-VTT',
                         help='Specify the one from {Flickr30k, MSR-VTT}')
     parser.add_argument("--gpu", dest='gpu', type=str, required=False,
                         help='Set CUDA_VISIBLE_DEVICES environment variable, optional')
