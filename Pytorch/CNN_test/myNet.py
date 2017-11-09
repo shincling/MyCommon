@@ -121,11 +121,12 @@ class Inception3(nn.Module):
         x = F.dropout(x, training=self.training)
         # 1 x 1 x 2048
         x = x.view(x.size(0), -1)
+        y = x
         # 2048
         x = self.fc(x)
         # 1000 (num_classes)
         if self.training and self.aux_logits:
-            return x, aux
+            return x, aux, y #add a output for the final hidden vector
         return x
 
 
