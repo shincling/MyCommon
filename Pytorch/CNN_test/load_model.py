@@ -17,7 +17,7 @@ torch.manual_seed(1)
 # mm=models.inception_v3()
 mm=myNet.inception_v3(1)
 #
-xx=Variable(torch.rand([2,3,300,300]))
+xx=Variable(torch.rand([2,3,299,299]))#standard size is 299*299.
 print mm(xx)[2].size()
 
 
