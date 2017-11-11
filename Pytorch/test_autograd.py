@@ -6,9 +6,9 @@ import numpy as np
 def mul3(x):
     return x*3
 def add3(x):
-    return x+3
-    # return x+Variable(torch.ones([2,2]))
-    return x+torch.FloatTensor(np.array([[1,2],[10,11]]))
+    # return x+3
+    return x+Variable(torch.ones([2,2]))
+    # return x+torch.FloatTensor(np.array([[1,2],[10,11]]))
 def mul3_numpy(x):
     return Variable(torch.FloatTensor(x.data.numpy()*3))
 a=Variable(torch.ones(2,2),requires_grad=True)
