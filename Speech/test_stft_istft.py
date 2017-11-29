@@ -31,12 +31,12 @@ if signal.shape[0] < MAX_LEN:  # 根据最大长度用 0 补齐,
 
 spec = np.transpose(librosa.core.spectrum.stft(signal, FRAME_LENGTH,FRAME_SHIFT))
 print spec
-y_signal=librosa.core.spectrum.istft(np.transpose(spec), FRAME_SHIFT,
-                                        )
+y_signal=librosa.core.spectrum.istft(np.transpose(spec), FRAME_SHIFT,)
+
 _mix_spec = spec
 phase_mix = np.angle(_mix_spec)
 _pred_spec = np.abs(_mix_spec) * np.exp(1j * phase_mix)
 _pred_wav = librosa.core.spectrum.istft(np.transpose(_pred_spec), FRAME_SHIFT,
-                                        window=WINDOWS)
+                                        )
 sf.write('y_stft.wav',y_signal,FRAME_RATE) #这个是可以的了！！！！　没有istft里的window选项
 sf.write('y_stft_abs_angel.wav',_pred_wav,FRAME_RATE)
