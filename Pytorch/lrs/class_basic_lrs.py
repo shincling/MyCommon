@@ -87,10 +87,12 @@ lrs.send({
     })
 
 for t in range(100):
-    lrs.send('epoch',t)
+    # lrs.send('epoch',t)
     out = net(x)                 # input x and predict based on x
     # print out
     loss = loss_func(out, y)     # must be (1. nn output, 2. target), the target label is NOT one-hotted
+    print '\nttt:',t
+    print 'loss:',loss.data[0]
     lrs.send('train_loss',loss.data[0])
 
 
@@ -106,6 +108,7 @@ for t in range(100):
         target_y = y.data.cpu().numpy()
         plt.scatter(x.data.cpu().numpy()[:, 0], x.data.cpu().numpy()[:, 1], c=pred_y, s=100, lw=0, cmap='RdYlGn')
         accuracy = sum(pred_y == target_y)/200.
+        lrs.send('acc',accuracy)
         print accuracy
         plt.text(1.5, -4, 'Accuracy=%.2f' % accuracy, fontdict={'size': 20, 'color':  'red'})
         plt.pause(0.1)
