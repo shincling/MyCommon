@@ -1,3 +1,4 @@
+#coding=utf8
 import numpy as np
 import torch
 from torch import nn, autograd as ag
@@ -7,7 +8,7 @@ from copy import deepcopy
 seed = 0
 plot = True
 innerstepsize = 0.02 # stepsize in inner SGD
-innerepochs = 1 # number of epochs of each inner SGD
+innerepochs = 1 # 感觉就是W_i项里的k number of epochs of each inner SGD
 outerstepsize0 = 0.1 # stepsize of outer optimization, i.e., meta-optimization
 niterations = 30000 # number of outer updates; each iteration we sample one task and update on it
 
@@ -17,6 +18,7 @@ torch.manual_seed(seed)
 # Define task distribution
 x_all = np.linspace(-5, 5, 50)[:,None] # All of the x points
 ntrain = 10 # Size of training minibatches
+ntrain = 20 # Size of training minibatches
 def gen_task():
     "Generate classification problem"
     phase = rng.uniform(low=0, high=2*np.pi)
