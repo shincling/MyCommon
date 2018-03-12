@@ -8,7 +8,7 @@ from copy import deepcopy
 seed = 0
 plot = True
 innerstepsize = 0.02 # stepsize in inner SGD
-innerepochs = 1 # 感觉就是W_i项里的k number of epochs of each inner SGD
+innerepochs = 1 # 不是k number of epochs of each inner SGD
 outerstepsize0 = 0.1 # stepsize of outer optimization, i.e., meta-optimization
 niterations = 30000 # number of outer updates; each iteration we sample one task and update on it
 
@@ -17,7 +17,7 @@ torch.manual_seed(seed)
 
 # Define task distribution
 x_all = np.linspace(-5, 5, 50)[:,None] # All of the x points
-ntrain = 10 # Size of training minibatches
+ntrain = 10 # Size of training minibatches 这个就是batch版本程序的n没跑了
 ntrain = 20 # Size of training minibatches
 def gen_task():
     "Generate classification problem"
@@ -33,7 +33,7 @@ model = nn.Sequential(
     nn.Linear(64, 64),
     nn.Tanh(),
     nn.Linear(64, 1),
-)
+) # 整个model模拟的是asin(x+b)函数的
 
 def totorch(x):
     return ag.Variable(torch.Tensor(x))
@@ -65,7 +65,7 @@ for iteration in range(niterations):
     # Do SGD on this task
     inds = rng.permutation(len(x_all))
     for _ in range(innerepochs):
-        for start in range(0, len(x_all), ntrain):
+        for start in range(0, len(x_all), ntrain): #这里相当于更新了5次，k=5也就是
             mbinds = inds[start:start+ntrain]
             train_on_batch(x_all[mbinds], y_all[mbinds])
     # Interpolate between current weights and trained weights from this task
