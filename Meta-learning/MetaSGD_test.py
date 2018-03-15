@@ -9,8 +9,9 @@ seed = 0
 plot = True
 innerstepsize = 0.02 # stepsize in inner SGD
 innerepochs = 1 # 不是k number of epochs of each inner SGD
-outerstepsize0 = 0.1 # stepsize of outer optimization, i.e., meta-optimization
+outerstepsize0 = 0.2 # stepsize of outer optimization, i.e., meta-optimization
 niterations = 30000 # number of outer updates; each iteration we sample one task and update on it
+test_num=10 #一个task里面 test的占总共（50个点）的比例
 
 rng = np.random.RandomState(seed)
 torch.manual_seed(seed)
@@ -34,6 +35,17 @@ model = nn.Sequential(
     nn.Tanh(),
     nn.Linear(64, 1),
 ) # 整个model模拟的是asin(x+b)函数的
+
+# class Adaptation(torch.nn.Module):
+#     def __init__(self):
+#         super(Adaptation,self).__init__()
+#         self.alpha_1=nn.Parameter(torch.FloatTensor(1,64))
+#         self.alpha_2=nn.Parameter(torch.FloatTensor(64,64))
+#         self.alpha_3=nn.Parameter(torch.FloatTensor(64,1))
+#
+#     def forward(self, theta1,theta2,theta3):
+#
+
 
 def totorch(x):
     return ag.Variable(torch.Tensor(x))
@@ -64,12 +76,19 @@ for iteration in range(niterations):
     y_all = f(x_all)
     # Do SGD on this task
     inds = rng.permutation(len(x_all))
+    train_inds=inds[:-test_num]
+    test_inds=inds[-test_num:]
+
     for _ in range(innerepochs):
-        for start in range(0, len(x_all), ntrain): #这里相当于更新了5次，k=5也就是
-            mbinds = inds[start:start+ntrain]
-            train_on_batch(x_all[mbinds], y_all[mbinds])
-    # Interpolate between current weights and trained weights from this task
-    # I.e. (weights_before - weights_after) is the meta-gradient
+        train_on_batch(x_all[train_inds], y_all[train_inds])
+
+        model.zero_grad()
+        ypred = model(totorch(x_all[test_inds]))
+        loss = (ypred - totorch(y_all[test_inds])).pow(2).mean()
+        loss.backward()
+        for param in model.parameters():
+            param.data -= innerstepsize * param.grad.data
+
     weights_after = model.state_dict()
     outerstepsize = outerstepsize0 * (1 - iteration / niterations) # linear schedule
     model.load_state_dict({name :
