@@ -36,16 +36,22 @@ model = nn.Sequential(
     nn.Linear(64, 1),
 ) # 整个model模拟的是asin(x+b)函数的
 
-# class Adaptation(torch.nn.Module):
-#     def __init__(self):
-#         super(Adaptation,self).__init__()
-#         self.alpha_1=nn.Parameter(torch.FloatTensor(1,64))
-#         self.alpha_2=nn.Parameter(torch.FloatTensor(64,64))
-#         self.alpha_3=nn.Parameter(torch.FloatTensor(64,1))
-#
-#     def forward(self, theta1,theta2,theta3):
-#
+class Adaptation(torch.nn.Module):
+    def __init__(self):
+        super(Adaptation,self).__init__()
+        self.alpha_1=nn.Parameter(torch.rand(64,1))
+        self.alpha_1b=nn.Parameter(torch.rand(64))
+        self.alpha_2=nn.Parameter(torch.rand(64,64))
+        self.alpha_2b=nn.Parameter(torch.rand(64))
+        self.alpha_3=nn.Parameter(torch.rand(1,64))
+        self.alpha_3b=nn.Parameter(torch.rand(1))
 
+    def forward(self, model):
+        for param,alpha in zip(model.parameters(),[self.alpha_1,self.alpha_1b,self.alpha_2,self.alpha_2b,self.alpha_3,self.alpha_3b,]):
+            # print 'prarm shape:',param.data.shape,'alpha shape:',alpha.data.shape
+            param.data=param.data+alpha.data
+
+ada=Adaptation()
 
 def totorch(x):
     return ag.Variable(torch.Tensor(x))
@@ -58,7 +64,16 @@ def train_on_batch(x, y):
     loss = (ypred - y).pow(2).mean()
     loss.backward()
     for param in model.parameters():
-        param.data -= innerstepsize * param.grad.data
+        print '111'
+        print param[:3]
+        break
+    ada(model)
+    for param in model.parameters():
+        print '222'
+        print param[:3]
+        break
+    # for param in model.parameters():
+    #     param.data -= innerstepsize * param.grad.data
 
 def predict(x):
     x = totorch(x)
