@@ -11,6 +11,7 @@ innerstepsize = 0.02 # stepsize in inner SGD
 innerepochs = 1 # 不是k number of epochs of each inner SGD
 outerstepsize0 = 0.2 # stepsize of outer optimization, i.e., meta-optimization
 outerstepsize = 0.02 # stepsize of outer optimization, i.e., meta-optimization
+lr= 0.002 # stepsize of outer optimization, i.e., meta-optimization
 niterations = 30000 # number of outer updates; each iteration we sample one task and update on it
 test_num=20 #一个task里面 test的占总共（50个点）的比例
 
@@ -57,7 +58,7 @@ class Adaptation(torch.nn.Module):
     def forward(self, model):
         for param,alpha in zip(model.parameters(),[self.alpha_1,self.alpha_1b,self.alpha_2,self.alpha_2b,self.alpha_3,self.alpha_3b,]):
             # print 'prarm shape:',param.data.shape,'alpha shape:',alpha.data.shape
-            param.data=param.data-alpha.data*param.grad.data
+            param.data=param.data-lr*alpha.data*param.grad.data
             # param=param-alpha
         # return model
 
@@ -82,9 +83,10 @@ def train_on_batch(x, y):
     #     print '222'
     #     print param[:3]
     #     break
-    for param in ada.parameters():
-        print 'alpha alpha alpha'
-        print param[:3]
+    # for param in ada.parameters():
+    #     print 'alpha alpha alpha'
+    #     print param[:3]
+    #     break
 
     train_param_grad_list=[]
     for param in model.parameters():
