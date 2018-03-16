@@ -10,8 +10,9 @@ plot = True
 innerstepsize = 0.02 # stepsize in inner SGD
 innerepochs = 1 # 不是k number of epochs of each inner SGD
 outerstepsize0 = 0.2 # stepsize of outer optimization, i.e., meta-optimization
+outerstepsize = 0.02 # stepsize of outer optimization, i.e., meta-optimization
 niterations = 30000 # number of outer updates; each iteration we sample one task and update on it
-test_num=10 #一个task里面 test的占总共（50个点）的比例
+test_num=20 #一个task里面 test的占总共（50个点）的比例
 
 rng = np.random.RandomState(seed)
 torch.manual_seed(seed)
@@ -45,11 +46,20 @@ class Adaptation(torch.nn.Module):
         self.alpha_2b=nn.Parameter(torch.rand(64))
         self.alpha_3=nn.Parameter(torch.rand(1,64))
         self.alpha_3b=nn.Parameter(torch.rand(1))
+        
+        # self.alpha_1=torch.autograd.Variable(torch.rand(64,1),requires_grad=True)
+        # self.alpha_1b=torch.autograd.Variable(torch.rand(64),requires_grad=True)
+        # self.alpha_2=torch.autograd.Variable(torch.rand(64,64),requires_grad=True)
+        # self.alpha_2b=torch.autograd.Variable(torch.rand(64),requires_grad=True)
+        # self.alpha_3=torch.autograd.Variable(torch.rand(1,64),requires_grad=True)
+        # self.alpha_3b=torch.autograd.Variable(torch.rand(1),requires_grad=True)
 
     def forward(self, model):
         for param,alpha in zip(model.parameters(),[self.alpha_1,self.alpha_1b,self.alpha_2,self.alpha_2b,self.alpha_3,self.alpha_3b,]):
             # print 'prarm shape:',param.data.shape,'alpha shape:',alpha.data.shape
-            param.data=param.data+alpha.data
+            param.data=param.data-alpha.data*param.grad.data
+            # param=param-alpha
+        # return model
 
 ada=Adaptation()
 
@@ -63,17 +73,23 @@ def train_on_batch(x, y):
     ypred = model(x)
     loss = (ypred - y).pow(2).mean()
     loss.backward()
-    for param in model.parameters():
-        print '111'
-        print param[:3]
-        break
-    ada(model)
-    for param in model.parameters():
-        print '222'
-        print param[:3]
-        break
     # for param in model.parameters():
-    #     param.data -= innerstepsize * param.grad.data
+    #     print '111'
+    #     print param[:3]
+    #     break
+    ada(model)
+    # for param in model.parameters():
+    #     print '222'
+    #     print param[:3]
+    #     break
+    for param in ada.parameters():
+        print 'alpha alpha alpha'
+        print param[:3]
+
+    train_param_grad_list=[]
+    for param in model.parameters():
+        train_param_grad_list.append(param.grad.data)
+    return train_param_grad_list
 
 def predict(x):
     x = totorch(x)
@@ -95,20 +111,27 @@ for iteration in range(niterations):
     test_inds=inds[-test_num:]
 
     for _ in range(innerepochs):
-        train_on_batch(x_all[train_inds], y_all[train_inds])
+        train_grads_list = train_on_batch(x_all[train_inds], y_all[train_inds])
 
         model.zero_grad()
         ypred = model(totorch(x_all[test_inds]))
         loss = (ypred - totorch(y_all[test_inds])).pow(2).mean()
         loss.backward()
-        for param in model.parameters():
+        # print 'hhh'
+        # print ada.alpha_1.grad
+        # for param in ada.parameters():
+        #     print 'hhh'
+        #     print param.grad
+        #     1/0
+        for param,alpha,train_grad in zip(model.parameters(),ada.parameters(),train_grads_list):
             param.data -= innerstepsize * param.grad.data
+            alpha.data += innerstepsize * train_grad * param.grad.data
 
-    weights_after = model.state_dict()
-    outerstepsize = outerstepsize0 * (1 - iteration / niterations) # linear schedule
-    model.load_state_dict({name :
-        weights_before[name] + (weights_after[name] - weights_before[name]) * outerstepsize
-        for name in weights_before})
+    # weights_after = model.state_dict()
+    # # outerstepsize = outerstepsize0 * (1 - iteration / niterations) # linear schedule
+    # model.load_state_dict({name :
+    #     weights_before[name] + (weights_after[name] - weights_before[name]) * outerstepsize
+    #     for name in weights_before})
 
     # Periodically plot the results on a particular task and minibatch
     if plot and iteration==0 or (iteration+1) % 1000 == 0:
