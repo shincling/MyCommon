@@ -7,20 +7,20 @@ from copy import deepcopy
 
 seed = 0
 plot = True
-innerstepsize = 0.02 # stepsize in inner SGD
+innerstepsize = 0.01 # stepsize in inner SGD
 innerepochs = 1 # 不是k number of epochs of each inner SGD
 outerstepsize0 = 0.2 # stepsize of outer optimization, i.e., meta-optimization
 outerstepsize = 0.02 # stepsize of outer optimization, i.e., meta-optimization
-lr= 0.002 # stepsize of outer optimization, i.e., meta-optimization
-niterations = 30000 # number of outer updates; each iteration we sample one task and update on it
-test_num=20 #一个task里面 test的占总共（50个点）的比例
+lr= 0.0005 # stepsize of outer optimization, i.e., meta-optimization
+niterations = 50000 # number of outer updates; each iteration we sample one task and update on it
+test_num=15#一个task里面 test的占总共（50个点）的比例
 
 rng = np.random.RandomState(seed)
 torch.manual_seed(seed)
 
 # Define task distribution
 x_all = np.linspace(-5, 5, 50)[:,None] # All of the x points
-ntrain = 10 # Size of training minibatches 这个就是batch版本程序的n没跑了
+ntrain = 20 # Size of training minibatches 这个就是batch版本程序的n没跑了
 # ntrain = 20 # Size of training minibatches
 def gen_task():
     "Generate classification problem"
