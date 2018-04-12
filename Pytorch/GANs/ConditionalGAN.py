@@ -9,17 +9,15 @@ import matplotlib.gridspec as gridspec
 import os
 from torch.autograd import Variable
 from tensorflow.examples.tutorials.mnist import input_data
-import lrs
 
 
 mnist = input_data.read_data_sets('../../MNIST_data', one_hot=True)
 mb_size = 64
-mb_size = 16
 Z_dim = 100
 X_dim = mnist.train.images.shape[1]
 y_dim = mnist.train.labels.shape[1]
 h_dim = 128
-c = 0
+cnt = 0
 lr = 1e-3
 
 
@@ -31,30 +29,32 @@ def xavier_init(size):
 
 """ ==================== GENERATOR ======================== """
 
-Wzh = xavier_init(size=[Z_dim, h_dim])
+Wzh = xavier_init(size=[Z_dim + y_dim, h_dim])
 bzh = Variable(torch.zeros(h_dim), requires_grad=True)
 
 Whx = xavier_init(size=[h_dim, X_dim])
 bhx = Variable(torch.zeros(X_dim), requires_grad=True)
 
 
-def G(z):
-    h = nn.relu(torch.matmul(z , Wzh) + bzh.repeat(z.size(0), 1))
+def G(z, c):
+    inputs = torch.cat([z, c], 1)
+    h = nn.relu(torch.matmul(inputs , Wzh) + bzh.repeat(inputs.size(0), 1))
     X = nn.sigmoid(torch.matmul(h , Whx) + bhx.repeat(h.size(0), 1))
     return X
 
 
 """ ==================== DISCRIMINATOR ======================== """
 
-Wxh = xavier_init(size=[X_dim, h_dim])
+Wxh = xavier_init(size=[X_dim + y_dim, h_dim])
 bxh = Variable(torch.zeros(h_dim), requires_grad=True)
 
 Why = xavier_init(size=[h_dim, 1])
 bhy = Variable(torch.zeros(1), requires_grad=True)
 
 
-def D(X):
-    h = nn.relu(torch.matmul(X , Wxh) + bxh.repeat(X.size(0), 1))
+def D(X, c):
+    inputs = torch.cat([X, c], 1)
+    h = nn.relu(torch.matmul(inputs , Wxh) + bxh.repeat(inputs.size(0), 1))
     y = nn.sigmoid(torch.matmul(h , Why) + bhy.repeat(h.size(0), 1))
     return y
 
@@ -80,22 +80,18 @@ D_solver = optim.Adam(D_params, lr=1e-3)
 ones_label = Variable(torch.ones(mb_size, 1))
 zeros_label = Variable(torch.zeros(mb_size, 1))
 
-lrs.send(
-    {'title':'Vanilla GAN'
-
-    }
-)
 
 for it in range(100000):
     # Sample data
     z = Variable(torch.randn(mb_size, Z_dim))
-    X, _ = mnist.train.next_batch(mb_size)
+    X, c = mnist.train.next_batch(mb_size)
     X = Variable(torch.from_numpy(X))
+    c = Variable(torch.from_numpy(c.astype('float32')))
 
     # Dicriminator forward-loss-backward-update
-    G_sample = G(z)
-    D_real = D(X)
-    D_fake = D(G_sample)
+    G_sample = G(z, c)
+    D_real = D(X, c)
+    D_fake = D(G_sample, c)
 
     D_loss_real = nn.binary_cross_entropy(D_real, ones_label)
     D_loss_fake = nn.binary_cross_entropy(D_fake, zeros_label)
@@ -109,8 +105,8 @@ for it in range(100000):
 
     # Generator forward-loss-backward-update
     z = Variable(torch.randn(mb_size, Z_dim))
-    G_sample = G(z)
-    D_fake = D(G_sample)
+    G_sample = G(z, c)
+    D_fake = D(G_sample, c)
 
     G_loss = nn.binary_cross_entropy(D_fake, ones_label)
 
@@ -122,12 +118,13 @@ for it in range(100000):
 
     # Print and plot every now and then
     print 'Iter-{}; D_loss: {}; G_loss: {}'.format(it, D_loss.data.numpy(), G_loss.data.numpy())
-    lrs.send('D_loss:',D_loss.data[0])
-    lrs.send('G_loss:',G_loss.data[0])
-    if 1 and it % 1000 == 0:
-        print 'Iter-{}; D_loss: {}; G_loss: {}'.format(it, D_loss.data.numpy(), G_loss.data.numpy())
+    if it % 1000 == 0:
+        print('Iter-{}; D_loss: {}; G_loss: {}'.format(it, D_loss.data.numpy(), G_loss.data.numpy()))
 
-        samples = G(z).data.numpy()[:16]
+        c = np.zeros(shape=[mb_size, y_dim], dtype='float32')
+        c[:, np.random.randint(0, 10)] = 1.
+        c = Variable(torch.from_numpy(c))
+        samples = G(z, c).data.numpy()[:16]
 
         fig = plt.figure(figsize=(4, 4))
         gs = gridspec.GridSpec(4, 4)
@@ -144,6 +141,6 @@ for it in range(100000):
         if not os.path.exists('out/'):
             os.makedirs('out/')
 
-        plt.savefig('out/{}.png'.format(str(c).zfill(3)), bbox_inches='tight')
-        c += 1
+        plt.savefig('out/{}.png'.format(str(cnt).zfill(3)), bbox_inches='tight')
+        cnt += 1
         plt.close(fig)
