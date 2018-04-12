@@ -123,7 +123,7 @@ for it in range(100000):
     print 'Iter-{}; D_loss: {}; G_loss: {}'.format(it, D_loss.data.numpy(), G_loss.data.numpy())
     lrs.send('D_loss:',D_loss.data[0])
     lrs.send('G_loss:',G_loss.data[0])
-    if 0 and it % 1000 == 0:
+    if 1 and it % 1000 == 0:
         print 'Iter-{}; D_loss: {}; G_loss: {}'.format(it, D_loss.data.numpy(), G_loss.data.numpy())
 
         samples = G(z).data.numpy()[:16]
